@@ -1,0 +1,10 @@
+<button class="file-upload-button">
+	<input type="file" #fileInput (change)="onFileSelect(fileInput)" />
+</button>
+
+<div class="file-content-wrapper" *ngFor="let line of fileContent">
+	<span class="file-content">
+		<p>{{ line }}</p>
+		<p></p>
+	</span>
+</div>
