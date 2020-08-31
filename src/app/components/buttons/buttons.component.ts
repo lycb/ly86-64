@@ -19,6 +19,8 @@ export class ButtonsComponent implements OnInit {
     if (!file) return;
     if (file.name.split(".")[1] !== "yo") {
       alert('File type is not supported! Please upload a .yo file');
+      input.value = "";
+      this.fileContent = [];
       return;
     }
 
@@ -42,6 +44,6 @@ export class ButtonsComponent implements OnInit {
   }
 
   onClickReset(): void {
-    
+
   }
 }
