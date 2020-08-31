@@ -32,4 +32,16 @@ export class ButtonsComponent implements OnInit {
     }
     fileReader.readAsText(file);
   }
+
+  onClickContinue(): void {
+
+  }
+
+  onClickStep(): void {
+
+  }
+
+  onClickReset(): void {
+    
+  }
 }

@@ -2,6 +2,10 @@
 	<input type="file" #fileInput (change)="onFileSelect(fileInput)" />
 </button>
 
+<button class="continue-button" (click)="onClickContinue()">Continue</button>
+<button class="step-button" (click)="onClickStep()">Step</button>
+<button class="reset-button" (click)="onClickReset()">Reset</button>
+
 <div class="file-content-wrapper" *ngFor="let line of fileContent">
 	<span class="file-content">
 		<pre class="content">{{ line }}</pre>
