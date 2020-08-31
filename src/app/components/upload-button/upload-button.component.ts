@@ -7,14 +7,12 @@ import { ParserService } from '../../services/parser/parser.service';
   styleUrls: ['./upload-button.component.css']
 })
 export class UploadButtonComponent implements OnInit {
+  fileContent: string[] = [];
 
-  constructor() { }
+  constructor(private parserService: ParserService) { }
 
   ngOnInit() {
   }
-
-  // line by line array to parse
-  fileContent: string[] = [];
 
   onFileSelect(input: HTMLInputElement): void {
     const file = input.files[0];
@@ -28,12 +26,10 @@ export class UploadButtonComponent implements OnInit {
     fileReader.onload = (e) => {
       let lines = (fileReader.result as string).split(/[\r\n]+/g);
       for (let line of lines) {
-        if (line[0] == "0") {
-          this.fileContent.push(line);
-        }
+        this.fileContent.push(line);
+        this.parserService.parse(line);
       }
     }
     fileReader.readAsText(file);
   }
-
 }
