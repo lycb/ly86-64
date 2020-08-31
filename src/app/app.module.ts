@@ -3,14 +3,16 @@ import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { UploadButtonComponent } from './components/upload-button/upload-button.component';
 import { ClockCycleComponent } from './components/clock-cycle/clock-cycle.component';
+import { RegistersComponent } from './components/registers/registers.component';
+import { ButtonsComponent } from './components/buttons/buttons.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    UploadButtonComponent,
     ClockCycleComponent,
+    RegistersComponent,
+    ButtonsComponent,
   ],
   imports: [
     BrowserModule,

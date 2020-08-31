@@ -2,11 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { ParserService } from '../../services/parser/parser.service';
 
 @Component({
-  selector: 'app-upload-button',
-  templateUrl: './upload-button.component.html',
-  styleUrls: ['./upload-button.component.css']
+  selector: 'app-buttons',
+  templateUrl: './buttons.component.html',
+  styleUrls: ['./buttons.component.css']
 })
-export class UploadButtonComponent implements OnInit {
+export class ButtonsComponent implements OnInit {
   fileContent: string[] = [];
 
   constructor(private parserService: ParserService) { }
@@ -18,7 +18,7 @@ export class UploadButtonComponent implements OnInit {
     const file = input.files[0];
     if (!file) return;
     if (file.name.split(".")[1] !== "yo") {
-    	alert('File type is not supported! Please upload a .yo file');
+      alert('File type is not supported! Please upload a .yo file');
       return;
     }
 

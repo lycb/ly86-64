@@ -1,4 +1,4 @@
-export const REGISTERS = {
+export const REGISTERS = [
 	'EAX',
 	'ECX',
 	'EDX',
@@ -7,7 +7,7 @@ export const REGISTERS = {
 	'EBP',
 	'ESI',
 	'EDI',
-}
+]
 
 export const EAX = 0
 export const ECX = 1
@@ -19,7 +19,7 @@ export const ESI = 6
 export const EDI = 7
 export const R_NONE = 0xf;
 
-export const INSTRUCTIONS = {
+export const INSTRUCTIONS = [
 	'NOP', 
 	'HALT', 
 	'RRMOVL',
@@ -32,7 +32,7 @@ export const INSTRUCTIONS = {
 	'RET',
 	'PUSHL',
 	'POPL',
-}
+]
 
 export const NOP = 0
 export const HALT = 1
