@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ParserService } from '../../services/parser/parser.service';
 
 @Component({
   selector: 'app-upload-button',
@@ -25,8 +26,7 @@ export class UploadButtonComponent implements OnInit {
 
     let fileReader = new FileReader();
     fileReader.onload = (e) => {
-      // console.log(this.fileContent);
-      const lines = fileReader.result.split(/[\r\n]+/g);
+      let lines = (fileReader.result as string).split(/[\r\n]+/g);
       for (let line of lines) {
         if (line[0] == "0") {
           this.fileContent.push(line);
@@ -34,7 +34,6 @@ export class UploadButtonComponent implements OnInit {
       }
     }
     fileReader.readAsText(file);
-    
   }
 
 }
