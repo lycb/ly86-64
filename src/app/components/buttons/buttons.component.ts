@@ -8,6 +8,7 @@ import { ParserService } from '../../services/parser/parser.service';
 })
 export class ButtonsComponent implements OnInit {
   fileContent: string[] = [];
+  loadComponent: boolean = false;
 
   constructor(private parserService: ParserService) { }
 
@@ -31,6 +32,8 @@ export class ButtonsComponent implements OnInit {
         this.fileContent.push(line);
         this.parserService.parse(line);
       }
+      this.parserService.setFileContent(lines);
+      this.loadComponent = true;
     }
     fileReader.readAsText(file);
   }

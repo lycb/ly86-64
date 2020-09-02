@@ -6,8 +6,5 @@
 <button class="step-button" (click)="onClickStep()">Step</button>
 <button class="reset-button" (click)="onClickReset()">Reset</button>
 
-<div class="file-content-wrapper" *ngFor="let line of fileContent">
-	<span class="file-content">
-		<pre class="content">{{ line }}</pre>
-	</span>
-</div>
+<app-code *ngIf="loadComponent"></app-code>
+

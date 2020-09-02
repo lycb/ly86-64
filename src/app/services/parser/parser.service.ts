@@ -6,7 +6,8 @@ import { Line } from './line';
 })
 export class ParserService {
 
-  lineArray: Line[] = []
+  lineArray: Line[] = [];
+  fileContent: string[] = [];
 
   constructor() { }
 
@@ -17,11 +18,19 @@ export class ParserService {
         this.lineArray.push({
           address: parseInt(parts[1], 16),
           instruction: parts[2]
-        })
+        });
     }
   }
 
   getLineArray(): Line[] {
-    return this.lineArray
+    return this.lineArray;
+  }
+
+  setFileContent(content: string[]): void {
+    this.fileContent = content;
+  }
+
+  getFileContent(): string[] {
+    return this.fileContent;
   }
 }

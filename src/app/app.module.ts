@@ -6,6 +6,7 @@ import { AppComponent } from './app.component';
 import { ClockCycleComponent } from './components/clock-cycle/clock-cycle.component';
 import { RegistersComponent } from './components/registers/registers.component';
 import { ButtonsComponent } from './components/buttons/buttons.component';
+import { CodeComponent } from './components/code/code.component';
 
 @NgModule({
   declarations: [
@@ -13,6 +14,7 @@ import { ButtonsComponent } from './components/buttons/buttons.component';
     ClockCycleComponent,
     RegistersComponent,
     ButtonsComponent,
+    CodeComponent,
   ],
   imports: [
     BrowserModule,
