@@ -1,5 +1,6 @@
-<div class="file-content-wrapper" *ngFor="let line of fileContent">
-	<span class="file-content">
-		<pre class="content">{{ line }}</pre>
-	</span>
+<div class="file-content-wrapper">
+	<div class="file-content" *ngFor="let line of fileContent">
+		<pre *ngIf="!line.isCurrent" class="not-current">{{ line.textLine }}</pre>
+		<pre *ngIf="line.isCurrent" class="current">{{ line.textLine }}</pre>
+	</div>
 </div>

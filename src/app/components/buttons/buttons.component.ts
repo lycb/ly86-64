@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ParserService } from '../../services/parser/parser.service';
+import { Line } from '../../models/Line';
 
 @Component({
   selector: 'app-buttons',
@@ -7,7 +8,7 @@ import { ParserService } from '../../services/parser/parser.service';
   styleUrls: ['./buttons.component.css']
 })
 export class ButtonsComponent implements OnInit {
-  fileContent: string[] = [];
+  fileContent: Line[] = [];
   loadComponent: boolean = false;
 
   constructor(private parserService: ParserService) { }
@@ -29,10 +30,23 @@ export class ButtonsComponent implements OnInit {
     fileReader.onload = (e) => {
       let lines = (fileReader.result as string).split(/[\r\n]+/g);
       for (let line of lines) {
-        this.fileContent.push(line);
-        this.parserService.parse(line);
+        if (line[0] == "0") {
+          this.fileContent.push({
+            textLine: line,
+            isAnAddress: true,
+            isCurrent: false,
+          });
+          this.parserService.parse(line);
+        } else {
+          this.fileContent.push({
+            textLine: line,
+            isAnAddress: false,
+            isCurrent: false,
+          });
+        }
       }
-      this.parserService.setFileContent(lines);
+      if (this.fileContent[0].isAnAddress) this.fileContent[0].isCurrent = true;
+      this.parserService.setFileContent(this.fileContent);
       this.loadComponent = true;
     }
     fileReader.readAsText(file);

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ParserService } from '../../services/parser/parser.service';
+import { Line } from '../../models/Line';
 
 @Component({
   selector: 'app-code',
@@ -7,7 +8,7 @@ import { ParserService } from '../../services/parser/parser.service';
   styleUrls: ['./code.component.css']
 })
 export class CodeComponent implements OnInit {
-	fileContent: string[] = [];	
+	fileContent: Line[] = [];	
   
   constructor(private parserService: ParserService) { }
 

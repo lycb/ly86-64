@@ -1,5 +1,15 @@
-.content {
+.file-content-wrapper {
+	margin-top: 10px;
+}
+
+.file-content .not-current {
 	font-family: monospace;
-	margin: 2px;
+	margin: 0;
 	white-space: pre;
 }
+
+.current {
+	background-color: #bcadff;
+	margin: 0;
+}
+

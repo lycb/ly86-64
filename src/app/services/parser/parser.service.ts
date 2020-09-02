@@ -1,13 +1,16 @@
 import { Injectable } from '@angular/core';
-import { Line } from './line';
+import { AddressLine } from '../../models/AddressLine';
+import { Line } from '../../models/Line';
+
 
 @Injectable({
   providedIn: 'root'
 })
+
 export class ParserService {
 
-  lineArray: Line[] = [];
-  fileContent: string[] = [];
+  lineArray: AddressLine[] = [];
+  fileContent: Line[] = [];
 
   constructor() { }
 
@@ -17,20 +20,21 @@ export class ParserService {
     if (parts != null) {
         this.lineArray.push({
           address: parseInt(parts[1], 16),
-          instruction: parts[2]
+          instruction: parts[2],
         });
     }
   }
 
-  getLineArray(): Line[] {
+  getAddressLineArray(): AddressLine[] {
     return this.lineArray;
   }
 
-  setFileContent(content: string[]): void {
+  setFileContent(content: Line[]): void {
     this.fileContent = content;
   }
 
-  getFileContent(): string[] {
+  getFileContent(): Line[] {
+    console.log(this.fileContent)
     return this.fileContent;
   }
 }
