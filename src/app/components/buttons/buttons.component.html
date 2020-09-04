@@ -6,5 +6,5 @@
 <button class="step-button" (click)="onClickStep()">Step</button>
 <button class="reset-button" (click)="onClickReset()">Reset</button>
 
-<app-code *ngIf="loadComponent"></app-code>
+<app-code [fileContent]="fileContent" *ngIf="loadComponent"></app-code>
 
