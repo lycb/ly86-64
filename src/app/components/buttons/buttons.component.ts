@@ -90,7 +90,7 @@ export class ButtonsComponent implements OnInit {
     }
   }
 
-  isFileExtensionYo(file: HTMLInputElement): boolean {
+  isFileExtensionYo(file: File): boolean {
     if (file.name.split(".")[1] !== "yo") {
       alert('File type is not supported! Please upload a .yo file');
       return false;

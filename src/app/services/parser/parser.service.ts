@@ -34,7 +34,7 @@ export class ParserService {
     return this.fileContent;
   }
 
-  setCurrent(line: Line[]): void {
+  setCurrent(line: Line): void {
     if (this.currentLine != undefined) {
       this.currentLine.isCurrent = false;
       this.currentLine = line;
@@ -50,6 +50,4 @@ export class ParserService {
   getCurrentLine(): Line {
     return this.currentLine;
   }
-
-
 }
