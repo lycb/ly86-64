@@ -19,10 +19,11 @@ export class ButtonsComponent implements OnInit {
   onFileSelect(input: HTMLInputElement): void {
     const file = input.files[0];
     if (!file) return;
-    if (file.name.split(".")[1] !== "yo") {
-      alert('File type is not supported! Please upload a .yo file');
+
+    if (!this.isFileExtensionYo(file)) {
       input.value = "";
       this.fileContent = [];
+      this.parserService.setFileContent(this.fileContent);
       return;
     }
 
@@ -32,26 +33,26 @@ export class ButtonsComponent implements OnInit {
       let index = 0;
       for (let line of lines) {
         if (line[0] == "0") {
-          index = this.fileContent.push({
+          this.fileContent.push({
+            id: index,
             textLine: line,
             isAnAddress: true,
             isCurrent: false,
-          }) - 1;
-          this.parserService.parse(line);
+            parsedLine: this.parserService.parse(line),
+          });
+          index++;
         } else {
-          index = this.fileContent.push({
+          this.fileContent.push({
+            id: index,
             textLine: line,
             isAnAddress: false,
             isCurrent: false,
-          }) - 1;
+            parsedLine: null,
+          });
+          index++;
         }
-        console.log(index);
       }
-      if (this.fileContent[0].isAnAddress) {
-        this.fileContent[0].isCurrent = true;
-        this.parserService.setCurrentLine(this.fileContent[0]);
-        this.parserService.setCurrentIndex(0);
-      }
+      this.setFirstAddressCurrent();
       this.parserService.setFileContent(this.fileContent);
       this.loadComponent = true;
     }
@@ -63,10 +64,37 @@ export class ButtonsComponent implements OnInit {
   }
 
   onClickStep(): void {
-
+    var current = this.parserService.getCurrentLine();
+    if (current.id < this.fileContent.length) {
+      for (let i = current.id + 1; i < this.fileContent.length; i++) {
+        if (this.fileContent[i].parsedLine != null) {
+          this.fileContent[i].isCurrent = true;
+          this.parserService.setCurrent(this.fileContent[i]);
+          break;
+        }
+      }
+    }
   }
 
   onClickReset(): void {
 
+  }
+
+  setFirstAddressCurrent(): void {
+    for (let i = 0; i < this.fileContent.length; i++) {
+      if (this.fileContent[i].isAnAddress) {
+        this.fileContent[i].isCurrent = true;
+        this.parserService.setCurrent(this.fileContent[i]);
+        break;
+      }
+    }
+  }
+
+  isFileExtensionYo(file: HTMLInputElement): boolean {
+    if (file.name.split(".")[1] !== "yo") {
+      alert('File type is not supported! Please upload a .yo file');
+      return false;
+    }
+    return true;
   }
 }
