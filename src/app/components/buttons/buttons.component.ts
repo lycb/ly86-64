@@ -8,7 +8,7 @@ import { Line } from '../../models/Line';
   styleUrls: ['./buttons.component.css']
 })
 export class ButtonsComponent implements OnInit {
-  fileContent: Line[] = [];
+  fileContent: Line[];
   loadComponent: boolean = false;
 
   constructor(private parserService: ParserService) { }
@@ -17,12 +17,12 @@ export class ButtonsComponent implements OnInit {
   }
 
   onFileSelect(input: HTMLInputElement): void {
+    this.fileContent = [];
     const file = input.files[0];
     if (!file) return;
 
     if (!this.isFileExtensionYo(file)) {
       input.value = "";
-      this.fileContent = [];
       this.parserService.setFileContent(this.fileContent);
       return;
     }
@@ -77,7 +77,7 @@ export class ButtonsComponent implements OnInit {
   }
 
   onClickReset(): void {
-
+    this.setFirstAddressCurrent();
   }
 
   setFirstAddressCurrent(): void {
@@ -90,9 +90,10 @@ export class ButtonsComponent implements OnInit {
     }
   }
 
-  isFileExtensionYo(file: HTMLInputElement): boolean {
+  isFileExtensionYo(file: File): boolean {
     if (file.name.split(".")[1] !== "yo") {
       alert('File type is not supported! Please upload a .yo file');
+      this.loadComponent = false;
       return false;
     }
     return true;
