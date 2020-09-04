@@ -29,23 +29,29 @@ export class ButtonsComponent implements OnInit {
     let fileReader = new FileReader();
     fileReader.onload = (e) => {
       let lines = (fileReader.result as string).split(/[\r\n]+/g);
+      let index = 0;
       for (let line of lines) {
         if (line[0] == "0") {
-          this.fileContent.push({
+          index = this.fileContent.push({
             textLine: line,
             isAnAddress: true,
             isCurrent: false,
-          });
+          }) - 1;
           this.parserService.parse(line);
         } else {
-          this.fileContent.push({
+          index = this.fileContent.push({
             textLine: line,
             isAnAddress: false,
             isCurrent: false,
-          });
+          }) - 1;
         }
+        console.log(index);
       }
-      if (this.fileContent[0].isAnAddress) this.fileContent[0].isCurrent = true;
+      if (this.fileContent[0].isAnAddress) {
+        this.fileContent[0].isCurrent = true;
+        this.parserService.setCurrentLine(this.fileContent[0]);
+        this.parserService.setCurrentIndex(0);
+      }
       this.parserService.setFileContent(this.fileContent);
       this.loadComponent = true;
     }

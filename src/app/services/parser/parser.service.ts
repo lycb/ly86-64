@@ -11,6 +11,8 @@ export class ParserService {
 
   lineArray: AddressLine[] = [];
   fileContent: Line[] = [];
+  currentLine: Line;
+  currentIndex: number;
 
   constructor() { }
 
@@ -37,4 +39,21 @@ export class ParserService {
     console.log(this.fileContent)
     return this.fileContent;
   }
+
+  setCurrentLine(newLine: Line): void {
+    this.currentLine = newLine;
+  }
+
+  getCurrentLine(): Line {
+    return this.currentLine;
+  }
+
+  setCurrentIndex(index: number): void {
+    this.currentIndex = index;;
+  }
+
+  getCurrentIndex(): number {
+    return this.currentIndex;
+  }
+
 }
