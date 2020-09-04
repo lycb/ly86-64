@@ -7,6 +7,7 @@ export const REGISTERS = [
 	'EBP',
 	'ESI',
 	'EDI',
+	'RNONE'
 ]
 
 export const EAX = 0
@@ -17,7 +18,7 @@ export const ESP = 4
 export const EBP = 5
 export const ESI = 6
 export const EDI = 7
-export const R_NONE = 0xf;
+export const RNONE = 0xf;
 
 export const INSTRUCTIONS = [
 	'NOP', 
