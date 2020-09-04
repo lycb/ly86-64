@@ -2,9 +2,9 @@
 	<input type="file" #fileInput (change)="onFileSelect(fileInput)" />
 </button>
 
-<button class="continue-button" (click)="onClickContinue()">Continue</button>
-<button class="step-button" (click)="onClickStep()">Step</button>
-<button class="reset-button" (click)="onClickReset()">Reset</button>
+<button class="continue-button" (click)="onClickContinue()" [disabled]="!loadComponent">Continue</button>
+<button class="step-button" (click)="onClickStep()" [disabled]="!loadComponent">Step</button>
+<button class="reset-button" (click)="onClickReset()" [disabled]="!loadComponent">Reset</button>
 
 <app-code [fileContent]="fileContent" *ngIf="loadComponent"></app-code>
 
