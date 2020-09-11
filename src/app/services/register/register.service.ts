@@ -25,17 +25,17 @@ export class RegisterService {
   }
 
   getValueByRegister(name: string): Long {
-    return this.register[this.matchRegisterNameToIndex(name)].value;
+    return this.register[this.register2index(name)].value;
   }
 
   setValueByRegister(name: string, value: Long): void {
-    this.register[this.matchRegisterNameToIndex(name)].value = value;
+    this.register[this.register2index(name)].value = value;
     var binaryNum = value.toNumber().toString(16);
-    this.register[this.matchRegisterNameToIndex(name)].hex = this.paddingHex(binaryNum, 16);
+    this.register[this.register2index(name)].hex = this.paddingHex(binaryNum, 16);
 
   }
 
-  matchRegisterNameToIndex(name: string): number {
+  register2index(name: string): number {
     switch(name) {
       case "RAX": return 0;
       case "RCX": return 1;

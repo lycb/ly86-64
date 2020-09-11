@@ -1,0 +1,61 @@
+.pipeline-wrapper {
+	margin-top: 1.2vh;
+	display: flex;
+	flex-wrap: wrap;
+	width: 100%;
+	height: 25vh;
+	/*background-color: pink;*/
+}
+
+.register-title {
+	text-align: center;
+	color: #ba5686;
+	font-family: monospace;
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+.fetch-stage-wrapper {
+	/*background-color: blue;*/
+	height: 100%;
+	width: 10%;
+	border: 2px dotted #ba5686;
+	border-radius: 5px;
+	margin-right: 0.5%;
+}
+
+.decode-stage-wrapper {
+	/*background-color: red;*/
+	height: 100%;
+	width: 21.191%;
+	border: 2px dotted #ba5686;
+	border-radius: 5px;
+	margin-right: 0.5%;
+}
+
+.execute-stage-wrapper {
+	/*background-color: green;*/
+	height: 100%;
+	width: 30%;
+	border: 2px dotted #ba5686;
+	border-radius: 5px;
+	margin-right: 0.5%;
+}
+
+.memory-stage-wrapper {
+	/*background-color: cyan;*/
+	height: 100%;
+	width: 20%;
+	border: 2px dotted #ba5686;
+	border-radius: 5px;
+	margin-right: 0.5%;
+}
+
+.writeback-stage-wrapper {
+	/*background-color: yellow;*/
+	height: 100%;
+	width: 15%;
+	border: 2px dotted #ba5686;
+	border-radius: 5px;
+	margin-right: 0.5%;
+}

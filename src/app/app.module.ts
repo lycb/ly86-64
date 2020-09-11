@@ -7,6 +7,7 @@ import { ClockCycleComponent } from './components/clock-cycle/clock-cycle.compon
 import { RegistersComponent } from './components/registers/registers.component';
 import { ButtonsComponent } from './components/buttons/buttons.component';
 import { CodeComponent } from './components/code/code.component';
+import { PipelineRegComponent } from './components/pipeline-reg/pipeline-reg.component';
 
 @NgModule({
   declarations: [
@@ -15,6 +16,7 @@ import { CodeComponent } from './components/code/code.component';
     RegistersComponent,
     ButtonsComponent,
     CodeComponent,
+    PipelineRegComponent,
   ],
   imports: [
     BrowserModule,

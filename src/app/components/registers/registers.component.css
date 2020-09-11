@@ -1,9 +1,10 @@
 .register-table-wrapper {
 	font-family: monospace;
+	margin: 5%;
 }
 
 .registers-title {
-	color: #cf5911;
+	color: #ba5686;
 	padding-left: 10px;
 	padding-right: 10px;
 	text-align: left;
