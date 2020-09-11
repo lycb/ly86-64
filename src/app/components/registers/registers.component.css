@@ -4,5 +4,14 @@
 
 .registers-title {
 	color: #cf5911;
-	padding: 5px;
+	padding-left: 10px;
+	padding-right: 10px;
+	text-align: left;
+}
+
+.registers-value {
+	padding-left: 10px;
+	padding-right: 10px;
+	text-align: left;
+
 }
