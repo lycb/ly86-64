@@ -1,10 +1,12 @@
-<button class="file-upload-button">
-	<input type="file" #fileInput (change)="onFileSelect(fileInput)" />
-</button>
-
-<button class="continue-button" (click)="onClickContinue()" [disabled]="!loadComponent">Continue</button>
-<button class="step-button" (click)="onClickStep()" [disabled]="!loadComponent">Step</button>
-<button class="reset-button" (click)="onClickReset()" [disabled]="!loadComponent">Reset</button>
+<div class=button-wrapper>
+	<button class="file-upload-button">
+		<input  class="file-upload-input" type="file" #fileInput (change)="onFileSelect(fileInput)" />
+	</button>
+	<button class="continue-button" (click)="onClickContinue()" [disabled]="!loadComponent">Continue</button>
+	<button class="step-button" (click)="onClickStep()" [disabled]="!loadComponent">Step</button>
+	<button class="reset-button" (click)="onClickReset()" [disabled]="!loadComponent">Reset</button>
+</div>
 
 <app-code [fileContent]="fileContent" *ngIf="loadComponent"></app-code>
+<app-clock-cycle [counter]="counter"></app-clock-cycle>
 

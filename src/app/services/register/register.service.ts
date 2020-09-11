@@ -17,7 +17,6 @@ export class RegisterService {
   			value: new Long(0,0)
   		});
 	  }
-	  console.log(this.register)
 	}
 
   getRegisters(): Register[] {
