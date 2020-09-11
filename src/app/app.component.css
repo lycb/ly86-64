@@ -1,4 +1,15 @@
 .container {
-	height: 100vh;
+	height: 98vh;
 	margin: 1vh;
+	overflow: hidden;
+	display: flex;
+}
+
+.button-div {
+	width: 50%;
+}
+
+.registers-div {
+	margin-left: 20px;
+	margin-top: 20px;
 }

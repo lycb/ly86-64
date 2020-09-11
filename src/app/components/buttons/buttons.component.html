@@ -1,12 +1,14 @@
-<div class=button-wrapper>
-	<button class="file-upload-button">
-		<input  class="file-upload-input" type="file" #fileInput (change)="onFileSelect(fileInput)" />
-	</button>
-	<button class="continue-button" (click)="onClickContinue()" [disabled]="!loadComponent">Continue</button>
-	<button class="step-button" (click)="onClickStep()" [disabled]="!loadComponent">Step</button>
-	<button class="reset-button" (click)="onClickReset()" [disabled]="!loadComponent">Reset</button>
+<div class=top-button-wrapper>
+	<div class="button-wrapper">
+		<button class="file-upload-button">
+			<input  class="file-upload-input" type="file" #fileInput (change)="onFileSelect(fileInput)" />
+		</button>
+		<button class="continue-button" (click)="onClickContinue()" [disabled]="!loadComponent">Continue</button>
+		<button class="step-button" (click)="onClickStep()" [disabled]="!loadComponent">Step</button>
+		<button class="reset-button" (click)="onClickReset()" [disabled]="!loadComponent">Reset</button>
+	</div>
+	<app-clock-cycle [counter]="counter"></app-clock-cycle>
 </div>
 
 <app-code [fileContent]="fileContent"></app-code>
-<app-clock-cycle [counter]="counter"></app-clock-cycle>
 

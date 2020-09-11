@@ -5,3 +5,7 @@
 .file-upload-button {
 	border: none;
 }
+
+.top-button-wrapper {
+	display: flex;
+}
