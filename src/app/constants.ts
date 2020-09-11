@@ -1,24 +1,20 @@
 export const REGISTERS = [
-	'EAX',
-	'ECX',
-	'EDX',
-	'EBX',
-	'ESP',
-	'EBP',
-	'ESI',
-	'EDI',
-	'RNONE'
+	'RAX',
+	'RCX',
+	'RDX',
+	'RBX',
+	'RSP',
+	'RBP',
+	'RSI',
+	'RDI',
+	'R8',
+	'R9',
+	'R10',
+	'R11',
+	'R12',
+	'R13',
+	'R14'
 ]
-
-export const EAX = 0
-export const ECX = 1
-export const EDX = 2
-export const EBX = 3
-export const ESP = 4
-export const EBP = 5
-export const ESI = 6
-export const EDI = 7
-export const RNONE = 0xf;
 
 export const INSTRUCTIONS = [
 	'NOP', 
