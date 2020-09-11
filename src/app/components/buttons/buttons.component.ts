@@ -9,9 +9,13 @@ import { Line } from '../../models/Line';
 })
 export class ButtonsComponent implements OnInit {
   fileContent: Line[];
-  loadComponent: boolean = false;
+  counter: number;
+  loadComponent: boolean;
 
-  constructor(private parserService: ParserService) { }
+  constructor(private parserService: ParserService) {
+    this.counter = 0;
+    this.loadComponent = false;
+  }
 
   ngOnInit() {
   }
@@ -70,6 +74,8 @@ export class ButtonsComponent implements OnInit {
         if (this.fileContent[i].parsedLine != null) {
           this.fileContent[i].isCurrent = true;
           this.parserService.setCurrent(this.fileContent[i]);
+          //increment the clock-cycle
+          this.counter++;
           break;
         }
       }
@@ -78,6 +84,7 @@ export class ButtonsComponent implements OnInit {
 
   onClickReset(): void {
     this.setFirstAddressCurrent();
+    this.counter = 0;
   }
 
   setFirstAddressCurrent(): void {

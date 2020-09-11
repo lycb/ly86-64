@@ -1,0 +1,11 @@
+.file-upload-input {
+	background-color: transparent;
+}
+
+.file-upload-button {
+	border: none;
+}
+
+.top-button-wrapper {
+	display: flex;
+}

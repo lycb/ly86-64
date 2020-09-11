@@ -16,14 +16,16 @@ export const REGISTERS = [
 	'R14'
 ]
 
+export const REGSIZE = 15;
+
 export const INSTRUCTIONS = [
-	'NOP', 
 	'HALT', 
+	'NOP',
 	'RRMOVL',
 	'IRMOVL',
 	'RMMOVL',
 	'MRMOVL',
-	'OPL',
+	'OP',
 	'JXX',
 	'CALL',
 	'RET',

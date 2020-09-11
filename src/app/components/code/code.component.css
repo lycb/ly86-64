@@ -1,5 +1,14 @@
 .file-content-wrapper {
 	margin-top: 10px;
+	width: 100%;
+	height: 65vh;
+	overflow: scroll;
+	border: 2px dotted #ba5686;
+	border-radius: 5px;
+}
+
+.file-content-wrapper::-webkit-scrollbar {
+  display: none;
 }
 
 .file-content .not-current {
@@ -9,7 +18,8 @@
 }
 
 .current {
-	background-color: #bcadff;
+	background-color: #ba5686;
+	color: white;
 	margin: 0;
 }
 
