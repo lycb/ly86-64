@@ -1,1 +1,11 @@
-<p>registers works!</p>
+<div class="register-table-wrapper">
+	<th class="registers-title" *ngFor="let column of headers">
+		{{ column | titlecase }}
+	</th>
+
+	<tr class="registers-row" *ngFor="let row of register">
+		<th class="registers-value" *ngFor="let column of headers">
+			{{ row[column] }}
+		</th>
+	</tr>
+</div>
