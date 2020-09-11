@@ -7,6 +7,6 @@
 	<button class="reset-button" (click)="onClickReset()" [disabled]="!loadComponent">Reset</button>
 </div>
 
-<app-code [fileContent]="fileContent" *ngIf="loadComponent"></app-code>
+<app-code [fileContent]="fileContent"></app-code>
 <app-clock-cycle [counter]="counter"></app-clock-cycle>
 
