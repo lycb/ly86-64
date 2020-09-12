@@ -55,6 +55,26 @@ export class RegisterService {
     }
   }
 
+  index2register(index: number): string {
+    switch(index) {
+      case 0: return 'RAX';
+      case 1: return 'RCX';
+      case 2: return 'RDX';
+      case 3: return 'RBX';
+      case 4: return 'RSP';
+      case 5: return 'RBP';
+      case 6: return 'RSI';
+      case 7: return 'RDI';
+      case 8: return 'R8';
+      case 9: return 'R9';
+      case 10: return 'R10';
+      case 11: return 'R11';
+      case 12: return 'R12';
+      case 13: return 'R13';
+      case 14: return 'R14';
+    }
+  }
+
   paddingHex(num, width): string {
     var result = num.toString(16);
     while (result.length < width) {

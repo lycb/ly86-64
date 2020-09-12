@@ -29,8 +29,8 @@ export const INSTRUCTIONS = [
 	'JXX',
 	'CALL',
 	'RET',
-	'PUSHL',
-	'POPL',
+	'PUSHQ',
+	'POPQ',
 ]
 
 export const NOP = 0

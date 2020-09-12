@@ -1,17 +1,42 @@
 <div class="pipeline-wrapper">
-	<div class="fetch-stage-wrapper">
+	<div [ngClass]="{
+		'fetch-stage-bubble': f_state === 'BUBBLE',
+		'fetch-stage-stall': f_state === 'STALL',
+		'fetch-stage-normal': f_state === 'NORMAL',
+		'fetch-stage': f_state === 'NA'
+	}">
 		<p class="register-title">FETCH</p>
 	</div>
-	<div class="decode-stage-wrapper">
+	<div [ngClass]="{
+		'decode-stage-bubble': d_state === 'BUBBLE',
+		'decode-stage-stall': d_state === 'STALL',
+		'decode-stage-normal': d_state === 'NORMAL',
+		'decode-stage': d_state === 'NA'
+	}">
 		<p class="register-title">DECODE</p>
 	</div>
-	<div class="execute-stage-wrapper">
+	<div [ngClass]="{
+		'execute-stage-bubble': e_state === 'BUBBLE',
+		'execute-stage-stall': e_state === 'STALL',
+		'execute-stage-normal': e_state === 'NORMAL',
+		'execute-stage': e_state === 'NA'
+	}">
 		<p class="register-title">EXECUTE</p>
 	</div>
-	<div class="memory-stage-wrapper">
+	<div [ngClass]="{
+		'memory-stage-bubble': m_state === 'BUBBLE',
+		'memory-stage-stall': m_state === 'STALL',
+		'memory-stage-normal': m_state === 'NORMAL',
+		'memory-stage': m_state === 'NA'
+	}">
 		<p class="register-title">MEMORY</p>
 	</div>
-	<div class="writeback-stage-wrapper">
+	<div [ngClass]="{
+		'writeback-stage-bubble': w_state === 'BUBBLE',
+		'writeback-stage-stall': w_state === 'STALL',
+		'writeback-stage-normal': w_state === 'NORMAL',
+		'writeback-stage': w_state === 'NA'
+	}">
 		<p class="register-title">WRITEBACK</p>
 	</div>
 </div>
