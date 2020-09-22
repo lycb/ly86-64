@@ -63,4 +63,10 @@ export const ZF = 0
 export const SF = 1
 export const OF = 2
 
+// status
+export const STAT_AOK = 1
+export const STAT_HLT = 2
+export const STAT_ADR = 3
+export const STAT_INS = 4
+
 

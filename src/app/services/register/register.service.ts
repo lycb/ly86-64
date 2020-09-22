@@ -28,11 +28,11 @@ export class RegisterService {
     return this.register[this.register2index(name)].value;
   }
 
+  // given a register name and a value, save that number to the register and convert that to a hex string
   setValueByRegister(name: string, value: Long): void {
     this.register[this.register2index(name)].value = value;
     var binaryNum = value.toNumber().toString(16);
     this.register[this.register2index(name)].hex = this.paddingHex(binaryNum, 16);
-
   }
 
   register2index(name: string): number {

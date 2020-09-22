@@ -14,7 +14,7 @@ export class InstructionService {
 
   		case '2': 
   			switch(ifun) {
-  				case '0': return 'RRMOVL';
+  				case '0': return 'RRMOVQ';
   				case '1': return 'CMOVLE';
   				case '2': return 'CMOVL';
   				case '3': return 'CMOVE';
@@ -23,9 +23,9 @@ export class InstructionService {
   				case '6': return 'CMOVG';
   			}
 
-  		case '3': return 'IRMOVL';
-  		case '4': return 'RMMOVL';
-  		case '5': return 'MRMOVL';
+  		case '3': return 'IRMOVQ';
+  		case '4': return 'RMMOVQ';
+  		case '5': return 'MRMOVQ';
 
   		case '6':
   			switch(ifun) {
