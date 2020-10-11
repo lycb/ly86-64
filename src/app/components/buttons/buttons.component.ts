@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ParserService } from '../../services/parser/parser.service';
+import { CpuService } from '../../services/cpu/cpu.service';
 import { Line } from '../../models/Line';
 
 @Component({
@@ -12,7 +13,7 @@ export class ButtonsComponent implements OnInit {
   counter: number;
   loadComponent: boolean;
 
-  constructor(private parserService: ParserService) {
+  constructor(private parserService: ParserService, private cpuService: CpuService) {
     this.counter = 0;
     this.loadComponent = false;
   }
@@ -70,15 +71,10 @@ export class ButtonsComponent implements OnInit {
   onClickStep(): void {
     var current = this.parserService.getCurrentLine();
     if (current.id < this.fileContent.length) {
-      for (let i = current.id + 1; i < this.fileContent.length; i++) {
-        if (this.fileContent[i].parsedLine != null) {
-          this.fileContent[i].isCurrent = true;
-          this.parserService.setCurrent(this.fileContent[i]);
-          //increment the clock-cycle
-          this.counter++;
-          break;
-        }
+      if (current.parsedLine.instruction != "") {
+        this.cpuService.doFetchStage(current.parsedLine.instruction);
       }
+      this.nextCurrentLine(current);
     }
   }
 
@@ -104,5 +100,17 @@ export class ButtonsComponent implements OnInit {
       return false;
     }
     return true;
+  }
+
+  nextCurrentLine(current: Line): void {
+    for (let i = current.id + 1; i < this.fileContent.length; i++) {
+      if (this.fileContent[i].parsedLine != null) {
+        this.fileContent[i].isCurrent = true;
+        this.parserService.setCurrent(this.fileContent[i]);
+        //increment the clock-cycle
+        this.counter++;
+        break;
+      }
+    }
   }
 }

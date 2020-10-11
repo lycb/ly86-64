@@ -52,6 +52,7 @@ export class RegisterService {
       case "R12": return 12;
       case "R13": return 13;
       case "R14": return 14;
+      default: return -1;
     }
   }
 
@@ -72,6 +73,7 @@ export class RegisterService {
       case 12: return 'R12';
       case 13: return 'R13';
       case 14: return 'R14';
+      default: return 'error';
     }
   }
 
