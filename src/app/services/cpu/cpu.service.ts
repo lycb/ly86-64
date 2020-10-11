@@ -20,12 +20,21 @@ export class CpuService {
 	}
 
 	doFetchStage(line: string): void {
-		let icode = parseInt(line[0], 16);
-		let ifun = parseInt(line[1], 16);
+		let icode = 0,
+			ifun = 0,
+			rA = 0,
+			rB = 0,
+			stat = 0,
+			valC = 0,
+			valP = 0;
+		icode = parseInt(line[0], 16);
+		ifun = parseInt(line[1], 16);
 		let registers = this.getRegisterIds(icode, line);
-		let rA = registers[0];
-		let rB = registers[1];
-		let stat = this.f_status(icode, this.error);
+		if (registers) {
+			rA = registers[0];
+			rB = registers[1];
+		}
+		stat = this.f_status(icode, this.error);
 	}
 
 	needRegister(icode: number): boolean {
@@ -60,7 +69,6 @@ export class CpuService {
 				this.error = true;
 			}
 		}
-		return new Array(0, 0);
 	}
 
 	isInstructionValid(icode: number) {
