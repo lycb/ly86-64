@@ -13,8 +13,11 @@ export const REGISTERS = [
 	'R11',
 	'R12',
 	'R13',
-	'R14'
+	'R14',
+	'RNONE'
 ]
+
+export const RNONE = 15;
 
 export const REGSIZE = 15;
 
@@ -33,6 +36,7 @@ export const INSTRUCTIONS = [
 	'POPQ',
 ]
 
+export const FNONE = 0
 export const HALT = 0
 export const NOP = 1
 export const RRMOVQ = 2
@@ -82,7 +86,7 @@ export const OF = 2
 // status
 export const SAOK = 1 // ok status
 export const SHLT = 2 // if icode is halt
-export const SADR = 3 // if the addr output was larger than 0xfff
+export const SADR = 3
 export const SINS = 4 // invalid instruction
 
 

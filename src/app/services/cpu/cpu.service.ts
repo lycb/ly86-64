@@ -3,6 +3,7 @@ import { InstructionService } from "../instruction/instruction.service";
 import { ParserService } from "../parser/parser.service";
 import { RegisterService } from "../register/register.service";
 import { Line } from "../../models/Line";
+import { F } from "../../models/PipeReg";
 import * as Constants from "../../constants";
 
 @Injectable({
@@ -10,6 +11,7 @@ import * as Constants from "../../constants";
 })
 export class CpuService {
 	error: boolean;
+	F_reg: F;
 
 	constructor(
 		private instructionService: InstructionService,
@@ -17,6 +19,7 @@ export class CpuService {
 		private RegisterService: RegisterService
 	) {
 		this.error = false;
+		this.F_reg = new F();
 	}
 
 	doFetchStage(line: string): void {
@@ -35,6 +38,13 @@ export class CpuService {
 			rB = registers[1];
 		}
 		stat = this.f_status(icode, this.error);
+		// this.F_reg.getPredPC().setInput(123);
+		// this.F_reg.getPredPC().normal();
+		// console.log(this.F_reg.getPredPC().getOutput());
+	}
+
+	predictPC(): number {
+		return 123;
 	}
 
 	needRegister(icode: number): boolean {
