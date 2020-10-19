@@ -3,7 +3,7 @@ import { InstructionService } from "../instruction/instruction.service";
 import { ParserService } from "../parser/parser.service";
 import { RegisterService } from "../register/register.service";
 import { Line } from "../../models/Line";
-import { Memory } from "../../models/Memory";
+import { MemoryFunc } from "../../models/Memory";
 import { F, D, E, M, W } from "../../models/PipeReg";
 import * as Constants from "../../constants";
 import { Observable, Subject } from 'rxjs';
