@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { ParserService } from '../../services/parser/parser.service';
 import { CpuService } from '../../services/cpu/cpu.service';
 import { Line } from '../../models/Line';
+import { MemoryFunc } from "../../models/Memory";
+import { AddressLine } from "../../models/AddressLine"; 
+import { F, D, E, M, W } from "../../models/PipeReg";
 
 @Component({
   selector: 'app-buttons',
@@ -12,10 +15,12 @@ export class ButtonsComponent implements OnInit {
   fileContent: Line[];
   counter: number;
   loadComponent: boolean;
+  freg: F;
 
   constructor(private parserService: ParserService, private cpuService: CpuService) {
     this.counter = 0;
     this.loadComponent = false;
+    this.freg = new F();
   }
 
   ngOnInit() {
@@ -60,6 +65,12 @@ export class ButtonsComponent implements OnInit {
       this.setFirstAddressCurrent();
       this.parserService.setFileContent(this.fileContent);
       this.loadComponent = true;
+      for (let i = 0; i < this.fileContent.length; i++) {
+        if (this.fileContent[i].isAnAddress && this.fileContent[i].parsedLine.instruction !== "") {
+          this.loadline(this.fileContent[i].parsedLine);
+        }
+      }
+      //this.loadline(this.fileContent[2].parsedLine)
     }
     fileReader.readAsText(file);
   }
@@ -72,7 +83,7 @@ export class ButtonsComponent implements OnInit {
     var current = this.parserService.getCurrentLine();
     if (current.id < this.fileContent.length) {
       if (current.parsedLine.instruction != "") {
-        this.cpuService.doFetchStage(current.parsedLine.instruction);
+        this.cpuService.doFetchStage(current, this.freg);
       }
       this.nextCurrentLine(current);
     }
@@ -113,4 +124,18 @@ export class ButtonsComponent implements OnInit {
       }
     }
   }
+
+   loadline(line: AddressLine): void {
+     let memory = MemoryFunc.getInstance();
+     let bytes = line.instruction.length / 2;
+     let position = 0;
+     let address = line.address;
+     while(bytes > 0) {
+       let value = parseInt(line.instruction.substring(position, position + 2) , 16);
+       position += 2;
+       bytes--;
+       memory.putByte(value, address);
+       address++;
+     }
+   }
 }
