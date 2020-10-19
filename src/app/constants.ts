@@ -90,3 +90,7 @@ export const SADR = 3
 export const SINS = 4 // invalid instruction
 
 
+// number of bytes
+export const VALC_BYTES = 8;
+export const REG_BYTES = 2;
+export const PC_INCREMENT = 1;

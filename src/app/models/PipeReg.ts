@@ -5,7 +5,7 @@ export class F {
 	predPC: PipeRegField;
 
 	constructor() {
-		this.predPC = new PipeRegField(-1);
+		this.predPC = new PipeRegField(0);
 	}
 
 	getPredPC(): PipeRegField {
@@ -28,8 +28,8 @@ export class D {
 		this.ifun = new PipeRegField(Constants.FNONE);
 		this.rA = new PipeRegField(Constants.RNONE);
 		this.rB = new PipeRegField(Constants.RNONE);
-		this.valC = new PipeRegField(-1);
-		this.valP = new PipeRegField(-1);
+		this.valC = new PipeRegField(0);
+		this.valP = new PipeRegField(0);
 	}
 
 	getstat(): PipeRegField {
@@ -77,13 +77,13 @@ export class E {
 		this.stat = new PipeRegField(Constants.SAOK);
 		this.icode = new PipeRegField(Constants.NOP);
 		this.ifun = new PipeRegField(Constants.FNONE);
-		this.valC = new PipeRegField(-1);
-		this.valA = new PipeRegField(-1);
-		this.valB = new PipeRegField(-1);
+		this.valC = new PipeRegField(0);
+		this.valA = new PipeRegField(0);
+		this.valB = new PipeRegField(0);
 		this.dstE = new PipeRegField(Constants.RNONE);
 		this.dstM = new PipeRegField(Constants.RNONE);
-		this.srcA = new PipeRegField(-1);
-		this.srcB = new PipeRegField(-1);
+		this.srcA = new PipeRegField(0);
+		this.srcB = new PipeRegField(0);
 	}
 
 	getstat(): PipeRegField {
@@ -139,9 +139,9 @@ export class M {
 	constructor() {
 		this.stat = new PipeRegField(Constants.SAOK);
 		this.icode = new PipeRegField(Constants.NOP);
-		this.Cnd = new PipeRegField(-1);
-		this.valE = new PipeRegField(-1);
-		this.valA = new PipeRegField(-1);
+		this.Cnd = new PipeRegField(0);
+		this.valE = new PipeRegField(0);
+		this.valA = new PipeRegField(0);
 		this.dstE = new PipeRegField(Constants.RNONE);
 		this.dstM = new PipeRegField(Constants.RNONE);
 	}
@@ -186,8 +186,8 @@ export class W {
 	constructor() {
 		this.stat = new PipeRegField(Constants.SAOK);
 		this.icode = new PipeRegField(Constants.NOP);
-		this.valE = new PipeRegField(-1);
-		this.valM = new PipeRegField(-1);
+		this.valE = new PipeRegField(0);
+		this.valM = new PipeRegField(0);
 		this.dstE = new PipeRegField(Constants.RNONE);
 		this.dstM = new PipeRegField(Constants.RNONE);
 	}
