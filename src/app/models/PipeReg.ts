@@ -5,7 +5,7 @@ export class F {
 	predPC: PipeRegField;
 
 	constructor() {
-		this.predPC = new PipeRegField(0);
+		this.predPC = new PipeRegField(-1);
 	}
 
 	getPredPC(): PipeRegField {
@@ -28,8 +28,8 @@ export class D {
 		this.ifun = new PipeRegField(Constants.FNONE);
 		this.rA = new PipeRegField(Constants.RNONE);
 		this.rB = new PipeRegField(Constants.RNONE);
-		this.valC = new PipeRegField(0);
-		this.valP = new PipeRegField(0);
+		this.valC = new PipeRegField(-1);
+		this.valP = new PipeRegField(-1);
 	}
 
 	getstat(): PipeRegField {
@@ -77,13 +77,13 @@ export class E {
 		this.stat = new PipeRegField(Constants.SAOK);
 		this.icode = new PipeRegField(Constants.NOP);
 		this.ifun = new PipeRegField(Constants.FNONE);
-		this.valC = new PipeRegField(0);
-		this.valA = new PipeRegField(0);
-		this.valB = new PipeRegField(0);
+		this.valC = new PipeRegField(-1);
+		this.valA = new PipeRegField(-1);
+		this.valB = new PipeRegField(-1);
 		this.dstE = new PipeRegField(Constants.RNONE);
 		this.dstM = new PipeRegField(Constants.RNONE);
-		this.srcA = new PipeRegField(0);
-		this.srcB = new PipeRegField(0);
+		this.srcA = new PipeRegField(-1);
+		this.srcB = new PipeRegField(-1);
 	}
 
 	getstat(): PipeRegField {
@@ -124,5 +124,95 @@ export class E {
 
 	getsrcB(): PipeRegField {
 		return this.srcB;
+	}
+}
+
+export class M {
+	stat: PipeRegField;
+	icode: PipeRegField;
+	Cnd: PipeRegField;
+	valE: PipeRegField;
+	valA: PipeRegField;
+	dstE: PipeRegField;
+	dstM: PipeRegField;
+
+	constructor() {
+		this.stat = new PipeRegField(Constants.SAOK);
+		this.icode = new PipeRegField(Constants.NOP);
+		this.Cnd = new PipeRegField(-1);
+		this.valE = new PipeRegField(-1);
+		this.valA = new PipeRegField(-1);
+		this.dstE = new PipeRegField(Constants.RNONE);
+		this.dstM = new PipeRegField(Constants.RNONE);
+	}
+
+	getstat(): PipeRegField {
+		return this.stat;
+	}
+
+	geticode(): PipeRegField {
+		return this.icode;
+	}
+
+	getCnd(): PipeRegField {
+		return this.Cnd;
+	}
+
+	getvalE(): PipeRegField {
+		return this.valE;
+	}
+
+	getvalA(): PipeRegField {
+		return this.valA;
+	}
+
+	getdstE(): PipeRegField {
+		return this.dstE;
+	}
+
+	getdstM(): PipeRegField {
+		return this.dstM;
+	}
+}
+
+export class W {
+	stat: PipeRegField;
+	icode: PipeRegField;
+	valE: PipeRegField;
+	valM: PipeRegField;
+	dstE: PipeRegField;
+	dstM: PipeRegField;
+
+	constructor() {
+		this.stat = new PipeRegField(Constants.SAOK);
+		this.icode = new PipeRegField(Constants.NOP);
+		this.valE = new PipeRegField(-1);
+		this.valM = new PipeRegField(-1);
+		this.dstE = new PipeRegField(Constants.RNONE);
+		this.dstM = new PipeRegField(Constants.RNONE);
+	}
+
+	getstat(): PipeRegField {
+		return this.stat;
+	}
+
+	geticode(): PipeRegField {
+		return this.icode;
+	}
+
+	getvalE(): PipeRegField {
+		return this.valE;
+	}
+
+	getvalM(): PipeRegField {
+		return this.valM;
+	}
+
+	getdstE(): PipeRegField {
+		return this.dstE;
+	}
+
+	getdstM(): PipeRegField {
+		return this.dstM;
 	}
 }
