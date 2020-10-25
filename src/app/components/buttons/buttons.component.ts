@@ -16,14 +16,16 @@ export class ButtonsComponent implements OnInit {
   counter: number;
   loadComponent: boolean;
   freg: F;
+  doesNextExist: boolean;
 
   constructor(private parserService: ParserService, private cpuService: CpuService) {
-    this.counter = 0;
-    this.loadComponent = false;
-    this.freg = new F();
   }
 
   ngOnInit() {
+    this.counter = 0;
+    this.loadComponent = false;
+    this.freg = new F();
+    this.doesNextExist = true;
   }
 
   onFileSelect(input: HTMLInputElement): void {
@@ -70,7 +72,6 @@ export class ButtonsComponent implements OnInit {
           this.loadline(this.fileContent[i].parsedLine);
         }
       }
-      //this.loadline(this.fileContent[2].parsedLine)
     }
     fileReader.readAsText(file);
   }
@@ -82,10 +83,10 @@ export class ButtonsComponent implements OnInit {
   onClickStep(): void {
     var current = this.parserService.getCurrentLine();
     if (current.id < this.fileContent.length) {
-      if (current.parsedLine.instruction != "") {
+      if (current.parsedLine.instruction != "" && this.doesNextExist) {
         this.cpuService.doFetchStage(current, this.freg);
       }
-      this.nextCurrentLine(current);
+      this.doesNextExist = this.nextCurrentLine(current);
     }
   }
 
@@ -113,14 +114,20 @@ export class ButtonsComponent implements OnInit {
     return true;
   }
 
-  nextCurrentLine(current: Line): void {
+  /*
+  * return true if there is a next "current" line to highlight
+  * return false if there isn't another line to read (i.e. EOF)
+  */
+  nextCurrentLine(current: Line): boolean {
     for (let i = current.id + 1; i < this.fileContent.length; i++) {
       if (this.fileContent[i].parsedLine != null) {
         this.fileContent[i].isCurrent = true;
         this.parserService.setCurrent(this.fileContent[i]);
         //increment the clock-cycle
         this.counter++;
-        break;
+        return true;
+      } else {
+        return false;
       }
     }
   }

@@ -22,6 +22,12 @@ class Memory {
 	    alert('error in getByte for address: ' + address);
 	    return null;
 	}
+
+	print(): void {
+		for (let i = 0; i < this.instance.length; i++) {
+			console.log("address: " + i + ", " + this.instance[i]);
+		}
+	}
 }
 
 export var MemoryFunc = (function() {

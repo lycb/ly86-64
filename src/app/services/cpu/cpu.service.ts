@@ -31,7 +31,7 @@ export class CpuService {
 	doFetchStage(lineObject: Line, freg: F): void {
 		this.freg = freg;
 		this.doFetchClockLow(lineObject, freg);
-		this.doFetchClockHigh();
+		this.doFetchClockHigh(freg);
 	}
 
 	doFetchClockLow(lineObject: Line, freg: F): void {
@@ -61,16 +61,16 @@ export class CpuService {
 		valC = this.buildValC(icode, f_pc);
 		valP = this.PCincrement(f_pc, icode, valC);
 		f_predPC = this.predictPC(icode, valC, valP);
-		this.f_pred.next(f_predPC);
 
-		freg.getPredPC().setInput(f_predPC);
-		console.log("freg PC: " + freg.getPredPC().getOutput())
+		// setting Observable to read for pipeline register
+		this.f_pred.next(f_predPC.toString(16));
+
+		this.freg.getPredPC().setInput(f_predPC);
 
 		this.setDInput(stat, icode, ifun, rA, rB, valC, valP);
 	}
 
-	doFetchClockHigh(): void {
-		const freg = new F();
+	doFetchClockHigh(freg: F): void {
 		const dreg = new D();
 
 		freg.getPredPC().normal();
