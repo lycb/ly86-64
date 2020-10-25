@@ -19,6 +19,7 @@ export class PipelineRegComponent implements OnInit {
 
   f_predPC: number;
   constructor(private cpuService: CpuService) { 
+    this.f_predPC = 0;
     this.subscription = this.cpuService.getPredPC().subscribe(pc => {
       if (pc) {
         this.f_predPC = pc;

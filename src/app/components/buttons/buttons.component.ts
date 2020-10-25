@@ -93,6 +93,7 @@ export class ButtonsComponent implements OnInit {
   onClickReset(): void {
     this.setFirstAddressCurrent();
     this.counter = 0;
+    this.cpuService.resetValues();
   }
 
   setFirstAddressCurrent(): void {

@@ -204,4 +204,8 @@ export class CpuService {
 			return freg.getPredPC().getOutput();
 		}
 	}
+
+	resetValues(): void {
+		this.f_pred.next(0);
+	}
 }
