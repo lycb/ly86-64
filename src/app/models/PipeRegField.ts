@@ -8,6 +8,7 @@ export class PipeRegField {
 
 	setInput(input: number): void {
 		this.input = input;
+		console.log("input: " + this.input)
 	}
 
 	getOutput(): number {

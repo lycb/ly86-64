@@ -15,8 +15,13 @@ export class ButtonsComponent implements OnInit {
   fileContent: Line[];
   counter: number;
   loadComponent: boolean;
-  freg: F;
   doesNextExist: boolean;
+
+  freg: F;
+  dreg: D;
+  ereg: E;
+  mreg: M;
+  wreg: W;
 
   constructor(private parserService: ParserService, private cpuService: CpuService) {
   }
@@ -24,8 +29,13 @@ export class ButtonsComponent implements OnInit {
   ngOnInit() {
     this.counter = 0;
     this.loadComponent = false;
-    this.freg = new F();
     this.doesNextExist = true;
+
+    this.freg = new F();
+    this.dreg = new D();
+    this.ereg = new E();
+    this.mreg = new M();
+    this.wreg = new W();
   }
 
   onFileSelect(input: HTMLInputElement): void {
@@ -38,42 +48,7 @@ export class ButtonsComponent implements OnInit {
       this.parserService.setFileContent(this.fileContent);
       return;
     }
-
-    let fileReader = new FileReader();
-    fileReader.onload = (e) => {
-      let lines = (fileReader.result as string).split(/[\r\n]+/g);
-      let index = 0;
-      for (let line of lines) {
-        if (line[0] == "0") {
-          this.fileContent.push({
-            id: index,
-            textLine: line,
-            isAnAddress: true,
-            isCurrent: false,
-            parsedLine: this.parserService.parse(line),
-          });
-          index++;
-        } else {
-          this.fileContent.push({
-            id: index,
-            textLine: line,
-            isAnAddress: false,
-            isCurrent: false,
-            parsedLine: null,
-          });
-          index++;
-        }
-      }
-      this.setFirstAddressCurrent();
-      this.parserService.setFileContent(this.fileContent);
-      this.loadComponent = true;
-      for (let i = 0; i < this.fileContent.length; i++) {
-        if (this.fileContent[i].isAnAddress && this.fileContent[i].parsedLine.instruction !== "") {
-          this.loadline(this.fileContent[i].parsedLine);
-        }
-      }
-    }
-    fileReader.readAsText(file);
+    this.readFileAsText(file);
   }
 
   onClickContinue(): void {
@@ -84,7 +59,7 @@ export class ButtonsComponent implements OnInit {
     var current = this.parserService.getCurrentLine();
     if (current.id < this.fileContent.length) {
       if (current.parsedLine.instruction != "" && this.doesNextExist) {
-        this.cpuService.doFetchStage(current, this.freg);
+        this.cpuService.doFetchStage(current, this.freg, this.dreg, this.ereg, this.mreg, this.wreg);
       }
       this.doesNextExist = this.nextCurrentLine(current);
     }
@@ -133,17 +108,55 @@ export class ButtonsComponent implements OnInit {
     }
   }
 
-   loadline(line: AddressLine): void {
-     let memory = MemoryFunc.getInstance();
-     let bytes = line.instruction.length / 2;
-     let position = 0;
-     let address = line.address;
-     while(bytes > 0) {
-       let value = parseInt(line.instruction.substring(position, position + 2) , 16);
-       position += 2;
-       bytes--;
-       memory.putByte(value, address);
-       address++;
-     }
-   }
+  loadline(line: AddressLine): void {
+    let memory = MemoryFunc.getInstance();
+    let bytes = line.instruction.length / 2;
+    let position = 0;
+    let address = line.address;
+    while(bytes > 0) {
+      let value = parseInt(line.instruction.substring(position, position + 2) , 16);
+      position += 2;
+      bytes--;
+      memory.putByte(value, address);
+      address++;
+    }
+  }
+
+  readFileAsText(file: File): void {
+    let fileReader = new FileReader();
+    fileReader.onload = (e) => {
+      let lines = (fileReader.result as string).split(/[\r\n]+/g);
+      let index = 0;
+      for (let line of lines) {
+        if (line[0] == "0") {
+          this.fileContent.push({
+            id: index,
+            textLine: line,
+            isAnAddress: true,
+            isCurrent: false,
+            parsedLine: this.parserService.parse(line),
+          });
+          index++;
+        } else {
+          this.fileContent.push({
+            id: index,
+            textLine: line,
+            isAnAddress: false,
+            isCurrent: false,
+            parsedLine: null,
+          });
+          index++;
+        }
+      }
+      this.setFirstAddressCurrent();
+      this.parserService.setFileContent(this.fileContent);
+      this.loadComponent = true;
+      for (let i = 0; i < this.fileContent.length; i++) {
+        if (this.fileContent[i].isAnAddress && this.fileContent[i].parsedLine.instruction !== "") {
+          this.loadline(this.fileContent[i].parsedLine);
+        }
+      }
+    }
+    fileReader.readAsText(file);
+  }
 }

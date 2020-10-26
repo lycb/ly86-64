@@ -14,13 +14,17 @@ import { Observable, Subject } from 'rxjs';
 export class CpuService {
 	error: boolean;
 	freg: F;
+	dreg: D;
+	ereg: E;
+	mreg: M;
+	wreg: W;
 	f_pred = new Subject<any>();
 
 	constructor(
 		private instructionService: InstructionService,
 		private parserService: ParserService,
 		private RegisterService: RegisterService
-	) {
+		) {
 		this.error = false;
 	}
 
@@ -28,25 +32,27 @@ export class CpuService {
 		return this.f_pred.asObservable();
 	}
 
-	doFetchStage(lineObject: Line, freg: F): void {
+	doFetchStage(lineObject: Line, freg: F, dreg: D, ereg: E, mreg: M, wreg: W): void {
 		this.freg = freg;
-		this.doFetchClockLow(lineObject, freg);
-		this.doFetchClockHigh(freg);
+		this.dreg = dreg;
+		this.ereg = ereg;
+		this.mreg = mreg;
+		this.wreg = wreg;
+		this.doFetchClockLow(lineObject, freg, dreg, ereg, mreg, wreg);
+		this.doFetchClockHigh(freg, dreg);
 	}
 
-	doFetchClockLow(lineObject: Line, freg: F): void {
-		const mreg = new M();
-		const wreg = new W();
+	doFetchClockLow(lineObject: Line, freg: F, dreg: D, ereg: E, mreg: M, wreg: W): void {
 		let line = lineObject.parsedLine.instruction;
 
 		let icode = 0,
-			ifun = 0,
-			rA = 0,
-			rB = 0,
-			stat = 0,
-			valC = 0,
-			valP = 0,
-			f_predPC = 0;
+		ifun = 0,
+		rA = 0,
+		rB = 0,
+		stat = 0,
+		valC = 0,
+		valP = 0,
+		f_predPC = 0;
 		icode = parseInt(line[0], 16);
 		ifun = parseInt(line[1], 16);
 		let registers = this.getRegisterIds(icode, line);
@@ -70,9 +76,7 @@ export class CpuService {
 		this.setDInput(stat, icode, ifun, rA, rB, valC, valP);
 	}
 
-	doFetchClockHigh(freg: F): void {
-		const dreg = new D();
-
+	doFetchClockHigh(freg: F, dreg: D): void {
 		freg.getPredPC().normal();
 		dreg.getstat().normal();
 		dreg.geticode().normal();
@@ -92,12 +96,6 @@ export class CpuService {
 		dreg.getrB().setInput(rB);
 		dreg.getvalC().setInput(valC);
 		dreg.getvalP().setInput(valP);
-		// console.log("icode: " + icode)
-		// console.log("ifun: " + ifun);
-		// console.log("rA: " + rA);
-		// console.log("rB: " + rB);
-		// console.log("valC: " + valC);
-		// console.log("valP: " + valP);
 	}
 
 	needRegister(icode: number): boolean {
@@ -109,7 +107,7 @@ export class CpuService {
 			icode == Constants.IRMOVQ ||
 			icode == Constants.RMMOVQ ||
 			icode == Constants.MRMOVQ
-		);
+			);
 	}
 
 	needValC(icode: number): boolean {
@@ -119,7 +117,7 @@ export class CpuService {
 			icode == Constants.MRMOVQ ||
 			icode == Constants.JXX ||
 			icode == Constants.CALL
-		);
+			);
 	}
 
 	buildValC(icode: number, f_pc: number): number {
@@ -152,7 +150,7 @@ export class CpuService {
 			icode == Constants.RET ||
 			icode == Constants.PUSHQ ||
 			icode == Constants.POPQ
-		);
+			);
 	}
 
 	f_status(icode: number, error: boolean): number {
@@ -207,5 +205,6 @@ export class CpuService {
 
 	resetValues(): void {
 		this.f_pred.next(0);
+		this.freg.getPredPC().setInput(0);
 	}
 }

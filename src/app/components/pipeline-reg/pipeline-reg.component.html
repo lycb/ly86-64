@@ -6,7 +6,9 @@
 		'fetch-stage': f_state === 'NA'
 	}">
 		<p class="register-title">FETCH</p>
-		<p>predPC: {{f_predPC}} </p>
+		<div class="values-wrapper">
+			<p class="register-value">predPC: {{f_predPC}} </p>
+		</div>
 	</div>
 	<div [ngClass]="{
 		'decode-stage-bubble': d_state === 'BUBBLE',
@@ -15,6 +17,15 @@
 		'decode-stage': d_state === 'NA'
 	}">
 		<p class="register-title">DECODE</p>
+		<div class="values-wrapper">
+			<p class="register-value">stat: {{d_stat}} </p>
+			<p class="register-value">icode: {{d_icode}} </p>
+			<p class="register-value">ifun: {{d_ifun}} </p>
+			<p class="register-value">rA: {{d_rA}} </p>
+			<p class="register-value">rB: {{d_rB}} </p>
+			<p class="register-value">valC: {{d_valC}} </p>
+			<p class="register-value">valP: {{d_valP}} </p>
+		</div>
 	</div>
 	<div [ngClass]="{
 		'execute-stage-bubble': e_state === 'BUBBLE',
@@ -23,6 +34,22 @@
 		'execute-stage': e_state === 'NA'
 	}">
 		<p class="register-title">EXECUTE</p>
+		<div class="execute-stage-value-wrapper">
+			<div class="execute-values-wrapper">
+				<p class="register-value">stat: {{e_stat}} </p>
+				<p class="register-value">icode: {{e_icode}} </p>
+				<p class="register-value">ifun: {{e_ifun}} </p>
+				<p class="register-value">valC: {{e_valC}} </p>
+				<p class="register-value">valA: {{e_valA}} </p>
+				<p class="register-value">valB: {{e_valB}} </p>
+			</div>
+			<div class="execute-values-wrapper">
+				<p class="register-value">dstE: {{e_dstE}} </p>
+				<p class="register-value">dstM: {{e_dstM}} </p>
+				<p class="register-value">srcA: {{e_srcA}} </p>
+				<p class="register-value">srcB: {{e_srcB}} </p>
+			</div>
+		</div>
 	</div>
 	<div [ngClass]="{
 		'memory-stage-bubble': m_state === 'BUBBLE',
@@ -31,6 +58,15 @@
 		'memory-stage': m_state === 'NA'
 	}">
 		<p class="register-title">MEMORY</p>
+		<div class="values-wrapper">
+			<p class="register-value">stat: {{m_stat}} </p>
+			<p class="register-value">icode: {{m_icode}} </p>
+			<p class="register-value">ifun: {{m_ifun}} </p>
+			<p class="register-value">valE: {{m_valE}} </p>
+			<p class="register-value">valA: {{m_valA}} </p>
+			<p class="register-value">dstE: {{m_dstE}} </p>
+			<p class="register-value">dstM: {{m_dstM}} </p>
+		</div>
 	</div>
 	<div [ngClass]="{
 		'writeback-stage-bubble': w_state === 'BUBBLE',
@@ -39,5 +75,14 @@
 		'writeback-stage': w_state === 'NA'
 	}">
 		<p class="register-title">WRITEBACK</p>
+		<div class="values-wrapper">
+			<p class="register-value">stat: {{w_stat}} </p>
+			<p class="register-value">icode: {{w_icode}} </p>
+			<p class="register-value">ifun: {{w_ifun}} </p>
+			<p class="register-value">valE: {{w_valE}} </p>
+			<p class="register-value">valM: {{w_valM}} </p>
+			<p class="register-value">dstE: {{w_dstE}} </p>
+			<p class="register-value">dstM: {{w_dstM}} </p>
+		</div>
 	</div>
 </div>
