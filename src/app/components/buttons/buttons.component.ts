@@ -15,7 +15,7 @@ export class ButtonsComponent implements OnInit {
   fileContent: Line[];
   counter: number;
   loadComponent: boolean;
-  doesNextExist: boolean;
+  nextLine: boolean;
 
   freg: F;
   dreg: D;
@@ -29,7 +29,7 @@ export class ButtonsComponent implements OnInit {
   ngOnInit() {
     this.counter = 0;
     this.loadComponent = false;
-    this.doesNextExist = true;
+    this.nextLine = true;
 
     this.freg = new F();
     this.dreg = new D();
@@ -48,81 +48,6 @@ export class ButtonsComponent implements OnInit {
       this.parserService.setFileContent(this.fileContent);
       return;
     }
-    this.readFileAsText(file);
-  }
-
-  onClickContinue(): void {
-
-  }
-
-  onClickStep(): void {
-    var current = this.parserService.getCurrentLine();
-    if (current.id < this.fileContent.length) {
-      if (current.parsedLine.instruction != "" && this.doesNextExist) {
-        this.cpuService.doFetchStage(current, this.freg, this.dreg, this.ereg, this.mreg, this.wreg);
-      }
-      this.doesNextExist = this.nextCurrentLine(current);
-    }
-  }
-
-  onClickReset(): void {
-    this.setFirstAddressCurrent();
-    this.counter = 0;
-    this.cpuService.resetValues();
-  }
-
-  setFirstAddressCurrent(): void {
-    for (let i = 0; i < this.fileContent.length; i++) {
-      if (this.fileContent[i].isAnAddress) {
-        this.fileContent[i].isCurrent = true;
-        this.parserService.setCurrent(this.fileContent[i]);
-        break;
-      }
-    }
-  }
-
-  isFileExtensionYo(file: File): boolean {
-    if (file.name.split(".")[1] !== "yo") {
-      alert('File type is not supported! Please upload a .yo file');
-      this.loadComponent = false;
-      return false;
-    }
-    return true;
-  }
-
-  /*
-  * return true if there is a next "current" line to highlight
-  * return false if there isn't another line to read (i.e. EOF)
-  */
-  nextCurrentLine(current: Line): boolean {
-    for (let i = current.id + 1; i < this.fileContent.length; i++) {
-      if (this.fileContent[i].parsedLine != null) {
-        this.fileContent[i].isCurrent = true;
-        this.parserService.setCurrent(this.fileContent[i]);
-        //increment the clock-cycle
-        this.counter++;
-        return true;
-      } else {
-        return false;
-      }
-    }
-  }
-
-  loadline(line: AddressLine): void {
-    let memory = MemoryFunc.getInstance();
-    let bytes = line.instruction.length / 2;
-    let position = 0;
-    let address = line.address;
-    while(bytes > 0) {
-      let value = parseInt(line.instruction.substring(position, position + 2) , 16);
-      position += 2;
-      bytes--;
-      memory.putByte(value, address);
-      address++;
-    }
-  }
-
-  readFileAsText(file: File): void {
     let fileReader = new FileReader();
     fileReader.onload = (e) => {
       let lines = (fileReader.result as string).split(/[\r\n]+/g);
@@ -158,5 +83,79 @@ export class ButtonsComponent implements OnInit {
       }
     }
     fileReader.readAsText(file);
+  }
+
+  onClickContinue(): void {
+
+  }
+
+  onClickStep(): void {
+    var current = this.parserService.getCurrentLine();
+    var nextId = current.id + 1;
+    if (current.id < this.fileContent.length && nextId < this.fileContent.length) {
+      if (current.parsedLine.instruction != "") {
+        this.cpuService.doFetchStage(current, this.freg, this.dreg, this.ereg, this.mreg, this.wreg);
+      }
+      this.nextCurrentLine(current);
+    }
+  }
+
+  onClickReset(): void {
+    this.setFirstAddressCurrent();
+    this.counter = 0;
+    this.cpuService.resetValues();
+  }
+
+  setFirstAddressCurrent(): void {
+    for (let i = 0; i < this.fileContent.length; i++) {
+      if (this.fileContent[i].isAnAddress) {
+        this.fileContent[i].isCurrent = true;
+        this.parserService.setCurrent(this.fileContent[i]);
+        break;
+      }
+    }
+  }
+
+  isFileExtensionYo(file: File): boolean {
+    if (file.name.split(".")[1] !== "yo") {
+      alert('File type is not supported! Please upload a .yo file');
+      this.loadComponent = false;
+      return false;
+    }
+    return true;
+  }
+
+  /*
+  * return true if there is a next "current" line to highlight
+  * return false if there isn't another line to read (i.e. EOF)
+  */
+  nextCurrentLine(current: Line): void {
+    for (let i = current.id + 1; i < this.fileContent.length; i++) {
+      if (this.fileContent[i].parsedLine != null) {
+        this.fileContent[i].isCurrent = true;
+        this.parserService.setCurrent(this.fileContent[i]);
+        //increment the clock-cycle
+        this.counter++;
+        break;
+      } 
+    }
+  }
+
+  loadline(line: AddressLine): void {
+    let memory = MemoryFunc.getInstance();
+    let bytes = line.instruction.length / 2;
+    let position = 0;
+    let address = line.address;
+    while(bytes > 0) {
+      let value = parseInt(line.instruction.substring(position, position + 2) , 16);
+      position += 2;
+      bytes--;
+      memory.putByte(value, address);
+      address++;
+    }
+  }
+
+  readFileAsText(file: File): void {
+
   }
 }

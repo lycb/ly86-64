@@ -64,7 +64,7 @@ export class CpuService {
 		stat = this.f_status(icode, this.error);
 		icode = this.f_icode(icode, this.error);
 		ifun = this.f_ifun(ifun, this.error);
-		valC = this.buildValC(icode, f_pc);
+		valC = this.getValC(icode, f_pc, line);
 		valP = this.PCincrement(f_pc, icode, valC);
 		f_predPC = this.predictPC(icode, valC, valP);
 
@@ -120,7 +120,26 @@ export class CpuService {
 			);
 	}
 
-	buildValC(icode: number, f_pc: number): number {
+	getValC(icode: number, f_pc: number, line: string): number {
+	    let memory = MemoryFunc.getInstance();
+	    let arr = new Array<number>(8);
+		if (this.needValC(icode)) {
+			if (!this.needRegister(icode)) {
+				let index = 0;
+				for (let i = f_pc + 1; index < 8; i++) {
+					arr[index] = memory.getByte(i);
+					index++;
+				}
+				return this.buildLong(arr);
+			} else {
+				let index = 0;
+				for (let i = f_pc + 2; index < 8; i++) {
+					arr[index] = memory.getByte(i);
+					index++;
+				}
+				return this.buildLong(arr);
+			}
+		}
 		return 0;
 	}
 
@@ -136,22 +155,6 @@ export class CpuService {
 		}
 	}
 
-	isInstructionValid(icode: number): boolean {
-		return (
-			icode == Constants.NOP ||
-			icode == Constants.HALT ||
-			icode == Constants.RRMOVQ ||
-			icode == Constants.IRMOVQ ||
-			icode == Constants.RMMOVQ ||
-			icode == Constants.MRMOVQ ||
-			icode == Constants.OPQ ||
-			icode == Constants.JXX ||
-			icode == Constants.CALL ||
-			icode == Constants.RET ||
-			icode == Constants.PUSHQ ||
-			icode == Constants.POPQ
-			);
-	}
 
 	f_status(icode: number, error: boolean): number {
 		if (error) return Constants.SADR;
@@ -207,5 +210,32 @@ export class CpuService {
 		this.f_pred.next(0);
 		this.freg.getPredPC().setInput(0);
 		this.freg.getPredPC().normal();
+	}
+
+	buildLong(arr: number[]): number {
+	   let ret = 0;
+	   for(let i = 6; i >= 0; i--)
+	   {
+	      ret = ret<<8;
+	      ret += arr[i];
+	   }
+	   return ret;
+	}
+
+	isInstructionValid(icode: number): boolean {
+		return (
+			icode == Constants.NOP ||
+			icode == Constants.HALT ||
+			icode == Constants.RRMOVQ ||
+			icode == Constants.IRMOVQ ||
+			icode == Constants.RMMOVQ ||
+			icode == Constants.MRMOVQ ||
+			icode == Constants.OPQ ||
+			icode == Constants.JXX ||
+			icode == Constants.CALL ||
+			icode == Constants.RET ||
+			icode == Constants.PUSHQ ||
+			icode == Constants.POPQ
+			);
 	}
 }
