@@ -206,5 +206,6 @@ export class CpuService {
 	resetValues(): void {
 		this.f_pred.next(0);
 		this.freg.getPredPC().setInput(0);
+		this.freg.getPredPC().normal();
 	}
 }
