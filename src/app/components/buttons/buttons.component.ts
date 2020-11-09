@@ -16,6 +16,7 @@ export class ButtonsComponent implements OnInit {
   counter: number;
   loadComponent: boolean;
   nextLine: boolean;
+  isFirstAddressCurrent: boolean;
 
   freg: F;
   dreg: D;
@@ -30,6 +31,7 @@ export class ButtonsComponent implements OnInit {
     this.counter = 0;
     this.loadComponent = false;
     this.nextLine = true;
+    this.isFirstAddressCurrent = false;
 
     this.freg = new F();
     this.dreg = new D();
@@ -48,41 +50,7 @@ export class ButtonsComponent implements OnInit {
       this.parserService.setFileContent(this.fileContent);
       return;
     }
-    let fileReader = new FileReader();
-    fileReader.onload = (e) => {
-      let lines = (fileReader.result as string).split(/[\r\n]+/g);
-      let index = 0;
-      for (let line of lines) {
-        if (line[0] == "0") {
-          this.fileContent.push({
-            id: index,
-            textLine: line,
-            isAnAddress: true,
-            isCurrent: false,
-            parsedLine: this.parserService.parse(line),
-          });
-          index++;
-        } else {
-          this.fileContent.push({
-            id: index,
-            textLine: line,
-            isAnAddress: false,
-            isCurrent: false,
-            parsedLine: null,
-          });
-          index++;
-        }
-      }
-      this.setFirstAddressCurrent();
-      this.parserService.setFileContent(this.fileContent);
-      this.loadComponent = true;
-      for (let i = 0; i < this.fileContent.length; i++) {
-        if (this.fileContent[i].isAnAddress && this.fileContent[i].parsedLine.instruction !== "") {
-          this.loadline(this.fileContent[i].parsedLine);
-        }
-      }
-    }
-    fileReader.readAsText(file);
+    this.readFileAsText(file);
   }
 
   onClickContinue(): void {
@@ -90,6 +58,7 @@ export class ButtonsComponent implements OnInit {
   }
 
   onClickStep(): void {
+    this.isFirstAddressCurrent = false;
     var current = this.parserService.getCurrentLine();
     var nextId = current.id + 1;
     if (current.id < this.fileContent.length && nextId < this.fileContent.length) {
@@ -103,15 +72,18 @@ export class ButtonsComponent implements OnInit {
   onClickReset(): void {
     this.setFirstAddressCurrent();
     this.counter = 0;
-    this.cpuService.resetValues();
+    this.cpuService.resetValues(this.freg);
   }
 
   setFirstAddressCurrent(): void {
-    for (let i = 0; i < this.fileContent.length; i++) {
-      if (this.fileContent[i].isAnAddress) {
-        this.fileContent[i].isCurrent = true;
-        this.parserService.setCurrent(this.fileContent[i]);
-        break;
+    if (!this.isFirstAddressCurrent) {
+      for (let i = 0; i < this.fileContent.length; i++) {
+        if (this.fileContent[i].isAnAddress) {
+          this.fileContent[i].isCurrent = true;
+          this.parserService.setCurrent(this.fileContent[i]);
+          this.isFirstAddressCurrent = true;
+          break;
+        }
       }
     }
   }
@@ -156,6 +128,40 @@ export class ButtonsComponent implements OnInit {
   }
 
   readFileAsText(file: File): void {
-
+    let fileReader = new FileReader();
+    fileReader.onload = (e) => {
+      let lines = (fileReader.result as string).split(/[\r\n]+/g);
+      let index = 0;
+      for (let line of lines) {
+        if (line[0] == "0") {
+          this.fileContent.push({
+            id: index,
+            textLine: line,
+            isAnAddress: true,
+            isCurrent: false,
+            parsedLine: this.parserService.parse(line),
+          });
+          index++;
+        } else {
+          this.fileContent.push({
+            id: index,
+            textLine: line,
+            isAnAddress: false,
+            isCurrent: false,
+            parsedLine: null,
+          });
+          index++;
+        }
+      }
+      this.setFirstAddressCurrent();
+      this.parserService.setFileContent(this.fileContent);
+      this.loadComponent = true;
+      for (let i = 0; i < this.fileContent.length; i++) {
+        if (this.fileContent[i].isAnAddress && this.fileContent[i].parsedLine.instruction !== "") {
+          this.loadline(this.fileContent[i].parsedLine);
+        }
+      }
+    }
+    fileReader.readAsText(file);
   }
 }

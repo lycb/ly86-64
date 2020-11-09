@@ -206,10 +206,10 @@ export class CpuService {
 		}
 	}
 
-	resetValues(): void {
+	resetValues(freg: F): void {
 		this.f_pred.next(0);
-		this.freg.getPredPC().setInput(0);
-		this.freg.getPredPC().normal();
+		freg.getPredPC().setInput(0);
+		freg.getPredPC().normal();
 	}
 
 	buildLong(arr: number[]): number {
