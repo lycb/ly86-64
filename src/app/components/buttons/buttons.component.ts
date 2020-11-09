@@ -64,6 +64,7 @@ export class ButtonsComponent implements OnInit {
     if (current.id < this.fileContent.length && nextId < this.fileContent.length) {
       if (current.parsedLine.instruction != "") {
         this.cpuService.doFetchStage(current, this.freg, this.dreg, this.ereg, this.mreg, this.wreg);
+        this.cpuService.doDecodeStage(current, this.freg, this.dreg, this.ereg, this.mreg, this.wreg);
       }
       this.nextCurrentLine(current);
     }

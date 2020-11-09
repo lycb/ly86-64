@@ -28,9 +28,7 @@ export class CpuService {
 		this.error = false;
 	}
 
-	getPredPC(): Observable<any> {
-		return this.f_pred.asObservable();
-	}
+	// FETCH
 
 	doFetchStage(lineObject: Line, freg: F, dreg: D, ereg: E, mreg: M, wreg: W): void {
 		this.freg = freg;
@@ -47,9 +45,9 @@ export class CpuService {
 
 		let icode = 0,
 		ifun = 0,
-		rA = 0,
-		rB = 0,
-		stat = 0,
+		rA = Constants.RNONE,
+		rB = Constants.RNONE,
+		stat = Constants.SAOK,
 		valC = 0,
 		valP = 0,
 		f_predPC = 0;
@@ -73,7 +71,7 @@ export class CpuService {
 
 		this.freg.getPredPC().setInput(f_predPC);
 
-		this.setDInput(stat, icode, ifun, rA, rB, valC, valP);
+		this.setDInput(dreg, stat, icode, ifun, rA, rB, valC, valP);
 	}
 
 	doFetchClockHigh(freg: F, dreg: D): void {
@@ -87,8 +85,11 @@ export class CpuService {
 		dreg.getvalP().normal();
 	}
 
-	setDInput(stat: number, icode: number, ifun: number, rA: number, rB: number, valC: number, valP: number): void {
-		const dreg = new D();
+	getPredPC(): Observable<any> {
+		return this.f_pred.asObservable();
+	}
+
+	setDInput(dreg: D, stat: number, icode: number, ifun: number, rA: number, rB: number, valC: number, valP: number): void {
 		dreg.getstat().setInput(stat);
 		dreg.geticode().setInput(icode);
 		dreg.getifun().setInput(ifun);
@@ -107,7 +108,7 @@ export class CpuService {
 			icode == Constants.IRMOVQ ||
 			icode == Constants.RMMOVQ ||
 			icode == Constants.MRMOVQ
-			);
+		);
 	}
 
 	needValC(icode: number): boolean {
@@ -117,7 +118,7 @@ export class CpuService {
 			icode == Constants.MRMOVQ ||
 			icode == Constants.JXX ||
 			icode == Constants.CALL
-			);
+		);
 	}
 
 	getValC(icode: number, f_pc: number, line: string): number {
@@ -237,5 +238,66 @@ export class CpuService {
 			icode == Constants.PUSHQ ||
 			icode == Constants.POPQ
 			);
+	}
+
+	// DECODE
+
+	doDecodeStage(lineObject: Line, freg: F, dreg: D, ereg: E, mreg: M, wreg: W): void {
+		this.freg = freg;
+		this.dreg = dreg;
+		this.ereg = ereg;
+		this.mreg = mreg;
+		this.wreg = wreg;
+		this.doDecodeClockLow(lineObject, freg, dreg, ereg, mreg, wreg);
+		this.doDecodeClockHigh(ereg);
+	}
+
+	doDecodeClockLow(lineObject: Line, freg: F, dreg: D, ereg: E, mreg: M, wreg: W): void {
+		let line = lineObject.parsedLine.instruction;
+
+		let icode = 0,
+		ifun = 0,
+		stat = Constants.SAOK,
+		valA = 0,
+		valB = 0,
+		valC = 0,
+		dstE = Constants.RNONE,
+		dstM = Constants.RNONE,
+		srcA = Constants.RNONE,
+		srcB = Constants.RNONE;
+		
+		stat = dreg.getstat().getOutput();
+		icode = dreg.geticode().getOutput();
+		ifun = dreg.getifun().getOutput();
+		valC = dreg.getvalC().getOutput();
+
+		this.setEInput(ereg, stat, icode, ifun, valC, valA, valB, dstE, dstM, srcA, srcB);
+	}
+
+	doDecodeClockHigh(ereg: E): void {
+		ereg.getstat().normal();
+	  ereg.geticode().normal();
+	  ereg.getifun().normal();
+	  ereg.getvalC().normal();
+	  ereg.getvalA().normal();
+	  ereg.getvalB().normal();
+	  ereg.getdstE().normal();
+	  ereg.getdstM().normal();
+	  ereg.getsrcA().normal();
+	  ereg.getsrcB().normal();
+	}
+
+	setEInput(ereg: E, stat: number, icode: number, ifun: number, valC: number, valA: number, 
+		valB: number, dstE: number, dstM: number, srcA: number, srcB: number): void {
+		ereg.getstat().setInput(stat);
+		ereg.geticode().setInput(icode);
+		ereg.getifun().setInput(ifun);
+		ereg.getvalA().setInput(valA);
+		ereg.getvalB().setInput(valB);
+		ereg.getvalC().setInput(valC);
+		ereg.getdstE().setInput(dstE);
+		ereg.getdstM().setInput(dstM);
+		ereg.getsrcA().setInput(srcA);
+		ereg.getsrcB().setInput(srcB);
 	}
 }
