@@ -1,4 +1,4 @@
-# y86
+# y86-64
 
 
 To see progress so far:
