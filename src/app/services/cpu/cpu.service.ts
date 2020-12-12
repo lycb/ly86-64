@@ -18,6 +18,8 @@ export class CpuService {
 	ereg: E;
 	mreg: M;
 	wreg: W;
+  d_reg = new Subject<D>();
+  e_reg = new Subject<E>();
 	f_pred = new Subject<any>();
 
 	constructor(
@@ -36,11 +38,14 @@ export class CpuService {
 		this.ereg = ereg;
 		this.mreg = mreg;
 		this.wreg = wreg;
+    this.doDecodeStage(lineObject, freg, dreg, ereg, mreg, wreg);
 		this.doFetchClockLow(lineObject, freg, dreg, ereg, mreg, wreg);
 		this.doFetchClockHigh(freg, dreg);
+
 	}
 
 	doFetchClockLow(lineObject: Line, freg: F, dreg: D, ereg: E, mreg: M, wreg: W): void {
+    console.log("fetch low")
 		let line = lineObject.parsedLine.instruction;
 
 		let icode = 0,
@@ -69,12 +74,13 @@ export class CpuService {
 		// setting Observable to read for pipeline register
 		this.f_pred.next(f_predPC.toString(16));
 
-		this.freg.getPredPC().setInput(f_predPC);
+    this.freg.getPredPC().setInput(f_predPC);
 
 		this.setDInput(dreg, stat, icode, ifun, rA, rB, valC, valP);
 	}
 
 	doFetchClockHigh(freg: F, dreg: D): void {
+    console.log("fetch high")
 		freg.getPredPC().normal();
 		dreg.getstat().normal();
 		dreg.geticode().normal();
@@ -207,7 +213,7 @@ export class CpuService {
 		}
 	}
 
-	resetValues(freg: F): void {
+	resetValues(freg: F, dreg: D, ereg: E, mreg: M, wreg: W): void {
 		this.f_pred.next(0);
 		freg.getPredPC().setInput(0);
 		freg.getPredPC().normal();
@@ -243,39 +249,50 @@ export class CpuService {
 	// DECODE
 
 	doDecodeStage(lineObject: Line, freg: F, dreg: D, ereg: E, mreg: M, wreg: W): void {
-		this.freg = freg;
+		console.log("decode stage")
+    this.freg = freg;
 		this.dreg = dreg;
 		this.ereg = ereg;
 		this.mreg = mreg;
 		this.wreg = wreg;
+
+    this.doExecuteStage(lineObject, freg, dreg, ereg, mreg, wreg);
 		this.doDecodeClockLow(lineObject, freg, dreg, ereg, mreg, wreg);
 		this.doDecodeClockHigh(ereg);
+
 	}
 
 	doDecodeClockLow(lineObject: Line, freg: F, dreg: D, ereg: E, mreg: M, wreg: W): void {
-		let line = lineObject.parsedLine.instruction;
+    console.log("decode low")
+    this.d_reg.next(dreg);
+
+    let line = lineObject.parsedLine.instruction;
 
 		let icode = 0,
 		ifun = 0,
-		stat = Constants.SAOK,
+		stat = 0,
 		valA = 0,
 		valB = 0,
-		valC = 0,
+		valC = dreg.getvalC().getOutput(),
 		dstE = Constants.RNONE,
 		dstM = Constants.RNONE,
 		srcA = Constants.RNONE,
 		srcB = Constants.RNONE;
 		
+
 		stat = dreg.getstat().getOutput();
 		icode = dreg.geticode().getOutput();
 		ifun = dreg.getifun().getOutput();
 		valC = dreg.getvalC().getOutput();
+    
+    console.log("icode in decode low: " + icode);
 
 		this.setEInput(ereg, stat, icode, ifun, valC, valA, valB, dstE, dstM, srcA, srcB);
 	}
 
 	doDecodeClockHigh(ereg: E): void {
-		ereg.getstat().normal();
+    console.log("decode high")
+	  ereg.getstat().normal();
 	  ereg.geticode().normal();
 	  ereg.getifun().normal();
 	  ereg.getvalC().normal();
@@ -300,4 +317,48 @@ export class CpuService {
 		ereg.getsrcA().setInput(srcA);
 		ereg.getsrcB().setInput(srcB);
 	}
+
+  getDreg(): Observable<D> {
+    return this.d_reg.asObservable();
+  }
+
+  //  EXECUTE 
+
+  doExecuteStage(lineObject: Line, freg: F, dreg: D, ereg: E, mreg: M, wreg: W): void {
+    console.log("execute stage")
+    this.freg = freg;
+    this.dreg = dreg;
+    this.ereg = ereg;
+    this.mreg = mreg;
+    this.wreg = wreg;
+
+    this.doExecuteClockLow(lineObject, freg, dreg, ereg, mreg, wreg);
+    this.doExecuteClockHigh(mreg);
+  }
+
+  doExecuteClockLow(lineObject: Line, freg: F, dreg: D, ereg: E, mreg: M, wreg: W): void { 
+    console.log("execute low")
+    this.e_reg.next(ereg);
+  }
+
+  doExecuteClockHigh(mreg: M): void {
+    console.log("execute high")
+  }
+
+  setMInput(mreg: M) {
+    // mreg.getstat().setInput(stat);
+    // mreg.geticode().setInput(icode);
+    // mreg.getifun().setInput(ifun);
+    // mreg.getvalA().setInput(valA);
+    // mreg.getvalB().setInput(valB);
+    // mreg.getvalC().setInput(valC);
+    // mreg.getdstE().setInput(dstE);
+    // mreg.getdstM().setInput(dstM);
+    // mreg.getsrcA().setInput(srcA);
+    // mreg.getsrcB().setInput(srcB);
+  }
+
+  getEreg(): Observable<E> {
+    return this.e_reg.asObservable();
+  }
 }

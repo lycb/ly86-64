@@ -15,97 +15,152 @@ export class PipelineRegComponent implements OnInit {
 	m_state: string;
 	w_state: string;
 
-  subscription: Subscription;
+  fpredPCsubsription: Subscription;
+  dregSubscription: Subscription;
+  eregSubscription: Subscription;
 
-  f_predPC: number;
+  f_predPC: string;
+  ereg: E;
 
-  d_stat: number;
-  d_icode: number;
-  d_ifun: number;
-  d_rA: number;
-  d_rB: number;
-  d_valC: number;
-  d_valP: number;
+  d_stat: string;
+  d_icode: string;
+  d_ifun: string;
+  d_rA: string;
+  d_rB: string;
+  d_valC: string;
+  d_valP: string;
 
-  e_stat: number;
-  e_icode: number;
-  e_ifun: number;
-  e_valC: number;
-  e_valA: number;
-  e_valB: number;
-  e_dstE: number;
-  e_dstM: number;
-  e_srcA: number;
-  e_srcB: number;
+  e_stat: string;
+  e_icode: string;
+  e_ifun: string;
+  e_valC: string;
+  e_valA: string;
+  e_valB: string;
+  e_dstE: string;
+  e_dstM: string;
+  e_srcA: string;
+  e_srcB: string;
 
-  m_stat: number;
-  m_icode: number;
-  m_ifun: number;
-  m_valE: number;
-  m_valA: number;
-  m_dstE: number;
-  m_dstM: number;
+  m_stat: string;
+  m_icode: string;
+  m_ifun: string;
+  m_valE: string;
+  m_valA: string;
+  m_dstE: string;
+  m_dstM: string;
 
-  w_stat: number;
-  w_icode: number;
-  w_ifun: number;
-  w_valE: number;
-  w_valM: number;
-  w_dstE: number;
-  w_dstM: number;
+  w_stat: string;
+  w_icode: string;
+  w_ifun: string;
+  w_valE: string;
+  w_valM: string;
+  w_dstE: string;
+  w_dstM: string;
 
   constructor(private cpuService: CpuService) { 
-    this.f_predPC = 0;
-    this.subscription = this.cpuService.getPredPC().subscribe(pc => {
-      if (pc) {
-        this.f_predPC = pc;
-      } else {
-        this.f_predPC = 0;
-      }
-    });
+    this.d_stat = "1";
+    this.d_icode = "1";
+    this.d_ifun = "0";
+    this.d_rA = "f";
+    this.d_rB = "f";
+    this.d_valC = "0";
+    this.d_valP = "0";
 
-    this.d_stat = 0;
-    this.d_icode = 0;
-    this.d_ifun = 0;
-    this.d_rA = 0;
-    this.d_rB = 0;
-    this.d_valC = 0;
-    this.d_valP = 0;
+    this.e_stat = "1";
+    this.e_icode = "1";
+    this.e_ifun = "0";
+    this.e_valC = "0";
+    this.e_valA = "0";
+    this.e_valB = "0";
+    this.e_dstE = "f";
+    this.e_dstM = "f";
+    this.e_srcA = "f";
+    this.e_srcB = "f";
 
-    this.e_stat = 0;
-    this.e_icode = 0;
-    this.e_ifun = 0;
-    this.e_valC = 0;
-    this.e_valA = 0;
-    this.e_valB = 0;
-    this.e_dstE = 0;
-    this.e_dstM = 0;
-    this.e_srcA = 0;
-    this.e_srcB = 0;
+    this.m_stat = "1";
+    this.m_icode = "1";
+    this.m_ifun = "0";
+    this.m_valE = "0";
+    this.m_valA = "0";
+    this.m_dstE = "f";
+    this.m_dstM = "f";
 
-    this.m_stat = 0;
-    this.m_icode = 0;
-    this.m_ifun = 0;
-    this.m_valE = 0;
-    this.m_valA = 0;
-    this.m_dstE = 0;
-    this.m_dstM = 0;
-
-    this.w_stat = 0;
-    this.w_icode = 0;
-    this.w_ifun = 0;
-    this.w_valE = 0;
-    this.w_valM = 0;
-    this.w_dstE = 0;
-    this.w_dstM = 0;
-
+    this.w_stat = "1";
+    this.w_icode = "1";
+    this.w_ifun = "0";
+    this.w_valE = "0";
+    this.w_valM = "0";
+    this.w_dstE = "f";
+    this.w_dstM = "f";
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.f_state = "NA";
     this.d_state = "NA";
     this.e_state = "NA";
     this.m_state = "NA";
     this.w_state = "NA";
+
+    this.f_predPC = "0";
+
+
+    await this.getEreg();
+
+    await this.getDreg();
+    
+    await this.getFpredPC();
+  }
+
+  ngOnDestroy() {
+    this.fpredPCsubsription.unsubscribe();
+    this.dregSubscription.unsubscribe();
+    this.eregSubscription.unsubscribe();
+  }
+
+  async getFpredPC() {
+    this.fpredPCsubsription = this.cpuService.getPredPC().subscribe(pc => {
+      if (pc) {
+        this.f_predPC = pc;
+        return true;
+      } else {
+        this.f_predPC = "error";
+      }
+    });
+  }
+
+  async getDreg() {
+    this.dregSubscription = this.cpuService.getDreg().subscribe(dreg => {
+      if (dreg) {
+        this.d_stat = dreg.stat.input.toString(16);
+        this.d_icode = dreg.icode.input.toString(16);
+        this.d_ifun = dreg.ifun.input.toString(16);
+        this.d_rA = dreg.rA.input.toString(16);
+        this.d_rB = dreg.rB.input.toString(16);
+        this.d_valC = dreg.valC.input.toString(16);
+        this.d_valP = dreg.valP.input.toString(16);
+        return true;
+      }
+    })
+  }
+
+  async getEreg() {
+    this.eregSubscription = this.cpuService.getEreg().subscribe(ereg => {
+      if (ereg) {
+        console.log(ereg)
+        this.ereg = ereg;
+        this.e_stat = ereg.stat.input.toString(16);
+        this.e_icode = ereg.icode.input.toString(16);
+        console.log(ereg.icode.input);
+        this.e_ifun = ereg.ifun.input.toString(16);
+        this.e_valC = ereg.valC.input.toString(16);
+        this.e_valA = ereg.valA.input.toString(16);
+        this.e_valB = ereg.valB.input.toString(16);
+        this.e_dstE = ereg.dstE.input.toString(16);
+        this.e_dstM = ereg.dstM.input.toString(16);
+        this.e_srcA = ereg.srcA.input.toString(16);
+        this.e_srcB = ereg.srcB.input.toString(16);
+        return true;
+      } 
+    })
   }
 }
