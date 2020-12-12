@@ -3,6 +3,7 @@ import { F, D, E, M, W } from "../../models/PipeReg";
 import { CpuService } from '../../services/cpu/cpu.service';
 import { Subscription } from 'rxjs';
 
+// Okay instead you could do something like THIS
 @Component({
   selector: 'app-pipeline-reg',
   templateUrl: './pipeline-reg.component.html',
@@ -142,11 +143,21 @@ export class PipelineRegComponent implements OnInit {
       }
     })
   }
-
-  async getEreg() {
+  
+  // This `subscribe` call basically registers a listener for whenever the ereg value changes.
+  // The callback gets called with the new value of ereg as it argument, whenever ereg changes.
+  // You don't "get" the value of an observable, you **subscribe to changes on it**.
+  //
+  // This is why Observables are neat, they allow you to easily manage parts of your application
+  // where different pieces of state are interdependent (this may all be obvious, just covering the basics).
+  //
+  // So this `getEreg` function doesn't need to be async. Javascript's `async`/`await` syntax is just sugar
+  // over top of the Promise API and you're not using Promises here.
+  //
+  // Instead you could do this:
+  startEregSubscription() {
     this.eregSubscription = this.cpuService.getEreg().subscribe(ereg => {
       if (ereg) {
-        console.log(ereg)
         this.ereg = ereg;
         this.e_stat = ereg.stat.input.toString(16);
         this.e_icode = ereg.icode.input.toString(16);
@@ -163,4 +174,10 @@ export class PipelineRegComponent implements OnInit {
       } 
     })
   }
+  
+  // and then remove the `await` from the call in `ngOnInit`.
+  // There may still be a problem here in that those `subscribe` callbacks aren't guaranteed to be called right away.
+  // So parts of this class may not be properly initialized after `ngOnInit` returns (which may or may not matter, I haven't looked at the code consuming
+  // this class, but I suspect it DOES matter). There's should be a way to get around 
+  // that too, but LMK if this makes sense first.
 }
