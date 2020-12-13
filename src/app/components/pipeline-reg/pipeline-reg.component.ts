@@ -92,9 +92,7 @@ export class PipelineRegComponent implements OnInit {
     this.w_valM = "0";
     this.w_dstE = "f";
     this.w_dstM = "f";
-  }
 
-  async ngOnInit() {
     this.f_state = "NA";
     this.d_state = "NA";
     this.e_state = "NA";
@@ -103,32 +101,25 @@ export class PipelineRegComponent implements OnInit {
 
     this.f_predPC = "0";
 
-
-    await this.getEreg();
-
-    await this.getDreg();
-    
-    await this.getFpredPC();
+    this.getEreg();
+    this.getDreg();
+    this.getFpredPC();
   }
 
-  ngOnDestroy() {
-    this.fpredPCsubsription.unsubscribe();
-    this.dregSubscription.unsubscribe();
-    this.eregSubscription.unsubscribe();
+  ngOnInit() {
   }
 
-  async getFpredPC() {
+  getFpredPC() {
     this.fpredPCsubsription = this.cpuService.getPredPC().subscribe(pc => {
       if (pc) {
         this.f_predPC = pc;
-        return true;
       } else {
         this.f_predPC = "error";
       }
     });
   }
 
-  async getDreg() {
+  getDreg() {
     this.dregSubscription = this.cpuService.getDreg().subscribe(dreg => {
       if (dreg) {
         this.d_stat = dreg.stat.input.toString(16);
@@ -138,19 +129,16 @@ export class PipelineRegComponent implements OnInit {
         this.d_rB = dreg.rB.input.toString(16);
         this.d_valC = dreg.valC.input.toString(16);
         this.d_valP = dreg.valP.input.toString(16);
-        return true;
       }
     })
   }
 
-  async getEreg() {
+  getEreg() {
     this.eregSubscription = this.cpuService.getEreg().subscribe(ereg => {
       if (ereg) {
-        console.log(ereg)
         this.ereg = ereg;
         this.e_stat = ereg.stat.input.toString(16);
         this.e_icode = ereg.icode.input.toString(16);
-        console.log(ereg.icode.input);
         this.e_ifun = ereg.ifun.input.toString(16);
         this.e_valC = ereg.valC.input.toString(16);
         this.e_valA = ereg.valA.input.toString(16);
@@ -162,5 +150,11 @@ export class PipelineRegComponent implements OnInit {
         return true;
       } 
     })
+  }
+
+  ngOnDestroy() {
+    this.fpredPCsubsription.unsubscribe();
+    this.dregSubscription.unsubscribe();
+    this.eregSubscription.unsubscribe();
   }
 }
