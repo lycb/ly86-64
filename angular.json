@@ -120,6 +120,10 @@
           }
         }
       }
-    }},
-  "defaultProject": "y86"
+    }
+  },
+  "defaultProject": "y86",
+  "cli": {
+    "analytics": "fb28518b-2a7b-43ce-bcb1-c2b48f3ca5d2"
+  }
 }
