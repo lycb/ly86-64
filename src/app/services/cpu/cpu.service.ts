@@ -267,8 +267,6 @@ export class CpuService {
         this.mreg = mreg;
         this.wreg = wreg;
 
-        this.d_reg.next(dreg);
-
         this.doDecodeClockLow(lineObject, freg, dreg, ereg, mreg, wreg);
         this.doDecodeClockHigh(ereg);
     }
@@ -336,8 +334,6 @@ export class CpuService {
         this.ereg = ereg;
         this.mreg = mreg;
         this.wreg = wreg;
-
-        this.e_reg.next(ereg);
 
         this.doExecuteClockLow(lineObject, freg, dreg, ereg, mreg, wreg);
         this.doExecuteClockHigh(mreg);
