@@ -63,8 +63,7 @@ export class ButtonsComponent implements OnInit {
     var nextId = current.id + 1;
     if (current.id < this.fileContent.length && nextId < this.fileContent.length) {
       if (current.parsedLine.instruction != "") {
-        this.cpuService.doFetchStage(current, this.freg, this.dreg, this.ereg, this.mreg, this.wreg);
-        this.cpuService.doDecodeStage(current, this.freg, this.dreg, this.ereg, this.mreg, this.wreg);
+        this.cpuService.doSimulation(current, this.freg, this.dreg, this.ereg, this.mreg, this.wreg);
       }
       this.nextCurrentLine(current);
     }
@@ -73,7 +72,7 @@ export class ButtonsComponent implements OnInit {
   onClickReset(): void {
     this.setFirstAddressCurrent();
     this.counter = 0;
-    this.cpuService.resetValues(this.freg);
+    this.cpuService.resetValues(this.freg, this.dreg, this.ereg, this.mreg, this.wreg);
   }
 
   setFirstAddressCurrent(): void {
