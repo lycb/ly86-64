@@ -129,6 +129,14 @@ export class PipelineRegComponent implements OnInit {
         this.d_rB = dreg.rB.input.toString(16);
         this.d_valC = dreg.valC.input.toString(16);
         this.d_valP = dreg.valP.input.toString(16);
+      } else {
+        this.d_stat = "1";
+        this.d_icode = "1";
+        this.d_ifun = "0";
+        this.d_rA = "f";
+        this.d_rB = "f";
+        this.d_valC = "0";
+        this.d_valP = "0";
       }
     })
   }
@@ -147,8 +155,18 @@ export class PipelineRegComponent implements OnInit {
         this.e_dstM = ereg.dstM.input.toString(16);
         this.e_srcA = ereg.srcA.input.toString(16);
         this.e_srcB = ereg.srcB.input.toString(16);
-        return true;
-      } 
+      } else {
+        this.e_stat = "1";
+        this.e_icode = "1";
+        this.e_ifun = "0";
+        this.e_valC = "0";
+        this.e_valA = "0";
+        this.e_valB = "0";
+        this.e_dstE = "f";
+        this.e_dstM = "f";
+        this.e_srcA = "f";
+        this.e_srcB = "f";
+      }
     })
   }
 

@@ -18,6 +18,7 @@ export class CpuService {
     ereg: E;
     mreg: M;
     wreg: W;
+
     d_reg = new Subject<D>();
     e_reg = new Subject<E>();
     f_pred = new Subject<any>();
@@ -86,7 +87,7 @@ export class CpuService {
         // setting Observable to read for pipeline register
         this.f_pred.next(f_predPC.toString(16));
 
-        this.freg.getPredPC().setInput(f_predPC);
+        freg.getPredPC().setInput(f_predPC);
 
         this.setDInput(dreg, stat, icode, ifun, rA, rB, valC, valP);
     }
@@ -266,6 +267,8 @@ export class CpuService {
         this.mreg = mreg;
         this.wreg = wreg;
 
+        this.d_reg.next(dreg);
+
         this.doDecodeClockLow(lineObject, freg, dreg, ereg, mreg, wreg);
         this.doDecodeClockHigh(ereg);
     }
@@ -333,6 +336,8 @@ export class CpuService {
         this.ereg = ereg;
         this.mreg = mreg;
         this.wreg = wreg;
+
+        this.e_reg.next(ereg);
 
         this.doExecuteClockLow(lineObject, freg, dreg, ereg, mreg, wreg);
         this.doExecuteClockHigh(mreg);
