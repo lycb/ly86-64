@@ -19,7 +19,7 @@ export class CpuService {
   mreg: M;
   wreg: W;
 
-
+  // Observables for passing values to the pipeline register component
   f_pred = new Subject<any>();
   d_reg = new Subject<D>();
   e_reg = new Subject<E>();
@@ -34,9 +34,8 @@ export class CpuService {
     this.error = false;
   }
 
-  
   /*
-  * doSimulation
+  * doSimulation--
   * performs simulation for the pipeline
   */
   doSimulation(lineObject: Line, freg: F, dreg: D, ereg: E, mreg: M, wreg: W): void {
@@ -57,6 +56,10 @@ export class CpuService {
     this.d_reg.next(dreg);
   }
 
+  /*
+  * doFetchStage--
+  * performs clock low and clock high for the fetch stage
+  */
   doFetchStage(lineObject: Line, freg: F, dreg: D, ereg: E, mreg: M, wreg: W): void {
     this.freg = freg;
     this.dreg = dreg;
@@ -183,7 +186,6 @@ export class CpuService {
       }
     }
   }
-
 
   f_status(icode: number, error: boolean): number {
     if (error) return Constants.SADR;

@@ -98,16 +98,21 @@ export class ButtonsComponent implements OnInit {
   }
 
   /*
+  * nextCurrentLine --
   * return true if there is a next "current" line to highlight
   * return false if there isn't another line to read (i.e. EOF)
   */
   nextCurrentLine(current: Line): void {
     for (let i = current.id + 1; i < this.fileContent.length; i++) {
-      if (this.fileContent[i].parsedLine != null) {
-        this.fileContent[i].isCurrent = true;
-        this.parserService.setCurrent(this.fileContent[i]);
-        //increment the clock-cycle
-        this.counter++;
+      let next = this.fileContent[i];
+      let curr = this.fileContent[i-1];
+      if (next.parsedLine != null) {
+        next.isCurrent = true;
+        this.parserService.setCurrent(next);
+        if (next.parsedLine.address != 0 && curr.parsedLine != null && curr.parsedLine.address != next.parsedLine.address) {
+          //increment the clock-cycle
+          this.counter++;
+        }
         break;
       } 
     }
