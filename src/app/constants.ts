@@ -17,6 +17,21 @@ export const REGISTERS = [
 	'RNONE'
 ]
 
+export const RAX = 0;
+export const RCX = 1;
+export const RDX = 2;
+export const RBX = 3;
+export const RSP = 4;
+export const RBP = 5;
+export const RSI = 6;
+export const RDI = 7;
+export const R8 = 8;
+export const R9 = 9;
+export const R10 = 10;
+export const R11 = 11;
+export const R12 = 12;
+export const R13 = 13;
+export const R14 = 14;
 export const RNONE = 15;
 
 export const REGSIZE = 15;
@@ -40,6 +55,7 @@ export const FNONE = 0
 export const HALT = 0
 export const NOP = 1
 export const RRMOVQ = 2
+export const CMOVXX = 2
 export const IRMOVQ = 3
 export const RMMOVQ = 4
 export const MRMOVQ = 5

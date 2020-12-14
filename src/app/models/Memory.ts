@@ -1,9 +1,9 @@
 class Memory {
 	private instance: number[];
-	private memSize = 0x1000;;
+	private memSize = 0x1000;
 
 	constructor() {
-		this.instance = new Array<number>(0x1000);
+		this.instance = new Array<number>(this.memSize);
 	}
 
 	putByte(value: number, address: number): void {

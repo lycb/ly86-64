@@ -33,14 +33,23 @@ export class CpuService {
     dbubble: boolean;
     ebubble: boolean;
 
+    mbubble: boolean;
+
     // Global variables for passing in between stages
-    d_srcA: number;
-    d_srcB: number;
+    D_srcA: number;
+    D_srcB: number;
+
+    E_dstE: number;
+    E_valE: number;
+    E_Cnd: number;
+
+    M_valM: number;
+    M_stat: number;
 
     constructor(
         private instructionService: InstructionService,
         private parserService: ParserService,
-        private RegisterService: RegisterService
+        private registerService: RegisterService
     ) {
         this.error = false;
     }
@@ -308,7 +317,7 @@ export class CpuService {
             e_dstM = ereg.getdstM().getOutput();
 
         return (((e_icode == Constants.MRMOVQ || e_icode == Constants.POPQ) &&
-            (e_dstM == this.d_srcA || e_dstM == this.d_srcB)) ||
+            (e_dstM == this.D_srcA || e_dstM == this.D_srcB)) ||
             (e_icode == Constants.RET || d_icode == Constants.RET || m_icode == Constants.RET));
     }
 
@@ -321,7 +330,7 @@ export class CpuService {
             e_dstM = ereg.getdstM().getOutput();
 
         return (e_icode == Constants.MRMOVQ || e_icode == Constants.POPQ) &&
-            (e_dstM == this.d_srcA || e_dstM == this.d_srcB);
+            (e_dstM == this.D_srcA || e_dstM == this.D_srcB);
     }
 
     d_bubble(dreg: D, ereg: E, mreg: M): boolean {
@@ -329,11 +338,11 @@ export class CpuService {
             d_icode = dreg.geticode().getOutput(),
             m_icode = mreg.geticode().getOutput(),
             e_dstM = ereg.getdstM().getOutput(),
-            Cnd = this.get_e_Cnd();
+            Cnd = this.E_Cnd;
 
         return (e_icode == Constants.JXX && !Cnd) ||
             (!((e_icode == Constants.MRMOVQ || e_icode == Constants.POPQ) &&
-                (e_dstM == this.d_srcA || e_dstM == this.d_srcB)) &&
+                (e_dstM == this.D_srcA || e_dstM == this.D_srcB)) &&
                 (e_icode == Constants.RET || d_icode == Constants.RET ||
                     m_icode == Constants.RET));
     }
@@ -374,18 +383,21 @@ export class CpuService {
 
         let line = lineObject.parsedLine.instruction;
 
+        this.D_srcA = this.set_D_srcA(dreg);
+        this.D_srcB = this.set_D_srcB(dreg);
+
         let icode = dreg.geticode().getOutput(),
             ifun = dreg.getifun().getOutput(),
             stat = dreg.getstat().getOutput(),
-            valA = this.d_valA(),
-            valB = this.d_valB(),
+            valA = this.d_valA(dreg, mreg, wreg),
+            valB = this.d_valB(mreg, wreg),
             valC = dreg.getvalC().getOutput(),
-            dstE = this.d_dstE(),
-            dstM = this.d_dstM(),
+            dstE = this.d_dstE(dreg),
+            dstM = this.d_dstM(dreg);
 
         this.d_calculateControlSignals(ereg);
 
-        this.setEInput(ereg, stat, icode, ifun, valC, valA, valB, dstE, dstM, this.d_srcA, this.d_srcB);
+        this.setEInput(ereg, stat, icode, ifun, valC, valA, valB, dstE, dstM, this.D_srcA, this.D_srcB);
     }
 
     doDecodeClockHigh(ereg: E): void {
@@ -428,43 +440,114 @@ export class CpuService {
         ereg.getsrcB().setInput(srcB);
     }
 
-    //TODO
-    set_d_srcA(): void {
+    set_D_srcA(dreg: D): number {
+        let icode = dreg.geticode().getOutput(),
+            rA = dreg.getrA().getOutput();
 
-    }
-    
-    //TODO
-    set_d_srcB(): void {
-
-    }
-
-    //TODO
-    d_valA(): number {
-        return 0;
+        if (icode == Constants.RRMOVQ || icode == Constants.RMMOVQ || icode == Constants.OPQ || icode == Constants.PUSHQ) {
+            return rA;
+        }
+        if (icode == Constants.POPQ || icode == Constants.RET) {
+            return Constants.RSP;
+        }
+        return Constants.RNONE;
     }
 
-    //TODO
-    d_valB(): number {
-        return 0;
+    set_D_srcB(dreg: D): number {
+        let icode = dreg.geticode().getOutput(),
+            rB = dreg.getrB().getOutput();
+
+        if (icode == Constants.OPQ || icode == Constants.RMMOVQ || icode == Constants.MRMOVQ) {
+            return rB;
+        }
+        if (icode == Constants.PUSHQ || icode == Constants.POPQ || icode == Constants.CALL || icode == Constants.RET) {
+            return Constants.RSP;
+        }
+        return Constants.RNONE;
     }
 
-    //TODO
-    d_dstE(): number {
-        return 0;
+    d_valA(dreg: D, mreg: M, wreg: W): number {
+        let icode = dreg.geticode().getOutput();
+
+        if (icode == Constants.CALL || icode == Constants.JXX) {
+            return dreg.getvalP().getOutput();
+        }
+        if (this.D_srcA == Constants.RNONE) {
+            return 0;
+        }
+        if (this.D_srcA == this.E_dstE) {
+            return this.E_valE;
+        }
+        if (this.D_srcA == mreg.getdstM().getOutput()) {
+            return this.M_valM;
+        }
+        if (this.D_srcA == mreg.getdstE().getOutput()) {
+            return mreg.getvalE().getOutput();
+        }
+        if (this.D_srcA == wreg.getdstM().getOutput()) {
+            return wreg.getvalE().getOutput();
+        }
+        if (this.D_srcA == wreg.getdstE().getOutput()) {
+            return wreg.getvalE().getOutput();
+        }
+
+        let register = this.registerService.index2register(this.D_srcA)
+        return this.registerService.getValueByRegister(register);
     }
 
-    //TODO
-    d_dstM(): number {
-        return 0;
+    d_valB(mreg: M, wreg: W): number {
+        if (this.D_srcB == Constants.RNONE) {
+            return 0;
+        }
+        if (this.D_srcB == this.E_dstE) {
+            return this.E_valE;
+        }
+        if (this.D_srcB == mreg.getdstM().getOutput()) {
+            return this.M_valM;
+        }
+        if (this.D_srcB == mreg.getdstE().getOutput()) {
+            return mreg.getvalE().getOutput();
+        }
+        if (this.D_srcB == wreg.getdstM().getOutput()) {
+            return wreg.getvalM().getOutput();
+        }
+        if (this.D_srcB == wreg.getdstE().getOutput()) {
+            return wreg.getvalE().getOutput();
+        }
+
+        let register = this.registerService.index2register(this.D_srcB)
+        return this.registerService.getValueByRegister(register);
+    }
+
+    d_dstE(dreg: D): number {
+        let icode = dreg.geticode().getOutput(),
+            rB = dreg.getrB().getOutput();
+
+        if (icode == Constants.OPQ || icode == Constants.RRMOVQ || icode == Constants.IRMOVQ) {
+            return rB;
+        }
+        if (icode == Constants.PUSHQ || icode == Constants.POPQ || icode == Constants.CALL || icode == Constants.RET) {
+            return Constants.RSP;
+        }
+        return Constants.RNONE;
+    }
+
+    d_dstM(dreg: D): number {
+        let icode = dreg.geticode().getOutput(),
+            rA = dreg.getrA().getOutput();
+
+        if (icode == Constants.POPQ || icode == Constants.MRMOVQ) {
+            return rA;
+        }
+        return Constants.RNONE;
     }
 
     d_calculateControlSignals(ereg: E): void {
         let e_dstM = ereg.getdstM().getOutput(),
-        e_icode = ereg.geticode().getOutput(),
-        Cnd = this.get_e_Cnd();
-        this.ebubble = ((e_icode == Constants.JXX && !Cnd) ||
+            e_icode = ereg.geticode().getOutput();
+        this.ebubble = ((e_icode == Constants.JXX && !this.E_Cnd) ||
             ((e_icode == Constants.MRMOVQ || e_icode == Constants.POPQ) &&
-                (e_dstM == this.d_srcA || e_dstM == this.d_srcB)));
+                (e_dstM == this.D_srcA || e_dstM == this.D_srcB)));
     }
 
     /*
@@ -500,36 +583,151 @@ export class CpuService {
             ifun = ereg.getifun().getOutput(),
             stat = ereg.getstat().getOutput(),
             valA = ereg.getvalA().getOutput(),
-            valE = 0, //need to implement choose valE
-            dstE = Constants.RNONE,
             dstM = ereg.getdstM().getOutput();
 
-        this.setMInput(mreg, icode, stat, valE, valA, dstE, dstM);
+        this.E_Cnd = this.set_E_Cnd(icode, ifun);
+        this.E_dstE = this.set_E_dstE(ereg);
+        this.E_valE = this.chooseValE(ereg, wreg);
+
+        this.e_calculateControlSignals(wreg);
+
+        this.setMInput(mreg, icode, this.E_Cnd, stat, this.E_valE, valA, this.E_dstE, dstM);
     }
 
+    /*
+    * doExecuteClockHigh
+    * applies to appropriate control signals to the M register
+    */
     doExecuteClockHigh(mreg: M): void {
-        mreg.getstat().normal();
-        mreg.geticode().normal();
-        mreg.getCnd().normal();
-        mreg.getvalE().normal();
-        mreg.getvalA().normal();
-        mreg.getdstE().normal();
-        mreg.getdstM().normal();
+        if (!this.mbubble) {
+            mreg.getstat().normal();
+            mreg.geticode().normal();
+            mreg.getCnd().normal();
+            mreg.getvalE().normal();
+            mreg.getvalA().normal();
+            mreg.getdstE().normal();
+            mreg.getdstM().normal();
+        } else {
+            mreg.getstat().bubble(Constants.SAOK);
+            mreg.geticode().bubble(Constants.NOP);
+            mreg.getCnd().bubble(0);
+            mreg.getvalE().bubble(0);
+            mreg.getvalA().bubble(0);
+            mreg.getdstE().bubble(Constants.RNONE);
+            mreg.getdstM().bubble(Constants.RNONE);
+        }
     }
 
-    setMInput(mreg: M, icode: number, stat: number, valE: number, valA: number,
+    setMInput(mreg: M, icode: number, Cnd: number, stat: number, valE: number, valA: number,
         dstE: number, dstM: number) {
         mreg.getstat().setInput(stat);
         mreg.geticode().setInput(icode);
+        mreg.getCnd().setInput(Cnd);
         mreg.getvalA().setInput(valA);
         mreg.getvalE().setInput(valE);
         mreg.getdstE().setInput(dstE);
         mreg.getdstM().setInput(dstM);
     }
 
+    alu_A(ereg: E): number {
+        let icode = ereg.geticode().getOutput();
+        if (icode == Constants.RRMOVQ || icode == Constants.OPQ) {
+            return ereg.getvalA().getOutput();
+        }
+        if (icode == Constants.IRMOVQ || icode == Constants.RMMOVQ || icode == Constants.MRMOVQ) {
+            return ereg.getvalC().getOutput();
+        }
+        if (icode == Constants.CALL || icode == Constants.PUSHQ) { return -8; }
+        if (icode == Constants.RET || icode == Constants.POPQ) { return 8; }
+        else { return 0; }
+    }
+
+    alu_B(ereg: E): number {
+        let icode = ereg.geticode().getOutput();
+        if (icode == Constants.RMMOVQ || icode == Constants.MRMOVQ || icode == Constants.OPQ ||
+            icode == Constants.CALL || icode == Constants.PUSHQ || icode == Constants.RET ||
+            icode == Constants.POPQ) {
+            return ereg.getvalB().getOutput();
+        }
+        if (icode == Constants.RRMOVQ || icode == Constants.IRMOVQ) { return 0; }
+        else { return 0; }
+    }
+
+    alufun(ereg: E): number {
+        let icode = ereg.geticode().getOutput();
+        if (icode == Constants.OPQ) {
+            return ereg.getifun().getOutput();
+        } 
+        return Constants.ADD;
+    }
+
     //TODO
-    get_e_Cnd(): boolean {
+    set_cc(ereg: E, wreg: W): boolean {
         return false;
+    }
+
+    //TODO
+    alu(ereg: E): number {
+        return 0;
+    }
+
+    //TODO
+    cc(sf: boolean, zf: boolean, of: boolean): void {
+
+    }
+
+    //TODO 
+    set_E_Cnd(icode: number, ifun: number): number {
+        return 0;
+    }
+
+    //TODO
+    set_E_dstE(ereg: E): number {
+        return 0;
+    }
+
+    /*
+    * chooseValE
+    * return the appropriate valE based on icode
+    * calls alu() if the icode is an OPQ
+    */
+    chooseValE(ereg: E, wreg: W): number {
+        let icode = ereg.geticode().getOutput(),
+        valA = ereg.getvalA().getOutput(),
+        valB = ereg.getvalB().getOutput(),
+        valC = ereg.getvalC().getOutput(),
+        BYTE = 8;
+
+        if (this.set_cc(ereg, wreg)) {
+            return this.alu(ereg);
+        }
+        if (icode == Constants.CMOVXX) {
+            return valA;
+        }
+        if (icode == Constants.RMMOVQ || icode == Constants.MRMOVQ) {
+            return valB + valC;
+        } 
+        if (icode == Constants.CALL || icode == Constants.PUSHQ) {
+            return valB - BYTE;
+        }
+        if (icode == Constants.RET || icode == Constants.POPQ) {
+            return valB + BYTE
+        }
+        if (icode == Constants.JXX || icode == Constants.NOP || icode == Constants.HALT) {
+            return 0;
+        }
+        return valC;
+    }
+
+    /*
+    * e_calculateControlSignals
+    * check to see if the M register need to bubble or not
+    */
+    e_calculateControlSignals(wreg: W): void {
+        let w_stat = wreg.getstat().getOutput();
+
+        this.mbubble = ((this.M_stat == Constants.SADR || this.M_stat == Constants.SINS || this.M_stat == Constants.SHLT) ||
+          (w_stat == Constants.SADR || w_stat == Constants.SINS || w_stat == Constants.SHLT));
     }
 
     /*
@@ -562,7 +760,7 @@ export class CpuService {
         let icode = ereg.geticode().getOutput(),
             ifun = ereg.getifun().getOutput(),
             stat = ereg.getstat().getOutput(),
-            valE = 0, //need to implement choose valE
+            valE = 0,
             valM = 0,
             dstE = Constants.RNONE,
             dstM = ereg.getdstM().getOutput();

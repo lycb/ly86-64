@@ -14,7 +14,7 @@ export class RegisterService {
 	  for (let reg of REGISTERS) {
   		this.register.push({
   			name: reg,
-  			value: Long.ZERO,
+  			value: 0,
         hex: "0x0000000000000000"
   		});
 	  }
@@ -24,14 +24,14 @@ export class RegisterService {
   	return this.register;
   }
 
-  getValueByRegister(name: string): Long {
+  getValueByRegister(name: string): number {
     return this.register[this.register2index(name)].value;
   }
 
   // given a register name and a value, save that number to the register and convert that to a hex string
-  setValueByRegister(name: string, value: Long): void {
+  setValueByRegister(name: string, value: number): void {
     this.register[this.register2index(name)].value = value;
-    var binaryNum = value.toNumber().toString(16);
+    var binaryNum = value.toString(16);
     this.register[this.register2index(name)].hex = this.paddingHex(binaryNum, 16);
   }
 
