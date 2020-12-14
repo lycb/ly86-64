@@ -3,59 +3,238 @@
 	display: flex;
 	flex-wrap: wrap;
 	width: 100%;
-	height: 25vh;
+	height: 100%;
+	color: gray;
+	font-family: monospace;
 	/*background-color: pink;*/
 }
 
 .register-title {
 	text-align: center;
-	color: #ba5686;
-	font-family: monospace;
 	margin-top: 5px;
 	margin-bottom: 5px;
 }
 
-.fetch-stage-wrapper {
-	/*background-color: blue;*/
+.values-wrapper {
+	width: 100%;
+}
+
+.register-value {
+	padding-left: 2%;
+	color: black;
+}
+
+.fetch-stage {
+	background-color: white;
 	height: 100%;
 	width: 10%;
-	border: 2px dotted #ba5686;
+	border: 2px dotted black;
 	border-radius: 5px;
 	margin-right: 0.5%;
 }
 
-.decode-stage-wrapper {
-	/*background-color: red;*/
+.fetch-stage-bubble {
+	background-color: #f77d36;
 	height: 100%;
-	width: 21%;
-	border: 2px dotted #ba5686;
+	width: 10%;
+	border: 2px dotted black;
 	border-radius: 5px;
 	margin-right: 0.5%;
+	color: white;
 }
 
-.execute-stage-wrapper {
-	/*background-color: green;*/
+.fetch-stage-stall {
+	background-color: #f7c336;
 	height: 100%;
-	width: 30%;
-	border: 2px dotted #ba5686;
+	width: 10%;
+	border: 2px dotted black;
 	border-radius: 5px;
 	margin-right: 0.5%;
+	color: white;
 }
 
-.memory-stage-wrapper {
-	/*background-color: cyan;*/
+.fetch-stage-normal {
+	background-color: #46ce7c;
+	height: 100%;
+	width: 10%;
+	border: 2px dotted black;
+	border-radius: 5px;
+	margin-right: 0.5%;
+	color: white;
+}
+
+.decode-stage {
+	background-color: white;
 	height: 100%;
 	width: 20%;
-	border: 2px dotted #ba5686;
+	border: 2px dotted black;
 	border-radius: 5px;
 	margin-right: 0.5%;
 }
 
-.writeback-stage-wrapper {
-	/*background-color: yellow;*/
+.decode-stage-bubble {
+	background-color: #f77d36;
 	height: 100%;
-	width: 15%;
-	border: 2px dotted #ba5686;
+	width: 20%;
+	border: 2px dotted black;
 	border-radius: 5px;
 	margin-right: 0.5%;
+	color: white;
+}
+
+.decode-stage-stall {
+	background-color: #f7c336;
+	height: 100%;
+	width: 20%;
+	border: 2px dotted black;
+	border-radius: 5px;
+	margin-right: 0.5%;
+	color: white;
+}
+
+.decode-stage-normal {
+	background-color: #46ce7c;
+	height: 100%;
+	width: 20%;
+	border: 2px dotted black;
+	border-radius: 5px;
+	margin-right: 0.5%;
+	color: white;
+}
+
+.execute-stage-value-wrapper {
+	display: flex;
+}
+
+.execute-values-wrapper {
+	width: 50%;
+}
+
+.execute-stage {
+	background-color: white;
+	height: 100%;
+	width: 30%;
+	border: 2px dotted black;
+	border-radius: 5px;
+	margin-right: 0.5%;
+}
+
+.execute-stage-bubble {
+	background-color: #f77d36;
+	height: 100%;
+	width: 30%;
+	border: 2px dotted black;
+	border-radius: 5px;
+	margin-right: 0.5%;
+	color: white;
+}
+
+.execute-stage-stall {
+	background-color: #f7c336;
+	height: 100%;
+	width: 30%;
+	border: 2px dotted black;
+	border-radius: 5px;
+	margin-right: 0.5%;
+	color: white;
+}
+
+.execute-stage-normal {
+	background-color: #46ce7c;
+	height: 100%;
+	width: 30%;
+	border: 2px dotted black;
+	border-radius: 5px;
+	margin-right: 0.5%;
+	color: white;
+}
+
+.memory-stage {
+	background-color: white;
+	height: 100%;
+	width: 20%;
+	border: 2px dotted black;
+	border-radius: 5px;
+	margin-right: 0.5%;
+}
+
+.memory-stage-bubble {
+	background-color: #f77d36;
+	height: 100%;
+	width: 20%;
+	border: 2px dotted black;
+	border-radius: 5px;
+	margin-right: 0.5%;
+	color: white;
+}
+
+.memory-stage-stall {
+	background-color: #f7c336;
+	height: 100%;
+	width: 20%;
+	border: 2px dotted black;
+	border-radius: 5px;
+	margin-right: 0.5%;
+	color: white;
+}
+
+.memory-stage-normal {
+	background-color: #46ce7c;
+	height: 100%;
+	width: 20%;
+	border: 2px dotted black;
+	border-radius: 5px;
+	margin-right: 0.5%;
+	color: white;
+}
+
+.writeback-stage {
+	background-color: white;
+	height: 100%;
+	width: 15%;
+	border: 2px dotted black;
+	border-radius: 5px;
+	margin-right: 0.5%;
+}
+
+.writeback-stage-bubble {
+	background-color: #f77d36;
+	height: 100%;
+	width: 15%;
+	border: 2px dotted black;
+	border-radius: 5px;
+	margin-right: 0.5%;
+	color: white;
+}
+
+.writeback-stage-stall {
+	background-color: #f7c336;
+	height: 100%;
+	width: 15%;
+	border: 2px dotted black;
+	border-radius: 5px;
+	margin-right: 0.5%;
+	color: white;
+}
+
+.writeback-stage-normal {
+	background-color: #46ce7c;
+	height: 100%;
+	width: 15%;
+	border: 2px dotted black;
+	border-radius: 5px;
+	margin-right: 0.5%;
+	color: white;
+}
+
+.bubble {
+	background-color: #ff8e66 !important;
+}
+
+.normal {
+	background-color: #baffba !important;
+}
+
+.stall {
+	background-color: #ffcc75 !important;
 }

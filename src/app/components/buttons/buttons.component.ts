@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ParserService } from '../../services/parser/parser.service';
+import { CpuService } from '../../services/cpu/cpu.service';
 import { Line } from '../../models/Line';
+import { MemoryFunc } from "../../models/Memory";
+import { AddressLine } from "../../models/AddressLine"; 
+import { F, D, E, M, W } from "../../models/PipeReg";
 
 @Component({
   selector: 'app-buttons',
@@ -11,13 +15,29 @@ export class ButtonsComponent implements OnInit {
   fileContent: Line[];
   counter: number;
   loadComponent: boolean;
+  nextLine: boolean;
+  isFirstAddressCurrent: boolean;
 
-  constructor(private parserService: ParserService) {
-    this.counter = 0;
-    this.loadComponent = false;
+  freg: F;
+  dreg: D;
+  ereg: E;
+  mreg: M;
+  wreg: W;
+
+  constructor(private parserService: ParserService, private cpuService: CpuService) {
   }
 
   ngOnInit() {
+    this.counter = 0;
+    this.loadComponent = false;
+    this.nextLine = true;
+    this.isFirstAddressCurrent = false;
+
+    this.freg = new F();
+    this.dreg = new D();
+    this.ereg = new E();
+    this.mreg = new M();
+    this.wreg = new W();
   }
 
   onFileSelect(input: HTMLInputElement): void {
@@ -30,7 +50,89 @@ export class ButtonsComponent implements OnInit {
       this.parserService.setFileContent(this.fileContent);
       return;
     }
+    this.readFileAsText(file);
+  }
 
+  onClickContinue(): void {
+
+  }
+
+  onClickStep(): void {
+    this.isFirstAddressCurrent = false;
+    var current = this.parserService.getCurrentLine();
+    var nextId = current.id + 1;
+    if (current.id < this.fileContent.length && nextId < this.fileContent.length) {
+      if (current.parsedLine.instruction != "") {
+        this.cpuService.doSimulation(current, this.freg, this.dreg, this.ereg, this.mreg, this.wreg);
+      }
+      this.nextCurrentLine(current);
+    }
+  }
+
+  onClickReset(): void {
+    this.setFirstAddressCurrent();
+    this.counter = 0;
+    this.cpuService.resetValues(this.freg, this.dreg, this.ereg, this.mreg, this.wreg);
+  }
+
+  setFirstAddressCurrent(): void {
+    if (!this.isFirstAddressCurrent) {
+      for (let i = 0; i < this.fileContent.length; i++) {
+        if (this.fileContent[i].isAnAddress) {
+          this.fileContent[i].isCurrent = true;
+          this.parserService.setCurrent(this.fileContent[i]);
+          this.isFirstAddressCurrent = true;
+          break;
+        }
+      }
+    }
+  }
+
+  isFileExtensionYo(file: File): boolean {
+    if (file.name.split(".")[1] !== "yo") {
+      alert('File type is not supported! Please upload a .yo file');
+      this.loadComponent = false;
+      return false;
+    }
+    return true;
+  }
+
+  /*
+  * nextCurrentLine --
+  * return true if there is a next "current" line to highlight
+  * return false if there isn't another line to read (i.e. EOF)
+  */
+  nextCurrentLine(current: Line): void {
+    for (let i = current.id + 1; i < this.fileContent.length; i++) {
+      let next = this.fileContent[i];
+      let curr = this.fileContent[i-1];
+      if (next.parsedLine != null) {
+        next.isCurrent = true;
+        this.parserService.setCurrent(next);
+        if (next.parsedLine.address != 0 && curr.parsedLine != null && curr.parsedLine.address != next.parsedLine.address) {
+          //increment the clock-cycle
+          this.counter++;
+        }
+        break;
+      } 
+    }
+  }
+
+  loadline(line: AddressLine): void {
+    let memory = MemoryFunc.getInstance();
+    let bytes = line.instruction.length / 2;
+    let position = 0;
+    let address = line.address;
+    while(bytes > 0) {
+      let value = parseInt(line.instruction.substring(position, position + 2) , 16);
+      position += 2;
+      bytes--;
+      memory.putByte(value, address);
+      address++;
+    }
+  }
+
+  readFileAsText(file: File): void {
     let fileReader = new FileReader();
     fileReader.onload = (e) => {
       let lines = (fileReader.result as string).split(/[\r\n]+/g);
@@ -59,50 +161,12 @@ export class ButtonsComponent implements OnInit {
       this.setFirstAddressCurrent();
       this.parserService.setFileContent(this.fileContent);
       this.loadComponent = true;
-    }
-    fileReader.readAsText(file);
-  }
-
-  onClickContinue(): void {
-
-  }
-
-  onClickStep(): void {
-    var current = this.parserService.getCurrentLine();
-    if (current.id < this.fileContent.length) {
-      for (let i = current.id + 1; i < this.fileContent.length; i++) {
-        if (this.fileContent[i].parsedLine != null) {
-          this.fileContent[i].isCurrent = true;
-          this.parserService.setCurrent(this.fileContent[i]);
-          //increment the clock-cycle
-          this.counter++;
-          break;
+      for (let i = 0; i < this.fileContent.length; i++) {
+        if (this.fileContent[i].isAnAddress && this.fileContent[i].parsedLine.instruction !== "") {
+          this.loadline(this.fileContent[i].parsedLine);
         }
       }
     }
-  }
-
-  onClickReset(): void {
-    this.setFirstAddressCurrent();
-    this.counter = 0;
-  }
-
-  setFirstAddressCurrent(): void {
-    for (let i = 0; i < this.fileContent.length; i++) {
-      if (this.fileContent[i].isAnAddress) {
-        this.fileContent[i].isCurrent = true;
-        this.parserService.setCurrent(this.fileContent[i]);
-        break;
-      }
-    }
-  }
-
-  isFileExtensionYo(file: File): boolean {
-    if (file.name.split(".")[1] !== "yo") {
-      alert('File type is not supported! Please upload a .yo file');
-      this.loadComponent = false;
-      return false;
-    }
-    return true;
+    fileReader.readAsText(file);
   }
 }

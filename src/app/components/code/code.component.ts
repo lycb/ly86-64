@@ -9,6 +9,7 @@ import { Line } from '../../models/Line';
 })
 
 export class CodeComponent implements OnInit {
+  // display the main code chunk
   @Input() fileContent: Line[];	
   
   constructor(private parserService: ParserService) { }

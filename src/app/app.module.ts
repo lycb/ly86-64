@@ -8,6 +8,7 @@ import { RegistersComponent } from './components/registers/registers.component';
 import { ButtonsComponent } from './components/buttons/buttons.component';
 import { CodeComponent } from './components/code/code.component';
 import { PipelineRegComponent } from './components/pipeline-reg/pipeline-reg.component';
+import { ConditionFlagsComponent } from './components/condition-flags/condition-flags.component';
 
 @NgModule({
   declarations: [
@@ -17,6 +18,7 @@ import { PipelineRegComponent } from './components/pipeline-reg/pipeline-reg.com
     ButtonsComponent,
     CodeComponent,
     PipelineRegComponent,
+    ConditionFlagsComponent,
   ],
   imports: [
     BrowserModule,

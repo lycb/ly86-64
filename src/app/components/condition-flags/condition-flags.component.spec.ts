@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
-import { ButtonsComponent } from './buttons.component';
+import { ConditionFlagsComponent } from './condition-flags.component';
 
-describe('ButtonsComponent', () => {
-  let component: ButtonsComponent;
-  let fixture: ComponentFixture<ButtonsComponent>;
+describe('ConditionFlagsComponent', () => {
+  let component: ConditionFlagsComponent;
+  let fixture: ComponentFixture<ConditionFlagsComponent>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ ButtonsComponent ]
+      declarations: [ ConditionFlagsComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ButtonsComponent);
+    fixture = TestBed.createComponent(ConditionFlagsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
