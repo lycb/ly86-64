@@ -668,7 +668,27 @@ export class CpuService {
 
     //TODO
     alu(ereg: E): number {
-        return 0;
+        let A = this.alu_A(ereg),
+        B = this.alu_B(ereg),
+        valE = 0;
+
+        if (this.alufun(ereg) == Constants.ADD) {
+            valE = A + B;
+            //call cc()
+        }
+        if (this.alufun(ereg) == Constants.SUB) {
+            valE = B - A;
+            //call cc()
+        }
+        if (this.alufun(ereg) == Constants.AND) {
+            valE = A & B;
+            //call cc()
+        }
+        if (this.alufun(ereg) == Constants.XOR) {
+            valE = A ^ B;
+            //call cc()
+        }
+        return valE;
     }
 
     //TODO
@@ -681,9 +701,13 @@ export class CpuService {
         return 0;
     }
 
-    //TODO
     set_E_dstE(ereg: E): number {
-        return 0;
+        let icode = ereg.geticode().getOutput();
+
+        if (icode == Constants.RRMOVQ && !this.E_Cnd) {
+            return Constants.RNONE;
+        }
+        return ereg.getdstE().getOutput();
     }
 
     /*
