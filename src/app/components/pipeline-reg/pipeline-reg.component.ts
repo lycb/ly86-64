@@ -18,10 +18,17 @@ export class PipelineRegComponent implements OnInit {
   fpredPCsubsription: Subscription;
   dregSubscription: Subscription;
   eregSubscription: Subscription;
+  mregSubscription: Subscription;
+  wregSubscription: Subscription;
+
+  freg: F;
+  dreg: D;
+  ereg: E;
+  mreg: M;
+  wreg: W;
 
   f_predPC: string;
-  ereg: E;
-
+   
   d_stat: string;
   d_icode: string;
   d_ifun: string;
@@ -43,7 +50,7 @@ export class PipelineRegComponent implements OnInit {
 
   m_stat: string;
   m_icode: string;
-  m_ifun: string;
+  m_cnd: string;
   m_valE: string;
   m_valA: string;
   m_dstE: string;
@@ -79,7 +86,7 @@ export class PipelineRegComponent implements OnInit {
 
     this.m_stat = "1";
     this.m_icode = "1";
-    this.m_ifun = "0";
+    this.m_cnd = "0";
     this.m_valE = "0";
     this.m_valA = "0";
     this.m_dstE = "f";
@@ -87,7 +94,6 @@ export class PipelineRegComponent implements OnInit {
 
     this.w_stat = "1";
     this.w_icode = "1";
-    this.w_ifun = "0";
     this.w_valE = "0";
     this.w_valM = "0";
     this.w_dstE = "f";
@@ -101,6 +107,8 @@ export class PipelineRegComponent implements OnInit {
 
     this.f_predPC = "0";
 
+    // this.getWreg();
+    this.getMreg();
     this.getEreg();
     this.getDreg();
     this.getFpredPC();
@@ -122,6 +130,7 @@ export class PipelineRegComponent implements OnInit {
   getDreg() {
     this.dregSubscription = this.cpuService.getDreg().subscribe(dreg => {
       if (dreg) {
+        this.dreg = dreg;
         this.d_stat = dreg.stat.input.toString(16);
         this.d_icode = dreg.icode.input.toString(16);
         this.d_ifun = dreg.ifun.input.toString(16);
@@ -170,9 +179,55 @@ export class PipelineRegComponent implements OnInit {
     })
   }
 
+  getMreg() {
+    this.mregSubscription = this.cpuService.getMreg().subscribe(mreg => {
+      if (mreg) {
+        this.mreg = mreg;
+        this.m_stat = mreg.stat.input.toString(16);
+        this.m_icode = mreg.icode.input.toString(16);
+        this.m_cnd = mreg.Cnd.input.toString(16);
+        this.m_valE = mreg.valE.input.toString(16);
+        this.m_valA = mreg.valA.input.toString(16);
+        this.m_dstE = mreg.dstE.input.toString(16);
+        this.m_dstM = mreg.dstM.input.toString(16);
+      } else {
+        this.m_stat = "1";
+        this.m_icode = "1";
+        this.m_cnd = "0";
+        this.m_valE = "0";
+        this.m_valA = "0";
+        this.m_dstE = "f";
+        this.m_dstM = "f";
+      }
+    })
+  }
+
+  // getWreg() {
+  //   this.wregSubscription = this.cpuService.getWreg().subscribe(wreg => {
+  //     if (wreg) {
+  //       this.wreg = wreg;
+  //       this.w_stat = wreg.stat.input.toString(16);
+  //       this.w_icode = wreg.icode.input.toString(16);
+  //       this.w_valE = wreg.valE.input.toString(16);
+  //       this.w_valM = wreg.valM.input.toString(16);
+  //       this.w_dstE = wreg.dstE.input.toString(16);
+  //       this.w_dstM = wreg.dstM.input.toString(16);
+  //     } else {
+  //       this.w_stat = "1";
+  //       this.w_icode = "1";
+  //       this.w_valE = "0";
+  //       this.w_valM = "0";
+  //       this.w_dstE = "f";
+  //       this.w_dstM = "f";
+  //     }
+  //   })
+  // }
+
   ngOnDestroy() {
     this.fpredPCsubsription.unsubscribe();
     this.dregSubscription.unsubscribe();
     this.eregSubscription.unsubscribe();
+    this.mregSubscription.unsubscribe();
+    this.wregSubscription.unsubscribe();
   }
 }
