@@ -107,7 +107,7 @@ export class PipelineRegComponent implements OnInit {
 
     this.f_predPC = "0";
 
-    // this.getWreg();
+    this.getWreg();
     this.getMreg();
     this.getEreg();
     this.getDreg();
@@ -202,26 +202,26 @@ export class PipelineRegComponent implements OnInit {
     })
   }
 
-  // getWreg() {
-  //   this.wregSubscription = this.cpuService.getWreg().subscribe(wreg => {
-  //     if (wreg) {
-  //       this.wreg = wreg;
-  //       this.w_stat = wreg.stat.input.toString(16);
-  //       this.w_icode = wreg.icode.input.toString(16);
-  //       this.w_valE = wreg.valE.input.toString(16);
-  //       this.w_valM = wreg.valM.input.toString(16);
-  //       this.w_dstE = wreg.dstE.input.toString(16);
-  //       this.w_dstM = wreg.dstM.input.toString(16);
-  //     } else {
-  //       this.w_stat = "1";
-  //       this.w_icode = "1";
-  //       this.w_valE = "0";
-  //       this.w_valM = "0";
-  //       this.w_dstE = "f";
-  //       this.w_dstM = "f";
-  //     }
-  //   })
-  // }
+  getWreg() {
+    this.wregSubscription = this.cpuService.getWreg().subscribe(wreg => {
+      if (wreg) {
+        this.wreg = wreg;
+        this.w_stat = wreg.stat.input.toString(16);
+        this.w_icode = wreg.icode.input.toString(16);
+        this.w_valE = wreg.valE.input.toString(16);
+        this.w_valM = wreg.valM.input.toString(16);
+        this.w_dstE = wreg.dstE.input.toString(16);
+        this.w_dstM = wreg.dstM.input.toString(16);
+      } else {
+        this.w_stat = "1";
+        this.w_icode = "1";
+        this.w_valE = "0";
+        this.w_valM = "0";
+        this.w_dstE = "f";
+        this.w_dstM = "f";
+      }
+    })
+  }
 
   ngOnDestroy() {
     this.fpredPCsubsription.unsubscribe();

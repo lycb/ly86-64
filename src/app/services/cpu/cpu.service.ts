@@ -34,8 +34,11 @@ export class CpuService {
     this.error = false;
   }
 
-  // FETCH
-
+  
+  /*
+  * doSimulation
+  * performs simulation for the pipeline
+  */
   doSimulation(lineObject: Line, freg: F, dreg: D, ereg: E, mreg: M, wreg: W): void {
     this.freg = freg;
     this.dreg = dreg;
@@ -43,9 +46,9 @@ export class CpuService {
     this.mreg = mreg;
     this.wreg = wreg;
 
-    // this.doWritebackStage(lineObject, freg, dreg, ereg, mreg, wreg);
+    this.doWritebackStage(wreg);
+    this.w_reg.next(wreg); // for subscribe timing
     this.doMemoryStage(lineObject, freg, dreg, ereg, mreg, wreg);
-    // this.w_reg.next(wreg);
     this.doExecuteStage(lineObject, freg, dreg, ereg, mreg, wreg);
     this.m_reg.next(mreg);
     this.doDecodeStage(lineObject, freg, dreg, ereg, mreg, wreg);
@@ -431,27 +434,22 @@ export class CpuService {
     return this.m_reg.asObservable();
   }
 
-  // //  WRITEBACK 
+  //  WRITEBACK 
 
-  // doWritebackStage(lineObject: Line, freg: F, dreg: D, ereg: E, mreg: M, wreg: W): void {
-  //   this.freg = freg;
-  //   this.dreg = dreg;
-  //   this.ereg = ereg;
-  //   this.mreg = mreg;
-  //   this.wreg = wreg;
+  doWritebackStage(wreg: W): void {
+    this.wreg = wreg;
 
-  //   this.doWritebackClockLow(lineObject, freg, dreg, ereg, mreg, wreg);
-  //   this.doWritebackClockHigh(wreg);
-  // }
+    this.doWritebackClockLow(wreg);
+    this.doWritebackClockHigh(wreg);
+  }
 
-  // doWritebackClockLow(lineObject: Line, freg: F, dreg: D, ereg: E, mreg: M, wreg: W): void {
+  doWritebackClockLow(wreg: W): void {
+  }
 
-  // }
+  doWritebackClockHigh(wreg: W): void {
+  }
 
-  // doWritebackClockHigh(wreg: W): void {
-  // }
-
-  // getWreg(): Observable<W> {
-  //   return this.w_reg.asObservable();
-  // }
+  getWreg(): Observable<W> {
+    return this.w_reg.asObservable();
+  }
 }
