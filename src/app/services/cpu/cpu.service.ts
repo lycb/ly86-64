@@ -704,11 +704,10 @@ export class CpuService {
     this.conditionCodesService.setZF(ZF);
   }
 
-  //TODO 
   set_E_Cnd(icode: number, ifun: number): number {
     let OF = this.conditionCodesService.getOF(),
-    SF = this.conditionCodesService.getSF(),
-    ZF = this.conditionCodesService.getZF();
+      SF = this.conditionCodesService.getSF(),
+      ZF = this.conditionCodesService.getZF();
 
     let ret;
 
@@ -718,13 +717,13 @@ export class CpuService {
     if (ifun == Constants.LESS) { return (SF ^ OF); }
     if (ifun == Constants.EQUAL) { return ZF; }
     if (ifun == Constants.NOTEQUAL) { return ZF == 0 ? 1 : 0; } // !ZF 
-    if (ifun == Constants.GREATER) { 
+    if (ifun == Constants.GREATER) {
       ZF = (ZF == 0 ? 1 : 0);
       let temp = SF ^ OF;
       temp = (temp == 0 ? 1 : 0);
       return (temp & ZF); // !(SF ^ OF) && !ZF;
     }
-    if (ifun == Constants.GREATEREQ) { 
+    if (ifun == Constants.GREATEREQ) {
       let temp = SF ^ OF;
       temp = (temp == 0 ? 1 : 0);
       return temp // !(SF ^ OF); 
