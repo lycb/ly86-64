@@ -80,6 +80,14 @@ export const CMOVNE = 4
 export const CMOVGE = 5
 export const CMOVG = 6
 
+export const UNCOND = 0
+export const LESSEQ = 1
+export const LESS = 2
+export const EQUAL = 3
+export const NOTEQUAL = 4
+export const GREATEREQ = 5
+export const GREATER = 6
+
 // BRANCHES
 export const JMP = 0
 export const JLE = 1
