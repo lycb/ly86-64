@@ -1,16 +1,16 @@
 export class PipeRegField {
-	state: number;
-	input: number;
-	constructor(state: number) {
+	state: Long;
+	input: Long;
+	constructor(state: Long) {
 		this.state = state;
-		this.input = 0;
+		this.input = Long.ZERO;
 	}
 
-	setInput(input: number): void {
+	setInput(input: Long): void {
 		this.input = input;
 	}
 
-	getOutput(): number {
+	getOutput(): Long {
 		return this.state;
 	}
 
@@ -22,7 +22,7 @@ export class PipeRegField {
 		// do nothing
 	}
 
-	bubble(state: number): void {
+	bubble(state: Long): void {
 		this.state = state;
 	}
 }

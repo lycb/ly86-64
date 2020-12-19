@@ -8,6 +8,7 @@ import { Line } from "../../models/Line";
 import { MemoryFunc } from "../../models/Memory";
 import { F, D, E, M, W } from "../../models/PipeReg";
 import * as Constants from "../../constants";
+import Long from 'long';
 import { Observable, Subject } from 'rxjs';
 
 @Injectable({
@@ -38,15 +39,15 @@ export class CpuService {
   mbubble: boolean;
 
   // Global variables for passing in between stages
-  D_srcA: number;
-  D_srcB: number;
+  D_srcA: Long;
+  D_srcB: Long;
 
-  E_dstE: number;
-  E_valE: number;
-  E_Cnd: number;
+  E_dstE: Long;
+  E_valE: Long;
+  E_Cnd: Long;
 
-  M_valM: number;
-  M_stat: number;
+  M_valM: Long;
+  M_stat: Long;
 
   constructor(
     private instructionService: InstructionService,
@@ -104,17 +105,17 @@ export class CpuService {
   doFetchClockLow(lineObject: Line, freg: F, dreg: D, ereg: E, mreg: M, wreg: W): void {
     let line = lineObject.parsedLine.instruction;
 
-    let icode = 0,
-      ifun = 0,
-      rA = Constants.RNONE,
-      rB = Constants.RNONE,
-      stat = Constants.SAOK,
-      valC = 0,
-      valP = 0,
-      f_predPC = 0;
+    let icode = Long.ZERO,
+      ifun = Long.ZERO,
+      rA = Long.fromNumber(Constants.RNONE),
+      rB = Long.fromNumber(Constants.RNONE),
+      stat = Long.fromNumber(Constants.SAOK),
+      valC = Long.ZERO,
+      valP = Long.ZERO,
+      f_predPC = Long.ZERO;
 
-    icode = parseInt(line[0], 16);
-    ifun = parseInt(line[1], 16);
+    icode = Long.fromString(line[0], 16);
+    ifun = Long.fromString(line[1], 16);
     let registers = this.getRegisterIds(icode, line);
     if (registers) {
       rA = registers[0];
@@ -125,7 +126,7 @@ export class CpuService {
     icode = this.f_icode(icode, this.error);
     ifun = this.f_ifun(ifun, this.error);
     valC = this.getValC(icode, f_pc, line);
-    valP = this.PCincrement(f_pc, icode, valC);
+    valP = Long.fromNumber(this.PCincrement(f_pc, icode));
     f_predPC = this.predictPC(icode, valC, valP);
 
     this.f_calculateControlSignals(dreg, ereg, mreg);
@@ -142,13 +143,13 @@ export class CpuService {
       freg.getPredPC().normal();
     }
     if (this.dbubble) {
-      dreg.getstat().bubble(Constants.SAOK);
-      dreg.geticode().bubble(Constants.NOP);
-      dreg.getifun().bubble(0);
-      dreg.getrA().bubble(Constants.RNONE);
-      dreg.getrB().bubble(Constants.RNONE);
-      dreg.getvalC().bubble(0);
-      dreg.getvalP().bubble(0);
+      dreg.getstat().bubble(Long.fromNumber(Constants.SAOK));
+      dreg.geticode().bubble(Long.fromNumber(Constants.NOP));
+      dreg.getifun().bubble(Long.ZERO);
+      dreg.getrA().bubble(Long.fromNumber(Constants.RNONE));
+      dreg.getrB().bubble(Long.fromNumber(Constants.RNONE));
+      dreg.getvalC().bubble(Long.ZERO);
+      dreg.getvalP().bubble(Long.ZERO);
     }
     if (!this.dbubble && !this.dstall) {
       dreg.getstat().normal();
@@ -161,7 +162,7 @@ export class CpuService {
     }
   }
 
-  setDInput(dreg: D, stat: number, icode: number, ifun: number, rA: number, rB: number, valC: number, valP: number): void {
+  setDInput(dreg: D, stat: Long, icode: Long, ifun: Long, rA: Long, rB: Long, valC: Long, valP: Long): void {
     dreg.getstat().setInput(stat);
     dreg.geticode().setInput(icode);
     dreg.getifun().setInput(ifun);
@@ -171,107 +172,107 @@ export class CpuService {
     dreg.getvalP().setInput(valP);
   }
 
-  needRegister(icode: number): boolean {
+  needRegister(icode: Long): boolean {
     return (
-      icode == Constants.RRMOVQ ||
-      icode == Constants.OPQ ||
-      icode == Constants.PUSHQ ||
-      icode == Constants.POPQ ||
-      icode == Constants.IRMOVQ ||
-      icode == Constants.RMMOVQ ||
-      icode == Constants.MRMOVQ
+      icode == Long.fromNumber(Constants.RRMOVQ) ||
+      icode == Long.fromNumber(Constants.OPQ) ||
+      icode == Long.fromNumber(Constants.PUSHQ) ||
+      icode == Long.fromNumber(Constants.POPQ) ||
+      icode == Long.fromNumber(Constants.IRMOVQ) ||
+      icode == Long.fromNumber(Constants.RMMOVQ) ||
+      icode == Long.fromNumber(Constants.MRMOVQ)
     );
   }
 
-  needValC(icode: number): boolean {
+  needValC(icode: Long): boolean {
     return (
-      icode == Constants.IRMOVQ ||
-      icode == Constants.RMMOVQ ||
-      icode == Constants.MRMOVQ ||
-      icode == Constants.JXX ||
-      icode == Constants.CALL
+      icode == Long.fromNumber(Constants.IRMOVQ) ||
+      icode == Long.fromNumber(Constants.RMMOVQ) ||
+      icode == Long.fromNumber(Constants.MRMOVQ) ||
+      icode == Long.fromNumber(Constants.JXX) ||
+      icode == Long.fromNumber(Constants.CALL)
     );
   }
 
-  getValC(icode: number, f_pc: number, line: string): number {
+  getValC(icode: Long, f_pc: Long, line: string): Long {
     let memory = MemoryFunc.getInstance();
-    let arr = new Array<number>(8);
+    let arr = new Array<Long>(8);
     if (this.needValC(icode)) {
       if (!this.needRegister(icode)) {
         let index = 0;
-        for (let i = f_pc + 1; index < 8; i++) {
+        for (let i = f_pc.toNumber() + 1; index < 8; i++) {
           arr[index] = memory.getByte(i);
           index++;
         }
-        return this.buildLong(arr);
+        return this.utilsSerivce.buildLong(arr);
       } else {
         let index = 0;
-        for (let i = f_pc + 2; index < 8; i++) {
+        for (let i = f_pc.toNumber() + 2; index < 8; i++) {
           arr[index] = memory.getByte(i);
           index++;
         }
-        return this.buildLong(arr);
+        return this.utilsSerivce.buildLong(arr);
       }
     }
-    return 0;
+    return Long.ZERO;
   }
 
-  getRegisterIds(icode: number, line: string): number[] {
+  getRegisterIds(icode: Long, line: string): Long[] {
     if (this.needRegister(icode)) {
-      const rA = parseInt(line.substring(2, 3), 16);
-      const rB = parseInt(line.substring(3, 4), 16);
-      if (rA <= 15 && rA >= 0 && rB <= 15 && rB >= 0) {
-        return new Array(rA, rB);
+      const rA = Long.fromString(line.substring(2, 3), 16);
+      const rB = Long.fromString(line.substring(3, 4), 16);
+      if (rA.lessThanOrEqual(15) && rA.greaterThanOrEqual(0) && rB.lessThanOrEqual(15) && rB.greaterThanOrEqual(0)) {
+        return new Array<Long>(rA, rB);
       } else {
         this.error = true;
       }
     }
   }
 
-  f_status(icode: number, error: boolean): number {
-    if (error) return Constants.SADR;
-    else if (!this.isInstructionValid(icode)) return Constants.SINS;
-    else if (icode == Constants.HALT) return Constants.SHLT;
-    else return Constants.SAOK;
+  f_status(icode: Long, error: boolean): Long {
+    if (error) return Long.fromNumber(Constants.SADR);
+    else if (!this.isInstructionValid(icode)) return Long.fromNumber(Constants.SINS);
+    else if (icode == Long.fromNumber(Constants.HALT)) return Long.fromNumber(Constants.SHLT);
+    else return Long.fromNumber(Constants.SAOK);
   }
 
-  f_icode(icode: number, error: boolean): number {
-    if (error) return Constants.NOP;
+  f_icode(icode: Long, error: boolean): Long {
+    if (error) return Long.fromNumber(Constants.NOP);
     else return icode;
   }
 
-  f_ifun(ifun: number, error: boolean): number {
-    if (error) return Constants.FNONE;
+  f_ifun(ifun: Long, error: boolean): Long {
+    if (error) return Long.fromNumber(Constants.FNONE);
     else return ifun;
   }
 
-  predictPC(icode: number, valC: number, valP: number): number {
-    if (icode === Constants.JXX || icode === Constants.CALL) return valC;
+  predictPC(icode: Long, valC: Long, valP: Long): Long {
+    if (icode === Long.fromNumber(Constants.JXX) || icode === Long.fromNumber(Constants.CALL)) return valC;
     else return valP;
   }
 
-  PCincrement(f_pc: number, icode: number, valC: number): number {
+  PCincrement(f_pc: Long, icode: Long): number {
     if (this.needValC(icode)) {
       if (this.needRegister(icode)) {
-        return f_pc + Constants.VALC_BYTES + Constants.REG_BYTES;
+        return f_pc.toNumber() + Constants.VALC_BYTES + Constants.REG_BYTES;
       } else {
-        return f_pc + Constants.VALC_BYTES + Constants.PC_INCREMENT;
+        return f_pc.toNumber() + Constants.VALC_BYTES + Constants.PC_INCREMENT;
       }
     } else if (!this.needValC(icode) && this.needRegister(icode)) {
-      return f_pc + Constants.REG_BYTES;
+      return f_pc.toNumber() + Constants.REG_BYTES;
     } else {
-      return f_pc + Constants.PC_INCREMENT;
+      return f_pc.toNumber() + Constants.PC_INCREMENT;
     }
   }
 
-  selectPC(freg: F, mreg: M, wreg: W): number {
+  selectPC(freg: F, mreg: M, wreg: W): Long {
     const m_icode = mreg.geticode().getOutput();
     const w_icode = wreg.geticode().getOutput();
     const m_Cnd = mreg.getCnd().getOutput();
 
-    if (m_icode == Constants.JXX && !m_Cnd) {
+    if (m_icode == Long.fromNumber(Constants.JXX) && !m_Cnd) {
       return mreg.getvalA().getOutput();
-    } else if (w_icode == Constants.RET) {
+    } else if (w_icode == Long.fromNumber(Constants.RET)) {
       return wreg.getvalM().getOutput();
     } else {
       return freg.getPredPC().getOutput();
@@ -280,33 +281,24 @@ export class CpuService {
 
   resetValues(freg: F, dreg: D, ereg: E, mreg: M, wreg: W): void {
     this.f_pred.next("0");
-    freg.getPredPC().setInput(0);
+    freg.getPredPC().setInput(Long.ZERO);
     freg.getPredPC().normal();
   }
 
-  buildLong(arr: number[]): number {
-    let ret = 0;
-    for (let i = 6; i >= 0; i--) {
-      ret = ret << 8;
-      ret += arr[i];
-    }
-    return ret;
-  }
-
-  isInstructionValid(icode: number): boolean {
+  isInstructionValid(icode: Long): boolean {
     return (
-      icode == Constants.NOP ||
-      icode == Constants.HALT ||
-      icode == Constants.RRMOVQ ||
-      icode == Constants.IRMOVQ ||
-      icode == Constants.RMMOVQ ||
-      icode == Constants.MRMOVQ ||
-      icode == Constants.OPQ ||
-      icode == Constants.JXX ||
-      icode == Constants.CALL ||
-      icode == Constants.RET ||
-      icode == Constants.PUSHQ ||
-      icode == Constants.POPQ
+      icode == Long.fromNumber(Constants.NOP) ||
+      icode == Long.fromNumber(Constants.HALT) ||
+      icode == Long.fromNumber(Constants.RRMOVQ) ||
+      icode == Long.fromNumber(Constants.IRMOVQ) ||
+      icode == Long.fromNumber(Constants.RMMOVQ) ||
+      icode == Long.fromNumber(Constants.MRMOVQ) ||
+      icode == Long.fromNumber(Constants.OPQ) ||
+      icode == Long.fromNumber(Constants.JXX) ||
+      icode == Long.fromNumber(Constants.CALL) ||
+      icode == Long.fromNumber(Constants.RET) ||
+      icode == Long.fromNumber(Constants.PUSHQ) ||
+      icode == Long.fromNumber(Constants.POPQ)
     );
   }
 
@@ -320,9 +312,10 @@ export class CpuService {
       m_icode = mreg.geticode().getOutput(),
       e_dstM = ereg.getdstM().getOutput();
 
-    return (((e_icode == Constants.MRMOVQ || e_icode == Constants.POPQ) &&
+    return ((e_icode == Long.fromNumber(Constants.MRMOVQ) || e_icode == Long.fromNumber(Constants.POPQ) &&
       (e_dstM == this.D_srcA || e_dstM == this.D_srcB)) ||
-      (e_icode == Constants.RET || d_icode == Constants.RET || m_icode == Constants.RET));
+      (e_icode == Long.fromNumber(Constants.RET) || d_icode == Long.fromNumber(Constants.RET) || 
+        m_icode == Long.fromNumber(Constants.RET)));
   }
 
     /*
@@ -333,7 +326,7 @@ export class CpuService {
     let e_icode = ereg.geticode().getOutput(),
       e_dstM = ereg.getdstM().getOutput();
 
-    return (e_icode == Constants.MRMOVQ || e_icode == Constants.POPQ) &&
+    return (e_icode == Long.fromNumber(Constants.MRMOVQ) || e_icode == Long.fromNumber(Constants.POPQ)) &&
       (e_dstM == this.D_srcA || e_dstM == this.D_srcB);
   }
 
@@ -344,11 +337,11 @@ export class CpuService {
       e_dstM = ereg.getdstM().getOutput(),
       Cnd = this.E_Cnd;
 
-    return (e_icode == Constants.JXX && !Cnd) ||
-      (!((e_icode == Constants.MRMOVQ || e_icode == Constants.POPQ) &&
+    return (e_icode == Long.fromNumber(Constants.JXX) && !Cnd) ||
+      (!((e_icode == Long.fromNumber(Constants.MRMOVQ) || e_icode == Long.fromNumber(Constants.POPQ)) &&
         (e_dstM == this.D_srcA || e_dstM == this.D_srcB)) &&
-        (e_icode == Constants.RET || d_icode == Constants.RET ||
-          m_icode == Constants.RET));
+        (e_icode == Long.fromNumber(Constants.RET) || d_icode == Long.fromNumber(Constants.RET) ||
+          m_icode == Long.fromNumber(Constants.RET)));
   }
 
   f_calculateControlSignals(dreg: D, ereg: E, mreg: M): void {
@@ -406,16 +399,16 @@ export class CpuService {
 
   doDecodeClockHigh(ereg: E): void {
     if (this.ebubble) {
-      ereg.getstat().bubble(Constants.SAOK);
-      ereg.geticode().bubble(Constants.NOP);
-      ereg.getifun().bubble(0);
-      ereg.getvalC().bubble(0);
-      ereg.getvalA().bubble(0);
-      ereg.getvalB().bubble(0);
-      ereg.getdstE().bubble(Constants.RNONE);
-      ereg.getdstM().bubble(Constants.RNONE);
-      ereg.getsrcA().bubble(Constants.RNONE);
-      ereg.getsrcB().bubble(Constants.RNONE);
+      ereg.getstat().bubble(Long.fromNumber(Constants.SAOK));
+      ereg.geticode().bubble(Long.fromNumber(Constants.NOP));
+      ereg.getifun().bubble(Long.ZERO);
+      ereg.getvalC().bubble(Long.ZERO);
+      ereg.getvalA().bubble(Long.ZERO);
+      ereg.getvalB().bubble(Long.ZERO);
+      ereg.getdstE().bubble(Long.fromNumber(Constants.RNONE));
+      ereg.getdstM().bubble(Long.fromNumber(Constants.RNONE));
+      ereg.getsrcA().bubble(Long.fromNumber(Constants.RNONE));
+      ereg.getsrcB().bubble(Long.fromNumber(Constants.RNONE));
     } else {
       ereg.getstat().normal();
       ereg.geticode().normal();
@@ -430,8 +423,8 @@ export class CpuService {
     }
   }
 
-  setEInput(ereg: E, stat: number, icode: number, ifun: number, valC: number, valA: number,
-    valB: number, dstE: number, dstM: number, srcA: number, srcB: number): void {
+  setEInput(ereg: E, stat: Long, icode: Long, ifun: Long, valC: Long, valA: Long,
+    valB: Long, dstE: Long, dstM: Long, srcA: Long, srcB: Long): void {
     ereg.getstat().setInput(stat);
     ereg.geticode().setInput(icode);
     ereg.getifun().setInput(ifun);
@@ -444,40 +437,40 @@ export class CpuService {
     ereg.getsrcB().setInput(srcB);
   }
 
-  set_D_srcA(dreg: D): number {
+  set_D_srcA(dreg: D): Long {
     let icode = dreg.geticode().getOutput(),
       rA = dreg.getrA().getOutput();
 
-    if (icode == Constants.RRMOVQ || icode == Constants.RMMOVQ || icode == Constants.OPQ || icode == Constants.PUSHQ) {
+    if (icode == Long.fromNumber(Constants.RRMOVQ) || icode == Long.fromNumber(Constants.RMMOVQ) || icode == Long.fromNumber(Constants.OPQ) || icode == Long.fromNumber(Constants.PUSHQ)) {
       return rA;
     }
-    if (icode == Constants.POPQ || icode == Constants.RET) {
-      return Constants.RSP;
+    if (icode == Long.fromNumber(Constants.POPQ) || icode == Long.fromNumber(Constants.RET)) {
+      return Long.fromNumber(Constants.RSP);
     }
-    return Constants.RNONE;
+    return Long.fromNumber(Constants.RNONE);
   }
 
-  set_D_srcB(dreg: D): number {
+  set_D_srcB(dreg: D): Long {
     let icode = dreg.geticode().getOutput(),
       rB = dreg.getrB().getOutput();
 
-    if (icode == Constants.OPQ || icode == Constants.RMMOVQ || icode == Constants.MRMOVQ) {
+    if (icode == Long.fromNumber(Constants.OPQ || icode == Long.fromNumber(Constants.RMMOVQ || icode == Long.fromNumber(Constants.MRMOVQ) {
       return rB;
     }
-    if (icode == Constants.PUSHQ || icode == Constants.POPQ || icode == Constants.CALL || icode == Constants.RET) {
-      return Constants.RSP;
+    if (icode == Long.fromNumber(Constants.PUSHQ || icode == Long.fromNumber(Constants.POPQ || icode == Long.fromNumber(Constants.CALL || icode == Long.fromNumber(Constants.RET) {
+      return Long.fromNumber(Constants.RSP;
     }
-    return Constants.RNONE;
+    return Long.fromNumber(Constants.RNONE;
   }
 
-  d_valA(dreg: D, mreg: M, wreg: W): number {
+  d_valA(dreg: D, mreg: M, wreg: W): Long {
     let icode = dreg.geticode().getOutput();
 
-    if (icode == Constants.CALL || icode == Constants.JXX) {
+    if (icode == Long.fromNumber(Constants.CALL || icode == Long.fromNumber(Constants.JXX) {
       return dreg.getvalP().getOutput();
     }
-    if (this.D_srcA == Constants.RNONE) {
-      return 0;
+    if (this.D_srcA == Long.fromNumber(Constants.RNONE) {
+      return Long.ZERO;
     }
     if (this.D_srcA == this.E_dstE) {
       return this.E_valE;
@@ -499,8 +492,8 @@ export class CpuService {
     return this.registerService.getValueByRegister(register);
   }
 
-  d_valB(mreg: M, wreg: W): number {
-    if (this.D_srcB == Constants.RNONE) {
+  d_valB(mreg: M, wreg: W): Long {
+    if (this.D_srcB == Long.fromNumber(Constants.RNONE) {
       return 0;
     }
     if (this.D_srcB == this.E_dstE) {
@@ -523,34 +516,34 @@ export class CpuService {
     return this.registerService.getValueByRegister(register);
   }
 
-  d_dstE(dreg: D): number {
+  d_dstE(dreg: D): Long {
     let icode = dreg.geticode().getOutput(),
       rB = dreg.getrB().getOutput();
 
-    if (icode == Constants.OPQ || icode == Constants.RRMOVQ || icode == Constants.IRMOVQ) {
+    if (icode == Long.fromNumber(Constants.OPQ || icode == Long.fromNumber(Constants.RRMOVQ || icode == Long.fromNumber(Constants.IRMOVQ) {
       return rB;
     }
-    if (icode == Constants.PUSHQ || icode == Constants.POPQ || icode == Constants.CALL || icode == Constants.RET) {
-      return Constants.RSP;
+    if (icode == Long.fromNumber(Constants.PUSHQ || icode == Long.fromNumber(Constants.POPQ || icode == Long.fromNumber(Constants.CALL || icode == Long.fromNumber(Constants.RET) {
+      return Long.fromNumber(Constants.RSP;
     }
-    return Constants.RNONE;
+    return Long.fromNumber(Constants.RNONE;
   }
 
-  d_dstM(dreg: D): number {
+  d_dstM(dreg: D): Long {
     let icode = dreg.geticode().getOutput(),
       rA = dreg.getrA().getOutput();
 
-    if (icode == Constants.POPQ || icode == Constants.MRMOVQ) {
+    if (icode == Long.fromNumber(Constants.POPQ || icode == Long.fromNumber(Constants.MRMOVQ) {
       return rA;
     }
-    return Constants.RNONE;
+    return Long.fromNumber(Constants.RNONE;
   }
 
   d_calculateControlSignals(ereg: E): void {
     let e_dstM = ereg.getdstM().getOutput(),
       e_icode = ereg.geticode().getOutput();
-    this.ebubble = ((e_icode == Constants.JXX && !this.E_Cnd) ||
-      ((e_icode == Constants.MRMOVQ || e_icode == Constants.POPQ) &&
+    this.ebubble = ((e_icode == Long.fromNumber(Constants.JXX && !this.E_Cnd) ||
+      ((e_icode == Long.fromNumber(Constants.MRMOVQ || e_icode == Long.fromNumber(Constants.POPQ) &&
         (e_dstM == this.D_srcA || e_dstM == this.D_srcB)));
   }
 
@@ -590,7 +583,7 @@ export class CpuService {
       valA = ereg.getvalA().getOutput(),
       dstM = ereg.getdstM().getOutput();
 
-    this.E_Cnd = this.set_E_Cnd(icode, ifun);
+    this.E_Cnd = this.get_E_Cnd(icode, ifun);
     this.E_dstE = this.set_E_dstE(ereg);
     this.E_valE = this.chooseValE(ereg, wreg);
 
@@ -613,18 +606,18 @@ export class CpuService {
       mreg.getdstE().normal();
       mreg.getdstM().normal();
     } else {
-      mreg.getstat().bubble(Constants.SAOK);
-      mreg.geticode().bubble(Constants.NOP);
-      mreg.getCnd().bubble(0);
-      mreg.getvalE().bubble(0);
-      mreg.getvalA().bubble(0);
-      mreg.getdstE().bubble(Constants.RNONE);
-      mreg.getdstM().bubble(Constants.RNONE);
+      mreg.getstat().bubble(Long.fromNumber(Constants.SAOK);
+      mreg.geticode().bubble(Long.fromNumber(Constants.NOP);
+      mreg.getCnd().bubble(Long.ZERO);
+      mreg.getvalE().bubble(Long.ZERO);
+      mreg.getvalA().bubble(Long.ZERO);
+      mreg.getdstE().bubble(Long.fromNumber(Constants.RNONE);
+      mreg.getdstM().bubble(Long.fromNumber(Constants.RNONE);
     }
   }
 
-  setMInput(mreg: M, icode: number, Cnd: number, stat: number, valE: number, valA: number,
-    dstE: number, dstM: number) {
+  setMInput(mreg: M, icode: Long, Cnd: Long, stat: Long, valE: Long, valA: Long,
+    dstE: Long, dstM: Long) {
     mreg.getstat().setInput(stat);
     mreg.geticode().setInput(icode);
     mreg.getCnd().setInput(Cnd);
@@ -634,36 +627,36 @@ export class CpuService {
     mreg.getdstM().setInput(dstM);
   }
 
-  alu_A(ereg: E): number {
+  alu_A(ereg: E): Long {
     let icode = ereg.geticode().getOutput();
-    if (icode == Constants.RRMOVQ || icode == Constants.OPQ) {
+    if (icode == Long.fromNumber(Constants.RRMOVQ || icode == Long.fromNumber(Constants.OPQ) {
       return ereg.getvalA().getOutput();
     }
-    if (icode == Constants.IRMOVQ || icode == Constants.RMMOVQ || icode == Constants.MRMOVQ) {
+    if (icode == Long.fromNumber(Constants.IRMOVQ || icode == Long.fromNumber(Constants.RMMOVQ || icode == Long.fromNumber(Constants.MRMOVQ) {
       return ereg.getvalC().getOutput();
     }
-    if (icode == Constants.CALL || icode == Constants.PUSHQ) { return -8; }
-    if (icode == Constants.RET || icode == Constants.POPQ) { return 8; }
+    if (icode == Long.fromNumber(Constants.CALL || icode == Long.fromNumber(Constants.PUSHQ) { return -8; }
+    if (icode == Long.fromNumber(Constants.RET || icode == Long.fromNumber(Constants.POPQ) { return 8; }
     else { return 0; }
   }
 
-  alu_B(ereg: E): number {
+  alu_B(ereg: E): Long {
     let icode = ereg.geticode().getOutput();
-    if (icode == Constants.RMMOVQ || icode == Constants.MRMOVQ || icode == Constants.OPQ ||
-      icode == Constants.CALL || icode == Constants.PUSHQ || icode == Constants.RET ||
-      icode == Constants.POPQ) {
+    if (icode == Long.fromNumber(Constants.RMMOVQ || icode == Long.fromNumber(Constants.MRMOVQ || icode == Long.fromNumber(Constants.OPQ ||
+      icode == Long.fromNumber(Constants.CALL || icode == Long.fromNumber(Constants.PUSHQ || icode == Long.fromNumber(Constants.RET ||
+      icode == Long.fromNumber(Constants.POPQ) {
       return ereg.getvalB().getOutput();
     }
-    if (icode == Constants.RRMOVQ || icode == Constants.IRMOVQ) { return 0; }
+    if (icode == Long.fromNumber(Constants.RRMOVQ || icode == Long.fromNumber(Constants.IRMOVQ) { return 0; }
     else { return 0; }
   }
 
-  alufun(ereg: E): number {
+  alufun(ereg: E): Long {
     let icode = ereg.geticode().getOutput();
-    if (icode == Constants.OPQ) {
+    if (icode == Long.fromNumber(Constants.OPQ) {
       return ereg.getifun().getOutput();
     }
-    return Constants.ADD;
+    return Long.fromNumber(Constants.ADD;
   }
 
   set_cc(ereg: E, wreg: W): boolean {
@@ -671,41 +664,37 @@ export class CpuService {
       M_stat = this.M_stat,
       w_stat = wreg.getstat().getOutput();
 
-    console.log('set_cc, icode: ' + icode)
-
-
-    return (icode == Constants.OPQ)
-      && !(M_stat == Constants.SADR || M_stat == Constants.SINS || M_stat == Constants.SHLT)
-      && !(w_stat == Constants.SADR || w_stat == Constants.SINS || w_stat == Constants.SHLT);
+    return (icode == Long.fromNumber(Constants.OPQ)
+      && !(M_stat == Long.fromNumber(Constants.SADR || M_stat == Long.fromNumber(Constants.SINS || M_stat == Long.fromNumber(Constants.SHLT)
+      && !(w_stat == Long.fromNumber(Constants.SADR || w_stat == Long.fromNumber(Constants.SINS || w_stat == Long.fromNumber(Constants.SHLT);
   }
 
   //TODO
-  alu(ereg: E): number {
-    console.log('alu')
+  alu(ereg: E): Long {
     let A = this.alu_A(ereg),
       B = this.alu_B(ereg),
-      valE = 0;
+      valE = Long.ZERO;
 
-    if (this.alufun(ereg) == Constants.ADD) {
-      valE = A + B;
+    if (this.alufun(ereg) == Long.fromNumber(Constants.ADD) {
+      valE = A.add(B);
       this.cc(this.utilsSerivce.sign(valE),
         (valE == 0 ? true : false),
         this.utilsSerivce.addOverflow(A, B))
     }
-    if (this.alufun(ereg) == Constants.SUB) {
-      valE = B - A;
+    if (this.alufun(ereg) == Long.fromNumber(Constants.SUB) {
+      valE = B.subtract(A);
       this.cc(this.utilsSerivce.sign(valE),
         (valE == 0 ? true : false),
         this.utilsSerivce.subOverflow(A, B))
     }
-    if (this.alufun(ereg) == Constants.AND) {
-      valE = A & B;
+    if (this.alufun(ereg) == Long.fromNumber(Constants.AND) {
+      valE = A.and(B);
       this.cc(this.utilsSerivce.sign(valE),
         (valE == 0 ? true : false),
         false)
     }
-    if (this.alufun(ereg) == Constants.XOR) {
-      valE = A ^ B;
+    if (this.alufun(ereg) == Long.fromNumber(Constants.XOR) {
+      valE = A.xor(B);
       this.cc(this.utilsSerivce.sign(valE),
         (valE == 0 ? true : false),
         false)
@@ -719,26 +708,26 @@ export class CpuService {
     this.conditionCodesService.setZF(ZF);
   }
 
-  set_E_Cnd(icode: number, ifun: number): number {
+  get_E_Cnd(icode: Long, ifun: Long): Long {
     let OF = this.conditionCodesService.getOF(),
       SF = this.conditionCodesService.getSF(),
       ZF = this.conditionCodesService.getZF();
 
     let ret;
 
-    if (icode != Constants.JXX && icode != Constants.CMOVXX) { return 0; }
-    if (ifun == Constants.UNCOND) { return 1; }
-    if (ifun == Constants.LESSEQ) { return ((SF ^ OF) | ZF); }
-    if (ifun == Constants.LESS) { return (SF ^ OF); }
-    if (ifun == Constants.EQUAL) { return ZF; }
-    if (ifun == Constants.NOTEQUAL) { return ZF == 0 ? 1 : 0; } // !ZF 
-    if (ifun == Constants.GREATER) {
+    if (icode != Long.fromNumber(Constants.JXX && icode != Long.fromNumber(Constants.CMOVXX) { return 0; }
+    if (ifun == Long.fromNumber(Constants.UNCOND) { return 1; }
+    if (ifun == Long.fromNumber(Constants.LESSEQ) { return ((SF ^ OF) | ZF); }
+    if (ifun == Long.fromNumber(Constants.LESS) { return (SF ^ OF); }
+    if (ifun == Long.fromNumber(Constants.EQUAL) { return ZF; }
+    if (ifun == Long.fromNumber(Constants.NOTEQUAL) { return ZF == 0 ? 1 : 0; } // !ZF 
+    if (ifun == Long.fromNumber(Constants.GREATER) {
       ZF = (ZF == 0 ? 1 : 0);
       let temp = SF ^ OF;
       temp = (temp == 0 ? 1 : 0);
       return (temp & ZF); // !(SF ^ OF) && !ZF;
     }
-    if (ifun == Constants.GREATEREQ) {
+    if (ifun == Long.fromNumber(Constants.GREATEREQ) {
       let temp = SF ^ OF;
       temp = (temp == 0 ? 1 : 0);
       return temp // !(SF ^ OF); 
@@ -746,11 +735,11 @@ export class CpuService {
     else { return -1; }
   }
 
-  set_E_dstE(ereg: E): number {
+  set_E_dstE(ereg: E): Long {
     let icode = ereg.geticode().getOutput();
 
-    if (icode == Constants.RRMOVQ && !this.E_Cnd) {
-      return Constants.RNONE;
+    if (icode == Long.fromNumber(Constants.RRMOVQ && !this.E_Cnd) {
+      return Long.fromNumber(Constants.RNONE;
     }
     return ereg.getdstE().getOutput();
   }
@@ -760,7 +749,7 @@ export class CpuService {
     * return the appropriate valE based on icode
     * calls alu() if the icode is an OPQ
     */
-  chooseValE(ereg: E, wreg: W): number {
+  chooseValE(ereg: E, wreg: W): Long {
     let icode = ereg.geticode().getOutput(),
       valA = ereg.getvalA().getOutput(),
       valB = ereg.getvalB().getOutput(),
@@ -770,19 +759,19 @@ export class CpuService {
     if (this.set_cc(ereg, wreg)) {
       return this.alu(ereg);
     }
-    if (icode == Constants.CMOVXX) {
+    if (icode == Long.fromNumber(Constants.CMOVXX) {
       return valA;
     }
-    if (icode == Constants.RMMOVQ || icode == Constants.MRMOVQ) {
+    if (icode == Long.fromNumber(Constants.RMMOVQ || icode == Long.fromNumber(Constants.MRMOVQ) {
       return valB + valC;
     }
-    if (icode == Constants.CALL || icode == Constants.PUSHQ) {
+    if (icode == Long.fromNumber(Constants.CALL || icode == Long.fromNumber(Constants.PUSHQ) {
       return valB - BYTE;
     }
-    if (icode == Constants.RET || icode == Constants.POPQ) {
+    if (icode == Long.fromNumber(Constants.RET || icode == Long.fromNumber(Constants.POPQ) {
       return valB + BYTE
     }
-    if (icode == Constants.JXX || icode == Constants.NOP || icode == Constants.HALT) {
+    if (icode == Long.fromNumber(Constants.JXX || icode == Long.fromNumber(Constants.NOP || icode == Long.fromNumber(Constants.HALT) {
       return 0;
     }
     return valC;
@@ -795,8 +784,8 @@ export class CpuService {
   e_calculateControlSignals(wreg: W): void {
     let w_stat = wreg.getstat().getOutput();
 
-    this.mbubble = ((this.M_stat == Constants.SADR || this.M_stat == Constants.SINS || this.M_stat == Constants.SHLT) ||
-      (w_stat == Constants.SADR || w_stat == Constants.SINS || w_stat == Constants.SHLT));
+    this.mbubble = ((this.M_stat == Long.fromNumber(Constants.SADR || this.M_stat == Long.fromNumber(Constants.SINS || this.M_stat == Long.fromNumber(Constants.SHLT) ||
+      (w_stat == Long.fromNumber(Constants.SADR || w_stat == Long.fromNumber(Constants.SINS || w_stat == Long.fromNumber(Constants.SHLT));
   }
 
     /*
@@ -831,7 +820,7 @@ export class CpuService {
       stat = ereg.getstat().getOutput(),
       valE = 0,
       valM = 0,
-      dstE = Constants.RNONE,
+      dstE = Long.fromNumber(Constants.RNONE,
       dstM = ereg.getdstM().getOutput();
 
     this.setWInput(wreg, stat, icode, valE, valM, dstE, dstM);
@@ -846,8 +835,8 @@ export class CpuService {
     wreg.getdstM().normal();
   }
 
-  setWInput(wreg: W, stat: number, icode: number, valE: number,
-    valM: number, dstE: number, dstM: number) {
+  setWInput(wreg: W, stat: Long, icode: Long, valE: Long,
+    valM: Long, dstE: Long, dstM: Long) {
     wreg.getstat().setInput(stat);
     wreg.geticode().setInput(icode);
     wreg.getvalE().setInput(valE);

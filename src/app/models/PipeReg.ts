@@ -1,11 +1,12 @@
 import { PipeRegField } from './PipeRegField'
 import * as Constants from "../constants";
+import Long from 'long';
 
 export class F {
 	predPC: PipeRegField;
 
 	constructor() {
-		this.predPC = new PipeRegField(0);
+		this.predPC = new PipeRegField(Long.ZERO);
 	}
 
 	getPredPC(): PipeRegField {
@@ -23,13 +24,13 @@ export class D {
 	valP: PipeRegField;
 
 	constructor() {
-		this.stat = new PipeRegField(Constants.SAOK);
-		this.icode = new PipeRegField(Constants.NOP);
-		this.ifun = new PipeRegField(Constants.FNONE);
-		this.rA = new PipeRegField(Constants.RNONE);
-		this.rB = new PipeRegField(Constants.RNONE);
-		this.valC = new PipeRegField(0);
-		this.valP = new PipeRegField(0);
+		this.stat = new PipeRegField(Long.fromNumber(Constants.SAOK));
+		this.icode = new PipeRegField(Long.fromNumber(Constants.NOP));
+		this.ifun = new PipeRegField(Long.fromNumber(Constants.FNONE));
+		this.rA = new PipeRegField(Long.fromNumber(Constants.RNONE));
+		this.rB = new PipeRegField(Long.fromNumber(Constants.RNONE));
+		this.valC = new PipeRegField(Long.ZERO);
+		this.valP = new PipeRegField(Long.ZERO);
 	}
 
 	getstat(): PipeRegField {
@@ -74,16 +75,16 @@ export class E {
 	srcB: PipeRegField;
 
 	constructor() {
-		this.stat = new PipeRegField(Constants.SAOK);
-		this.icode = new PipeRegField(Constants.NOP);
-		this.ifun = new PipeRegField(Constants.FNONE);
-		this.valC = new PipeRegField(0);
-		this.valA = new PipeRegField(0);
-		this.valB = new PipeRegField(0);
-		this.dstE = new PipeRegField(Constants.RNONE);
-		this.dstM = new PipeRegField(Constants.RNONE);
-		this.srcA = new PipeRegField(0);
-		this.srcB = new PipeRegField(0);
+		this.stat = new PipeRegField(Long.fromNumber(Constants.SAOK));
+		this.icode = new PipeRegField(Long.fromNumber(Constants.NOP));
+		this.ifun = new PipeRegField(Long.fromNumber(Constants.FNONE));
+		this.valC = new PipeRegField(Long.ZERO);
+		this.valA = new PipeRegField(Long.ZERO);
+		this.valB = new PipeRegField(Long.ZERO);
+		this.dstE = new PipeRegField(Long.fromNumber(Constants.RNONE));
+		this.dstM = new PipeRegField(Long.fromNumber(Constants.RNONE));
+		this.srcA = new PipeRegField(Long.ZERO);
+		this.srcB = new PipeRegField(Long.ZERO);
 	}
 
 	getstat(): PipeRegField {
@@ -137,13 +138,13 @@ export class M {
 	dstM: PipeRegField;
 
 	constructor() {
-		this.stat = new PipeRegField(Constants.SAOK);
-		this.icode = new PipeRegField(Constants.NOP);
-		this.Cnd = new PipeRegField(0);
-		this.valE = new PipeRegField(0);
-		this.valA = new PipeRegField(0);
-		this.dstE = new PipeRegField(Constants.RNONE);
-		this.dstM = new PipeRegField(Constants.RNONE);
+		this.stat = new PipeRegField(Long.fromNumber(Constants.SAOK));
+		this.icode = new PipeRegField(Long.fromNumber(Constants.NOP))
+		this.Cnd = new PipeRegField(Long.ZERO);
+		this.valE = new PipeRegField(Long.ZERO);
+		this.valA = new PipeRegField(Long.ZERO);
+		this.dstE = new PipeRegField(Long.fromNumber(Constants.RNONE));
+		this.dstM = new PipeRegField(Long.fromNumber(Constants.RNONE));
 	}
 
 	getstat(): PipeRegField {
@@ -184,12 +185,12 @@ export class W {
 	dstM: PipeRegField;
 
 	constructor() {
-		this.stat = new PipeRegField(Constants.SAOK);
-		this.icode = new PipeRegField(Constants.NOP);
-		this.valE = new PipeRegField(0);
-		this.valM = new PipeRegField(0);
-		this.dstE = new PipeRegField(Constants.RNONE);
-		this.dstM = new PipeRegField(Constants.RNONE);
+		this.stat = new PipeRegField(Long.fromNumber(Constants.SAOK));
+		this.icode = new PipeRegField(Long.fromNumber(Constants.NOP))
+		this.valE = new PipeRegField(Long.ZERO);
+		this.valM = new PipeRegField(Long.ZERO);
+		this.dstE = new PipeRegField(Long.fromNumber(Constants.RNONE));
+		this.dstM = new PipeRegField(Long.fromNumber(Constants.RNONE));
 	}
 
 	getstat(): PipeRegField {

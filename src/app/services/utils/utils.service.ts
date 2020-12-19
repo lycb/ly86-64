@@ -8,6 +8,14 @@ export class UtilsService {
 
   constructor() { }
 
+  buildLong(arr: Long[]): Long {
+    let ret = Long.ZERO;
+    for (let i = 6; i >= 0; i--) {
+      ret = ret.shiftLeft(8);
+      ret = ret.add(arr[i]);
+    }
+    return ret;
+  }
   /*
   * sign
   * @returns the sign of source in two's comp
