@@ -1,0 +1,42 @@
+                            | # This program calls a minBST function that returns the minimum value
+                            | # in a binary search tree.  The parameter to minBST is in %rdi.
+                            | # %rdi contains the address of the root node. The return value is
+                            | # stored in %rax. A node consists of three 8-byte fields: address
+                            | # of left child, address of right child, value of node.
+0x000:                      |        .pos 0
+0x000: 30f40002000000000000 |        irmovq stack, %rsp
+0x00a: 30f75000000000000000 |        irmovq node0, %rdi
+0x014: 30f00000000000000000 |        irmovq 0, %rax
+0x01e: 802800000000000000   |        call minBST
+0x027: 00                   |        halt
+0x028:                      | minBST: #address of root node is in %rdi
+                            |         #returns the minimum value in the tree in register %rax
+0x028: 2030                 |        rrmovq %rbx, %rax
+0x02a: 50370000000000000000 |        mrmovq 0(%rdi), %rbx
+0x034: 2037                 |        rrmovq %rbx, %rdi
+0x036: 6233                 |        andq %rbx, %rbx
+0x038: 762800000000000000   |        jg minBST
+0x041: 50001000000000000000 |        mrmovq 16(%rax), %rax
+0x04b: 90                   | done:  ret
+                            | #
+0x050:                      |        .align 8
+0x050: 6800000000000000     | node0: .quad node1    #address of left child
+0x058: 8000000000000000     |        .quad node2    #address of right child
+0x060: 0a00000000000000     |        .quad 10       #value in the node
+0x068: 9800000000000000     | node1: .quad node3
+0x070: 0000000000000000     |        .quad 0
+0x078: 0400000000000000     |        .quad 4
+0x080: b000000000000000     | node2: .quad node4
+0x088: c800000000000000     |        .quad node5
+0x090: 0c00000000000000     |        .quad 12
+0x098: 0000000000000000     | node3: .quad 0
+0x0a0: 0000000000000000     |        .quad 0
+0x0a8: 0200000000000000     |        .quad 2        #here is the minimum value
+0x0b0: 0000000000000000     | node4: .quad 0
+0x0b8: 0000000000000000     |        .quad 0
+0x0c0: 0b00000000000000     |        .quad 11
+0x0c8: 0000000000000000     | node5: .quad 0
+0x0d0: 0000000000000000     |        .quad 0
+0x0d8: 0f00000000000000     |        .quad 15
+0x200:                      |        .pos 0x200
+0x200: 0000000000000000     | stack: .quad 0

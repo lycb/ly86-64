@@ -16,32 +16,34 @@ export class UtilsService {
     }
     return ret;
   }
+
+
   /*
   * sign
   * @returns the sign of source in two's comp
   * if source is negative, return 1, else return 0
   */
-  sign(source: number): boolean {
-  	let bit = parseInt(source.toString(2)[0], 16);
-  	if (bit == 1) return true;
-  	return false;
+  sign(source: Long): boolean {
+    return source.isNegative();
   }
 
-  addOverflow(a: number, b: number): boolean {
-  	let sumSign = this.sign(a + b),
+  addOverflow(a: Long, b: Long): boolean {
+  	let sum = a.add(b),
+    sumSign = this.sign(sum),
   	aSign = this.sign(a),
   	bSign = this.sign(b);
   	console.log("a: " + a)
-  	console.log("sum: " + (a+b))
+  	console.log("sum: " + sum)
   	console.log("asign: " + aSign + " bSign: " + bSign)
   	return ((aSign == bSign) && (aSign != sumSign)); 
   }
 
-  subOverflow(a: number, b: number): boolean {
-  	let sumSign = this.sign(b - a),
+  subOverflow(a: Long, b: Long): boolean {
+  	let sub = b.subtract(a),
+    subSign = this.sign(sub),
   	aSign = this.sign(a),
   	bSign = this.sign(b);
-  	return ((aSign == bSign) && (aSign != sumSign)); 
+  	return ((aSign == bSign) && (aSign != subSign)); 
   }
 }
 

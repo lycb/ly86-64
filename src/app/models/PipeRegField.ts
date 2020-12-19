@@ -1,3 +1,5 @@
+import Long from 'long';
+
 export class PipeRegField {
 	state: Long;
 	input: Long;
