@@ -3,6 +3,7 @@ import { InstructionService } from "../instruction/instruction.service";
 import { ParserService } from "../parser/parser.service";
 import { RegisterService } from "../register/register.service";
 import { ConditionCodesService } from "../condition-codes/condition-codes.service";
+import { UtilsService } from "../utils/utils.service";
 import { Line } from "../../models/Line";
 import { MemoryFunc } from "../../models/Memory";
 import { F, D, E, M, W } from "../../models/PipeReg";
@@ -51,7 +52,8 @@ export class CpuService {
     private instructionService: InstructionService,
     private parserService: ParserService,
     private registerService: RegisterService,
-    private conditionCodesService: ConditionCodesService
+    private conditionCodesService: ConditionCodesService,
+    private utilsSerivce: UtilsService
   ) {
     this.error = false;
   }
@@ -579,6 +581,7 @@ export class CpuService {
   }
 
   doExecuteClockLow(lineObject: Line, freg: F, dreg: D, ereg: E, mreg: M, wreg: W): void {
+    console.log('doExecuteClockLow')
     let line = lineObject.parsedLine.instruction;
 
     let icode = ereg.geticode().getOutput(),
@@ -668,6 +671,9 @@ export class CpuService {
       M_stat = this.M_stat,
       w_stat = wreg.getstat().getOutput();
 
+    console.log('set_cc, icode: ' + icode)
+
+
     return (icode == Constants.OPQ)
       && !(M_stat == Constants.SADR || M_stat == Constants.SINS || M_stat == Constants.SHLT)
       && !(w_stat == Constants.SADR || w_stat == Constants.SINS || w_stat == Constants.SHLT);
@@ -675,25 +681,34 @@ export class CpuService {
 
   //TODO
   alu(ereg: E): number {
+    console.log('alu')
     let A = this.alu_A(ereg),
       B = this.alu_B(ereg),
       valE = 0;
 
     if (this.alufun(ereg) == Constants.ADD) {
       valE = A + B;
-      //call cc()
+      this.cc(this.utilsSerivce.sign(valE),
+        (valE == 0 ? true : false),
+        this.utilsSerivce.addOverflow(A, B))
     }
     if (this.alufun(ereg) == Constants.SUB) {
       valE = B - A;
-      //call cc()
+      this.cc(this.utilsSerivce.sign(valE),
+        (valE == 0 ? true : false),
+        this.utilsSerivce.subOverflow(A, B))
     }
     if (this.alufun(ereg) == Constants.AND) {
       valE = A & B;
-      //call cc()
+      this.cc(this.utilsSerivce.sign(valE),
+        (valE == 0 ? true : false),
+        false)
     }
     if (this.alufun(ereg) == Constants.XOR) {
       valE = A ^ B;
-      //call cc()
+      this.cc(this.utilsSerivce.sign(valE),
+        (valE == 0 ? true : false),
+        false)
     }
     return valE;
   }
