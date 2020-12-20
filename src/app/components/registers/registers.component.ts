@@ -18,5 +18,8 @@ export class RegistersComponent implements OnInit {
   	this.register = this.registerService.getRegisters();
   	// this.registerService.setValueByRegister('RAX', 0)
   	// console.log(this.registerService.getValueByRegister('RAX'))
+
+    // this.registerService.setValueByRegister('RAX', new Long(-1, -1, true))
+    // console.log(this.registerService.getValueByRegister('RAX').toString())
   }
 }

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { REGISTERS } from '../../constants';
 import { Register } from '../../models/Register';
+import { UtilsService } from '../utils/utils.service';
 import Long from 'long';
  
 @Injectable({
@@ -9,12 +10,12 @@ import Long from 'long';
 export class RegisterService {
 	register: Register[];
 
-  constructor() { 
+  constructor(private utilsService: UtilsService) { 
   	this.register = [];
 	  for (let reg of REGISTERS) {
   		this.register.push({
   			name: reg,
-  			value: 0,
+  			value: new Long(0, 0, false),
         hex: "0x0000000000000000"
   		});
 	  }
@@ -24,15 +25,15 @@ export class RegisterService {
   	return this.register;
   }
 
-  getValueByRegister(name: string): number {
-    return this.register[this.register2index(name)].value;
+  getValueByRegister(name: string): Long {
+    return this.register[this.register2index(name)].value.toSigned();
   }
 
   // given a register name and a value, save that number to the register and convert that to a hex string
-  setValueByRegister(name: string, value: number): void {
-    this.register[this.register2index(name)].value = value;
+  setValueByRegister(name: string, value: Long): void {
+    this.register[this.register2index(name)].value = value.toSigned();
     var binaryNum = value.toString(16);
-    this.register[this.register2index(name)].hex = this.paddingHex(binaryNum, 16);
+    this.register[this.register2index(name)].hex = this.utilsService.paddingHex(binaryNum, 16);
   }
 
   register2index(name: string): number {
@@ -77,11 +78,5 @@ export class RegisterService {
     }
   }
 
-  paddingHex(num, width): string {
-    var result = num.toString(16);
-    while (result.length < width) {
-      result = '0' + result;
-    } 
-    return "0x" + result;
-  }
+  
 }

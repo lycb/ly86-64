@@ -1,40 +1,41 @@
 import { Injectable } from '@angular/core';
+import Long from 'long';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ConditionCodesService {
 
-  OF: boolean;
-  SF: boolean;
-  ZF: boolean;
+  OF: Long;
+  SF: Long;
+  ZF: Long;
 
   constructor() {
-    this.OF = false;
-    this.SF = false;
-    this.ZF = false;
+    this.OF = Long.ZERO;
+    this.SF = Long.ZERO;
+    this.ZF = Long.ZERO;
   }
-  getOF(): number {
-    return this.OF ? 1: 0;
-  }
-
-  getSF(): number {
-    return this.SF ? 1: 0;
+  getOF(): Long {
+    return this.OF;
   }
 
-  getZF(): number {
-    return this.ZF ? 1: 0;
+  getSF(): Long {
+    return this.SF;
   }
 
-  setOF(OF: boolean): void {
+  getZF(): Long {
+    return this.ZF;
+  }
+
+  setOF(OF: Long): void {
     this.OF = OF;
   }
 
-  setSF(SF: boolean): void {
+  setSF(SF: Long): void {
     this.SF = SF;
   }
 
-  setZF(ZF: boolean): void {
+  setZF(ZF: Long): void {
     this.ZF = ZF;
   }
 }

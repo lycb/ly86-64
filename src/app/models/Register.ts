@@ -2,6 +2,6 @@ import Long from 'long';
 
 export class Register {
   name: string;
-  value: number;
+  value: Long;
   hex: string;
 }
