@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ParserService } from '../../services/parser/parser.service';
 import { CpuService } from '../../services/cpu/cpu.service';
+import { UtilsService } from '../../services/utils/utils.service';
 import { Line } from '../../models/Line';
 import { MemoryFunc } from "../../models/Memory";
 import { AddressLine } from "../../models/AddressLine"; 
@@ -24,7 +25,9 @@ export class ButtonsComponent implements OnInit {
   mreg: M;
   wreg: W;
 
-  constructor(private parserService: ParserService, private cpuService: CpuService) {
+  constructor(private parserService: ParserService, 
+    private cpuService: CpuService,
+    private utilsService: UtilsService) {
   }
 
   ngOnInit() {
@@ -119,7 +122,7 @@ export class ButtonsComponent implements OnInit {
   }
 
   loadline(line: AddressLine): void {
-    let memory = MemoryFunc.getInstance();
+    let memory = MemoryFunc.getInstance(this.utilsService);
     let bytes = line.instruction.length / 2;
     let position = 0;
     let address = line.address;

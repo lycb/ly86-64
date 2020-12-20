@@ -17,6 +17,18 @@ export class UtilsService {
     return ret;
   }
 
+  getByte(source: Long, byteNum: number): Long {
+    if (byteNum > 7 || byteNum < 0) {
+      return Long.ZERO;
+    }
+    let m = new Long(0xff, 0),
+    ret = source;
+
+    ret = ret.shiftRight(Long.fromNumber((8 * byteNum)));
+    ret = ret.and(m);
+    return ret;
+  }
+
 
   /*
   * sign
@@ -28,22 +40,22 @@ export class UtilsService {
   }
 
   addOverflow(a: Long, b: Long): boolean {
-  	let sum = a.add(b),
-    sumSign = this.sign(sum),
-  	aSign = this.sign(a),
-  	bSign = this.sign(b);
-  	console.log("a: " + a)
-  	console.log("sum: " + sum)
-  	console.log("asign: " + aSign + " bSign: " + bSign)
-  	return ((aSign == bSign) && (aSign != sumSign)); 
+    let sum = a.add(b),
+      sumSign = this.sign(sum),
+      aSign = this.sign(a),
+      bSign = this.sign(b);
+    console.log("a: " + a)
+    console.log("sum: " + sum)
+    console.log("asign: " + aSign + " bSign: " + bSign)
+    return ((aSign == bSign) && (aSign != sumSign));
   }
 
   subOverflow(a: Long, b: Long): boolean {
-  	let sub = b.subtract(a),
-    subSign = this.sign(sub),
-  	aSign = this.sign(a),
-  	bSign = this.sign(b);
-  	return ((aSign == bSign) && (aSign != subSign)); 
+    let sub = b.subtract(a),
+      subSign = this.sign(sub),
+      aSign = this.sign(a),
+      bSign = this.sign(b);
+    return ((aSign == bSign) && (aSign != subSign));
   }
 }
 

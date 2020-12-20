@@ -54,7 +54,7 @@ export class CpuService {
         private parserService: ParserService,
         private registerService: RegisterService,
         private conditionCodesService: ConditionCodesService,
-        private utilsSerivce: UtilsService
+        private utilsService: UtilsService
     ) {
         this.error = false;
     }
@@ -195,7 +195,7 @@ export class CpuService {
     }
 
     getValC(icode: Long, f_pc: Long, line: string): Long {
-        let memory = MemoryFunc.getInstance();
+        let memory = MemoryFunc.getInstance(this.utilsService);
         let arr = new Array<Long>(8);
         if (this.needValC(icode)) {
             if (!this.needRegister(icode)) {
@@ -204,14 +204,14 @@ export class CpuService {
                     arr[index] = memory.getByte(i);
                     index++;
                 }
-                return this.utilsSerivce.buildLong(arr);
+                return this.utilsService.buildLong(arr);
             } else {
                 let index = 0;
                 for (let i = f_pc.toNumber() + 2; index < 8; i++) {
                     arr[index] = memory.getByte(i);
                     index++;
                 }
-                return this.utilsSerivce.buildLong(arr);
+                return this.utilsService.buildLong(arr);
             }
         }
         return Long.ZERO;
@@ -342,11 +342,11 @@ export class CpuService {
             Cnd = this.E_Cnd;
 
         return (e_icode.equals(Long.fromNumber(Constants.JXX)) && !Cnd) ||
-            (!((e_icode.equals(Long.fromNumber(Constants.MRMOVQ)) || 
+            (!((e_icode.equals(Long.fromNumber(Constants.MRMOVQ)) ||
                 e_icode.equals(Long.fromNumber(Constants.POPQ))) &&
-                (e_dstM.equals(this.D_srcA) || 
+                (e_dstM.equals(this.D_srcA) ||
                     e_dstM.equals(this.D_srcB))) &&
-                (e_icode.equals(Long.fromNumber(Constants.RET)) || 
+                (e_icode.equals(Long.fromNumber(Constants.RET)) ||
                     d_icode.equals(Long.fromNumber(Constants.RET)) ||
                     m_icode.equals(Long.fromNumber(Constants.RET))));
     }
@@ -448,13 +448,13 @@ export class CpuService {
         let icode = dreg.geticode().getOutput(),
             rA = dreg.getrA().getOutput();
 
-        if (icode.equals(Long.fromNumber(Constants.RRMOVQ)) || 
-            icode.equals(Long.fromNumber(Constants.RMMOVQ)) || 
-            icode.equals(Long.fromNumber(Constants.OPQ)) || 
+        if (icode.equals(Long.fromNumber(Constants.RRMOVQ)) ||
+            icode.equals(Long.fromNumber(Constants.RMMOVQ)) ||
+            icode.equals(Long.fromNumber(Constants.OPQ)) ||
             icode.equals(Long.fromNumber(Constants.PUSHQ))) {
             return rA;
         }
-        if (icode.equals(Long.fromNumber(Constants.POPQ)) || 
+        if (icode.equals(Long.fromNumber(Constants.POPQ)) ||
             icode.equals(Long.fromNumber(Constants.RET))) {
             return Long.fromNumber(Constants.RSP);
         }
@@ -465,14 +465,14 @@ export class CpuService {
         let icode = dreg.geticode().getOutput(),
             rB = dreg.getrB().getOutput();
 
-        if (icode.equals(Long.fromNumber(Constants.OPQ)) || 
-            icode.equals(Long.fromNumber(Constants.RMMOVQ)) || 
+        if (icode.equals(Long.fromNumber(Constants.OPQ)) ||
+            icode.equals(Long.fromNumber(Constants.RMMOVQ)) ||
             icode.equals(Long.fromNumber(Constants.MRMOVQ))) {
             return rB;
         }
-        if (icode.equals(Long.fromNumber(Constants.PUSHQ)) || 
-            icode.equals(Long.fromNumber(Constants.POPQ)) || 
-            icode.equals(Long.fromNumber(Constants.CALL)) || 
+        if (icode.equals(Long.fromNumber(Constants.PUSHQ)) ||
+            icode.equals(Long.fromNumber(Constants.POPQ)) ||
+            icode.equals(Long.fromNumber(Constants.CALL)) ||
             icode.equals(Long.fromNumber(Constants.RET))) {
             return Long.fromNumber(Constants.RSP);
         }
@@ -482,7 +482,7 @@ export class CpuService {
     d_valA(dreg: D, mreg: M, wreg: W): Long {
         let icode = dreg.geticode().getOutput();
 
-        if (icode.equals(Long.fromNumber(Constants.CALL)) || 
+        if (icode.equals(Long.fromNumber(Constants.CALL)) ||
             icode.equals(Long.fromNumber(Constants.JXX))) {
             return dreg.getvalP().getOutput();
         }
@@ -719,12 +719,12 @@ export class CpuService {
         if (this.alufun(ereg).equals(Long.fromNumber(Constants.ADD))) {
             valE = A.add(B);
             this.cc(valE.isNegative(), valE.isZero(),
-                this.utilsSerivce.addOverflow(A, B))
+                this.utilsService.addOverflow(A, B))
         }
         if (this.alufun(ereg).equals(Long.fromNumber(Constants.SUB))) {
             valE = B.subtract(A);
             this.cc(valE.isNegative(), valE.isZero(),
-                this.utilsSerivce.subOverflow(A, B))
+                this.utilsService.subOverflow(A, B))
         }
         if (this.alufun(ereg).equals(Long.fromNumber(Constants.AND))) {
             valE = A.and(B);
@@ -816,7 +816,7 @@ export class CpuService {
     */
     e_calculateControlSignals(wreg: W): void {
         let w_stat = wreg.getstat().getOutput();
-        
+
         this.mbubble = ((this.M_stat.equals(Long.fromNumber(Constants.SADR)) ||
             this.M_stat.equals(Long.fromNumber(Constants.SINS)) ||
             this.M_stat.equals(Long.fromNumber(Constants.SHLT))) ||
@@ -854,13 +854,24 @@ export class CpuService {
     doMemoryClockLow(lineObject: Line, freg: F, dreg: D, ereg: E, mreg: M, wreg: W): void {
         let icode = ereg.geticode().getOutput(),
             ifun = ereg.getifun().getOutput(),
-            stat = ereg.getstat().getOutput(),
             valE = Long.ZERO,
-            valM = Long.ZERO,
             dstE = Long.fromNumber(Constants.RNONE),
             dstM = ereg.getdstM().getOutput();
 
-        this.setWInput(wreg, stat, icode, valE, valM, dstE, dstM);
+        this.M_stat = ereg.getstat().getOutput();
+        this.M_valM = this.m_stat(mreg);
+
+        let memory = MemoryFunc.getInstance(this.utilsService);
+
+        let addr = this.mem_addr(mreg);
+        if (this.mem_read(mreg)) {
+            this.M_valM = memory.getLong(addr);
+        }
+        if (this.mem_write(mreg)) {
+            memory.putLong(mreg.getvalA().getOutput(), addr);
+        }
+
+        this.setWInput(wreg, this.M_stat, icode, valE, this.M_valM, dstE, dstM);
     }
 
     doMemoryClockHigh(wreg: W): void {
@@ -880,6 +891,26 @@ export class CpuService {
         wreg.getvalM().setInput(valM);
         wreg.getdstE().setInput(dstE);
         wreg.getdstM().setInput(dstM);
+    }
+
+    //TODO
+    mem_read(mreg: M): boolean {
+        return false;
+    }
+
+    //TODO
+    mem_write(mreg: M): boolean {
+        return false;
+    }
+
+    //TODO
+    mem_addr(mreg: M): Long {
+        return Long.ZERO;
+    }
+
+    //TODO
+    m_stat(mreg): Long {
+        return Long.ZERO;
     }
 
     /*
