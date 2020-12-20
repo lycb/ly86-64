@@ -121,6 +121,7 @@ export class PipelineRegComponent implements OnInit {
     this.fpredPCsubsription = this.cpuService.getPredPC().subscribe(pc => {
       if (pc) {
         this.f_predPC = pc;
+        // this.setColor();
       } else {
         this.f_predPC = "error";
       }
@@ -138,6 +139,7 @@ export class PipelineRegComponent implements OnInit {
         this.d_rB = dreg.rB.input.toString(16);
         this.d_valC = dreg.valC.input.toString(16);
         this.d_valP = dreg.valP.input.toString(16);
+        // this.setColor();
       } else {
         this.d_stat = "1";
         this.d_icode = "1";
@@ -164,6 +166,7 @@ export class PipelineRegComponent implements OnInit {
         this.e_dstM = ereg.dstM.input.toString(16);
         this.e_srcA = ereg.srcA.input.toString(16);
         this.e_srcB = ereg.srcB.input.toString(16);
+        // this.setColor();
       } else {
         this.e_stat = "1";
         this.e_icode = "1";
@@ -190,6 +193,7 @@ export class PipelineRegComponent implements OnInit {
         this.m_valA = mreg.valA.input.toString(16);
         this.m_dstE = mreg.dstE.input.toString(16);
         this.m_dstM = mreg.dstM.input.toString(16);
+        // this.setColor();
       } else {
         this.m_stat = "1";
         this.m_icode = "1";
@@ -212,6 +216,7 @@ export class PipelineRegComponent implements OnInit {
         this.w_valM = wreg.valM.input.toString(16);
         this.w_dstE = wreg.dstE.input.toString(16);
         this.w_dstM = wreg.dstM.input.toString(16);
+        // this.setColor();
       } else {
         this.w_stat = "1";
         this.w_icode = "1";
@@ -221,6 +226,14 @@ export class PipelineRegComponent implements OnInit {
         this.w_dstM = "f";
       }
     })
+  }
+
+  setColor() {
+        this.f_state = this.cpuService.getFColor();
+        this.d_state = this.cpuService.getDColor();
+        this.e_state = this.cpuService.getEColor();
+        this.m_state = this.cpuService.getMColor();
+        this.w_state = this.cpuService.getWColor();
   }
 
   ngOnDestroy() {
