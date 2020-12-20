@@ -4,6 +4,7 @@ import { UtilsService } from "../services/utils/utils.service";
 class Memory {
 	private instance: Long[];
 	private memSize = 0x1000;
+	private error = false;
 
 	constructor(private utilsService: UtilsService) {
 		this.instance = new Array<Long>(this.memSize);
@@ -11,20 +12,29 @@ class Memory {
 
 	putLong(value: Long, address: number): void {
 		if (address % 8 == 0 && address >= 0 && address < this.memSize - 7) {
+			this.error = false;
 			for (let i = 0; i < 8; i++) {
 				this.instance[address + i] = this.utilsService.getByte(value, i);
 			}
+			return;
 		}
+		this.error = true;
 	}
 
 	getLong(address: number): Long {
 		if (address % 8 == 0 && address >= 0 && address < this.memSize - 7) {
+			this.error = false;
 			let longArr = new Array<Long>(8);
 			for (let i = 0; i < 8; i++) {
 				longArr[i] = this.instance[address + i];
 			}
 			return this.utilsService.buildLong(longArr);
 		}
+		this.error = true;
+	}
+
+	getError(): boolean {
+		return this.error;
 	}
 
 	putByte(value: Long, address: number): void {

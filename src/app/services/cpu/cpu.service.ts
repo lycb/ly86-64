@@ -71,8 +71,8 @@ export class CpuService {
         this.wreg = wreg;
 
         this.doWritebackStage(wreg);
-        this.w_reg.next(wreg); // for subscribe timing
         this.doMemoryStage(lineObject, freg, dreg, ereg, mreg, wreg);
+        this.w_reg.next(wreg);
         this.doExecuteStage(lineObject, freg, dreg, ereg, mreg, wreg);
         this.m_reg.next(mreg);
         this.doDecodeStage(lineObject, freg, dreg, ereg, mreg, wreg);
@@ -122,6 +122,7 @@ export class CpuService {
             rB = registers[1];
         }
         let f_pc = this.selectPC(freg, mreg, wreg);
+
         stat = this.f_status(icode, this.error);
         icode = this.f_icode(icode, this.error);
         ifun = this.f_ifun(ifun, this.error);
@@ -691,7 +692,7 @@ export class CpuService {
 
     alufun(ereg: E): Long {
         let icode = ereg.geticode().getOutput();
-        if (icode == Long.fromNumber(Constants.OPQ)) {
+        if (icode.equals(Long.fromNumber(Constants.OPQ))) {
             return ereg.getifun().getOutput();
         }
         return Long.fromNumber(Constants.ADD);
@@ -858,18 +859,20 @@ export class CpuService {
             dstE = Long.fromNumber(Constants.RNONE),
             dstM = ereg.getdstM().getOutput();
 
-        this.M_stat = ereg.getstat().getOutput();
-        this.M_valM = this.m_stat(mreg);
-
         let memory = MemoryFunc.getInstance(this.utilsService);
 
+        this.M_valM = Long.ZERO;
+
         let addr = this.mem_addr(mreg);
-        if (this.mem_read(mreg)) {
+        if (this.mem_read(icode)) {
             this.M_valM = memory.getLong(addr);
         }
-        if (this.mem_write(mreg)) {
+        if (this.mem_write(icode)) {
             memory.putLong(mreg.getvalA().getOutput(), addr);
         }
+
+        this.error = memory.getError();
+        this.M_stat = this.m_stat(mreg);
 
         this.setWInput(wreg, this.M_stat, icode, valE, this.M_valM, dstE, dstM);
     }
@@ -893,24 +896,54 @@ export class CpuService {
         wreg.getdstM().setInput(dstM);
     }
 
-    //TODO
-    mem_read(mreg: M): boolean {
-        return false;
+    /*
+    * mem_read
+    * if the instruction requires memory access,
+    * this methods returns true
+    */
+    mem_read(icode: Long): boolean {
+        return icode.equals(Long.fromNumber(Constants.MRMOVQ)) ||
+            icode.equals(Long.fromNumber(Constants.POPQ)) ||
+            icode.equals(Long.fromNumber(Constants.RET));
     }
 
-    //TODO
-    mem_write(mreg: M): boolean {
-        return false;
+    /*
+    * mem_write
+    * if the instruction requires writing to memory,
+    * this methods returns true
+    */
+    mem_write(icode: Long): boolean {
+        return icode.equals(Long.fromNumber(Constants.RMMOVQ)) ||
+            icode.equals(Long.fromNumber(Constants.PUSHQ)) ||
+            icode.equals(Long.fromNumber(Constants.CALL));
     }
 
-    //TODO
+    /*
+    * mem_addr
+    * returns the address that is used to access memory using icode.
+    */
     mem_addr(mreg: M): Long {
-        return Long.ZERO;
+        let icode = mreg.geticode().getOutput();
+        if (icode.equals(Long.fromNumber(Constants.RMMOVQ)) || 
+            icode.equals(Long.fromNumber(Constants.PUSHQ)) || 
+            icode.equals(Long.fromNumber(Constants.CALL)) || 
+            icode.equals(Long.fromNumber(Constants.MRMOVQ))) {
+            return mreg.getvalE().getOutput();
+        } else if (icode.equals(Long.fromNumber(Constants.POPQ)) || 
+            icode.equals(Long.fromNumber(Constants.RET))) {
+            return mreg.getvalA().getOutput();
+        } else {
+            return Long.ZERO;
+        }
     }
 
-    //TODO
-    m_stat(mreg): Long {
-        return Long.ZERO;
+    /*
+    * m_stat
+    * sets the M_stat variable based on error from accessing memory
+    */
+    m_stat(mreg: M): Long {
+        if (this.error) return Long.fromNumber(Constants.SADR);
+        else return mreg.getstat().getOutput();
     }
 
     /*
@@ -931,14 +964,26 @@ export class CpuService {
     doWritebackStage(wreg: W): void {
         this.wreg = wreg;
 
-        this.doWritebackClockLow(wreg);
+        let stop = this.doWritebackClockLow(wreg);
         this.doWritebackClockHigh(wreg);
     }
 
-    doWritebackClockLow(wreg: W): void {
+    doWritebackClockLow(wreg: W): boolean {
+        let stat = wreg.getstat().getOutput();
+
+        return stat.notEquals(Long.fromNumber(Constants.SAOK));
     }
 
     doWritebackClockHigh(wreg: W): void {
+        let valE = wreg.getvalE().getOutput(),
+        dstE =  wreg.getdstE().getOutput(),
+        valM = wreg.getvalM().getOutput(),
+        dstM = wreg.getdstM().getOutput(),
+        r_dstE = this.registerService.index2register(dstE.toNumber()),
+        r_dstM = this.registerService.index2register(dstM.toNumber());
+
+        this.registerService.setValueByRegister(r_dstE, valE);
+        this.registerService.setValueByRegister(r_dstM, valM);
     }
 
     /*
