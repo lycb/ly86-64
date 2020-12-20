@@ -4,7 +4,7 @@ import { CpuService } from '../../services/cpu/cpu.service';
 import { UtilsService } from '../../services/utils/utils.service';
 import { Line } from '../../models/Line';
 import { MemoryFunc } from "../../models/Memory";
-import { AddressLine } from "../../models/AddressLine"; 
+import { AddressLine } from "../../models/AddressLine";
 import { F, D, E, M, W } from "../../models/PipeReg";
 
 @Component({
@@ -25,7 +25,7 @@ export class ButtonsComponent implements OnInit {
   mreg: M;
   wreg: W;
 
-  constructor(private parserService: ParserService, 
+  constructor(private parserService: ParserService,
     private cpuService: CpuService,
     private utilsService: UtilsService) {
   }
@@ -108,16 +108,17 @@ export class ButtonsComponent implements OnInit {
   nextCurrentLine(current: Line): void {
     for (let i = current.id + 1; i < this.fileContent.length; i++) {
       let next = this.fileContent[i];
-      let curr = this.fileContent[i-1];
       if (next.parsedLine != null) {
         next.isCurrent = true;
         this.parserService.setCurrent(next);
-        if (next.parsedLine.address != 0 && curr.parsedLine != null && curr.parsedLine.address != next.parsedLine.address) {
+        if (next.parsedLine.address != 0 && current.parsedLine != null &&
+          current.parsedLine.address != next.parsedLine.address &&
+          current.parsedLine.address != 0) {
           //increment the clock-cycle
           this.counter++;
         }
         break;
-      } 
+      }
     }
   }
 
@@ -126,8 +127,8 @@ export class ButtonsComponent implements OnInit {
     let bytes = line.instruction.length / 2;
     let position = 0;
     let address = line.address;
-    while(bytes > 0) {
-      let value = parseInt(line.instruction.substring(position, position + 2) , 16);
+    while (bytes > 0) {
+      let value = parseInt(line.instruction.substring(position, position + 2), 16);
       position += 2;
       bytes--;
       memory.putByte(value, address);
