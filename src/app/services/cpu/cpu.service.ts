@@ -853,11 +853,10 @@ export class CpuService {
     }
 
     doMemoryClockLow(lineObject: Line, freg: F, dreg: D, ereg: E, mreg: M, wreg: W): void {
-        let icode = ereg.geticode().getOutput(),
-            ifun = ereg.getifun().getOutput(),
-            valE = Long.ZERO,
-            dstE = Long.fromNumber(Constants.RNONE),
-            dstM = ereg.getdstM().getOutput();
+        let icode = mreg.geticode().getOutput(),
+            valE = mreg.getvalE().getOutput(),
+            dstE = mreg.getdstE().getOutput(),
+            dstM = mreg.getdstM().getOutput();
 
         let memory = MemoryFunc.getInstance(this.utilsService);
 
