@@ -29,7 +29,6 @@ export class UtilsService {
     return ret;
   }
 
-
   /*
   * sign
   * @returns the sign of source in two's comp
@@ -37,45 +36,69 @@ export class UtilsService {
   */
   sign(source: string): boolean {
     let temp = this.paddingBinary(source, 64);
-    console.log(temp)
     if (temp[0] == '0') return false;
     else return true;
   }
 
   addOverflow(a: Long, b: Long): boolean {
-    let sum = a.add(b),
-      sumSign = this.sign(sum.toString(2)),
+    let sum = (a.add(b)).toSigned(),
+      sumSign = sum.isNegative(),
       aSign = this.sign(a.toString(2)),
       bSign = this.sign(b.toString(2));
-    console.log("a: " + a.toString(16))
-    console.log("b: " + b.toString(16))
-    console.log("sum: " + sum)
-    console.log("asign: " + aSign + " bSign: " + bSign + " Sum: " + sumSign)
     return ((aSign == bSign) && (aSign != sumSign));
   }
 
   subOverflow(a: Long, b: Long): boolean {
-    let sub = b.subtract(a),
-      subSign = this.sign(sub.toString(2)),
+    let sub = (b.subtract(a)).toSigned(),
+      subSign = sub.isNegative(),
       aSign = this.sign(a.toString(2)),
       bSign = this.sign(b.toString(2));
-    return ((aSign == bSign) && (aSign != subSign));
+    return ((aSign != bSign) && (aSign == subSign));
   }
 
+  /*
+  * paddingHex
+  * pad any hex number to a specified width
+  * 
+  * for example:
+  * paddingHex(12, 8) returns 0x0000000c
+  */
   paddingHex(num, width): string {
-    var result = num.toString(16);
-    while (result.length < width) {
-      result = '0' + result;
+    let result;
+    if (num < 0) {
+      result = (num >>> 0).toString(16);
+    } else {
+      result = num.toString(16);
+      while (result.length < width) {
+        result = '0' + result;
+      }
     }
     return "0x" + result;
   }
 
-  paddingBinary(num, width): string {
-    var result = num.toString(2);
-    while (result.length < width) {
-      result = '0' + result;
+
+    /*
+    * paddingBinary
+    * pad any binary number to a specified width
+    * 
+    * for example:
+    * paddingBinary(12, 8) returns 00001100
+    */
+    paddingBinary(num, width): string {
+      let result;
+      if (num < 0) {
+        result = (num >>> 0).toString(2);
+
+        while (result.length > width) {
+          result = result.slice(1);
+        }
+      } else {
+        result = num.toString(2);
+        while (result.length < width) {
+          result = '0' + result;
+        }
+      }
+      return result;
     }
-    return result;
   }
-}
 
