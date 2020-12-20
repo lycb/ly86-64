@@ -720,6 +720,11 @@ export class CpuService {
             valE = A.add(B);
             this.cc(valE.isNegative(), valE.isZero(),
                 this.utilsService.addOverflow(A, B))
+
+            
+            console.log("TEST")
+            console.log("of: " + this.utilsService.addOverflow(Long.MAX_VALUE, Long.MIN_VALUE))
+            console.log("END TEST")
         }
         if (this.alufun(ereg).equals(Long.fromNumber(Constants.SUB))) {
             valE = B.subtract(A);

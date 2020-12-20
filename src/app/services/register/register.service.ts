@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { REGISTERS } from '../../constants';
 import { Register } from '../../models/Register';
+import { UtilsService } from '../utils/utils.service';
 import Long from 'long';
  
 @Injectable({
@@ -9,7 +10,7 @@ import Long from 'long';
 export class RegisterService {
 	register: Register[];
 
-  constructor() { 
+  constructor(private utilsService: UtilsService) { 
   	this.register = [];
 	  for (let reg of REGISTERS) {
   		this.register.push({
@@ -32,7 +33,7 @@ export class RegisterService {
   setValueByRegister(name: string, value: Long): void {
     this.register[this.register2index(name)].value = value.toSigned();
     var binaryNum = value.toString(16);
-    this.register[this.register2index(name)].hex = this.paddingHex(binaryNum, 16);
+    this.register[this.register2index(name)].hex = this.utilsService.paddingHex(binaryNum, 16);
   }
 
   register2index(name: string): number {
@@ -77,11 +78,5 @@ export class RegisterService {
     }
   }
 
-  paddingHex(num, width): string {
-    var result = num.toString(16);
-    while (result.length < width) {
-      result = '0' + result;
-    } 
-    return "0x" + result;
-  }
+  
 }
