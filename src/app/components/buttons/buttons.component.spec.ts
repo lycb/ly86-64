@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync, fakeAsync, tick } from '@angular/core/testing';
 
 import { ButtonsComponent } from './buttons.component';
 
@@ -22,4 +22,13 @@ describe('ButtonsComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  // it('should open the select file window', fakeAsync(() => {
+  //   spyOn(component, 'onFileSelect');
+
+  //   let button = fixture.debugElement.nativeElement.querySelector('button.file-upload-button');
+  //   button.click();
+  //   tick();
+  //   expect(component.onFileSelect).toHaveBeenCalled(); 
+  // }));
 });

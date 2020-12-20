@@ -19,6 +19,7 @@
     "@angular/platform-browser": "~11.0.4",
     "@angular/platform-browser-dynamic": "~11.0.4",
     "@angular/router": "~11.0.4",
+    "@types/core-js": "^2.5.4",
     "@types/jest": "^26.0.19",
     "@types/mocha": "^8.2.0",
     "long": "^4.0.0",

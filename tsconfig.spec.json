@@ -5,8 +5,7 @@
     "types": [
       "jasmine",
       "node",
-      "jest",
-      "mocha"
+      "core-js"
     ]
   },
   "files": [
