@@ -5,7 +5,7 @@ import { RegisterService } from "../register/register.service";
 import { ConditionCodesService } from "../condition-codes/condition-codes.service";
 import { UtilsService } from "../utils/utils.service";
 import { Line } from "../../models/Line";
-import { MemoryFunc } from "../../models/Memory";
+import { MemoryService } from "../memory/memory.service";
 import { F, D, E, M, W } from "../../models/PipeReg";
 import * as Constants from "../../constants";
 import Long from 'long';
@@ -55,7 +55,8 @@ export class CpuService {
     private parserService: ParserService,
     private registerService: RegisterService,
     private conditionCodesService: ConditionCodesService,
-    private utilsService: UtilsService
+    private utilsService: UtilsService,
+    private memoryService: MemoryService
   ) {
     this.error = false;
   }
@@ -65,15 +66,13 @@ export class CpuService {
     * performs simulation for the pipeline
     */
   doSimulation(lineObject: Line, freg: F, dreg: D, ereg: E, mreg: M, wreg: W): void {
-    this.isNormal = true;
-    this.isBubbled = false;
-    this.isStalled = false;
-
     this.freg = freg;
     this.dreg = dreg;
     this.ereg = ereg;
     this.mreg = mreg;
     this.wreg = wreg;
+
+    console.log("----------START-------------")
 
     this.doWritebackStage(wreg);
     this.doMemoryStage(lineObject, freg, dreg, ereg, mreg, wreg);
@@ -84,6 +83,8 @@ export class CpuService {
     this.e_reg.next(ereg);
     this.doFetchStage(lineObject, freg, dreg, ereg, mreg, wreg);
     this.d_reg.next(dreg);
+
+    console.log("----------END-------------")
   }
 
     /*
@@ -149,6 +150,7 @@ export class CpuService {
       freg.getPredPC().normal();
     }
     if (this.dbubble) {
+      console.log("d bubble")
       dreg.getstat().bubble(Long.fromNumber(Constants.SAOK));
       dreg.geticode().bubble(Long.fromNumber(Constants.NOP));
       dreg.getifun().bubble(Long.ZERO);
@@ -158,6 +160,7 @@ export class CpuService {
       dreg.getvalP().bubble(Long.ZERO);
     }
     if (!this.dbubble && !this.dstall) {
+      console.log("d normal")
       dreg.getstat().normal();
       dreg.geticode().normal();
       dreg.getifun().normal();
@@ -171,9 +174,11 @@ export class CpuService {
   setDInput(dreg: D, stat: Long, icode: Long, ifun: Long, rA: Long, rB: Long, valC: Long, valP: Long): void {
     dreg.getstat().setInput(stat);
     dreg.geticode().setInput(icode);
+    console.log("icode in setDInput: " + icode)
     dreg.getifun().setInput(ifun);
     dreg.getrA().setInput(rA);
     dreg.getrB().setInput(rB);
+    console.log("rb before in f: " + rB + " rb after: " + dreg.getrB().getOutput())
     dreg.getvalC().setInput(valC);
     dreg.getvalP().setInput(valP);
   }
@@ -201,20 +206,19 @@ export class CpuService {
   }
 
   getValC(icode: Long, f_pc: Long, line: string): Long {
-    let memory = MemoryFunc.getInstance(this.utilsService);
     let arr = new Array<Long>(8);
     if (this.needValC(icode)) {
       if (!this.needRegister(icode)) {
         let index = 0;
         for (let i = f_pc.toNumber() + 1; index < 8; i++) {
-          arr[index] = memory.getByte(i);
+          arr[index] = this.memoryService.getByte(i);
           index++;
         }
         return this.utilsService.buildLong(arr);
       } else {
         let index = 0;
         for (let i = f_pc.toNumber() + 2; index < 8; i++) {
-          arr[index] = memory.getByte(i);
+          arr[index] = this.memoryService.getByte(i);
           index++;
         }
         return this.utilsService.buildLong(arr);
@@ -309,10 +313,10 @@ export class CpuService {
     );
   }
 
-    /*
-    * F_stall
-    * stalling logic for F register
-    */
+  /*
+  * F_stall
+  * stalling logic for F register
+  */
   f_stall(dreg: D, ereg: E, mreg: M): boolean {
     let e_icode = ereg.geticode().getOutput(),
       d_icode = dreg.geticode().getOutput(),
@@ -327,17 +331,20 @@ export class CpuService {
         m_icode.equals(Long.fromNumber(Constants.RET))));
   }
 
-    /*
-    * D_stall
-    * stalling logic for D register
-    */
+  /*
+  * D_stall
+  * stalling logic for D register
+  */
   d_stall(ereg: E): boolean {
     let e_icode = ereg.geticode().getOutput(),
       e_dstM = ereg.getdstM().getOutput();
 
-    return (e_icode.equals(Long.fromNumber(Constants.MRMOVQ)) ||
-      e_icode.equals(Long.fromNumber(Constants.POPQ))) &&
-      (e_dstM.equals(this.D_srcA) || e_dstM.equals(this.D_srcB));
+      console.log("e_dstM: " + e_dstM);
+      console.log("d_srcA: " + this.D_srcA)
+      console.log("d_srcB: " + this.D_srcB)
+
+    return (e_icode.equals(Long.fromNumber(Constants.MRMOVQ)) || e_icode.equals(Long.fromNumber(Constants.POPQ))) &&
+        (e_dstM.equals(this.D_srcA) || e_dstM.equals(this.D_srcB));
   }
 
   d_bubble(dreg: D, ereg: E, mreg: M): boolean {
@@ -348,12 +355,9 @@ export class CpuService {
       Cnd = this.E_Cnd;
 
     return (e_icode.equals(Long.fromNumber(Constants.JXX)) && !Cnd) ||
-      (!((e_icode.equals(Long.fromNumber(Constants.MRMOVQ)) ||
-        e_icode.equals(Long.fromNumber(Constants.POPQ))) &&
-        (e_dstM.equals(this.D_srcA) ||
-          e_dstM.equals(this.D_srcB))) &&
-        (e_icode.equals(Long.fromNumber(Constants.RET)) ||
-          d_icode.equals(Long.fromNumber(Constants.RET)) ||
+        (!((e_icode.equals(Long.fromNumber(Constants.MRMOVQ)) || e_icode.equals(Long.fromNumber(Constants.POPQ))) &&
+        (e_dstM.equals(this.D_srcA) || e_dstM.equals(this.D_srcB))) &&
+        (e_icode.equals(Long.fromNumber(Constants.RET)) || d_icode.equals(Long.fromNumber(Constants.RET)) || 
           m_icode.equals(Long.fromNumber(Constants.RET))));
   }
 
@@ -361,6 +365,10 @@ export class CpuService {
     this.fstall = this.f_stall(dreg, ereg, mreg);
     this.dstall = this.d_stall(ereg);
     this.dbubble = this.d_bubble(dreg, ereg, mreg);
+
+    console.log("fstall: " + this.fstall)
+    console.log("dstall: " + this.dstall)
+    console.log("dbubble: " + this.dbubble)
   }
 
     /*
@@ -471,9 +479,12 @@ export class CpuService {
     let icode = dreg.geticode().getOutput(),
       rB = dreg.getrB().getOutput();
 
+      console.log("rb: " + rB)
+
     if (icode.equals(Long.fromNumber(Constants.OPQ)) ||
       icode.equals(Long.fromNumber(Constants.RMMOVQ)) ||
       icode.equals(Long.fromNumber(Constants.MRMOVQ))) {
+      console.log("get in")
       return rB;
     }
     if (icode.equals(Long.fromNumber(Constants.PUSHQ)) ||
@@ -561,8 +572,12 @@ export class CpuService {
     let icode = dreg.geticode().getOutput(),
       rA = dreg.getrA().getOutput();
 
+    console.log("rA in d: " + rA)
+    console.log("icode in d: " + icode)
+
     if (icode.equals(Long.fromNumber(Constants.POPQ)) ||
       icode.equals(Long.fromNumber(Constants.MRMOVQ))) {
+      console.log("d_dstM is rA")
       return rA;
     }
     return Long.fromNumber(Constants.RNONE);
@@ -863,19 +878,17 @@ export class CpuService {
       dstE = mreg.getdstE().getOutput(),
       dstM = mreg.getdstM().getOutput();
 
-    let memory = MemoryFunc.getInstance(this.utilsService);
-
     this.M_valM = Long.ZERO;
 
     let addr = this.mem_addr(mreg);
     if (this.mem_read(icode)) {
-      this.M_valM = memory.getLong(addr);
+      this.M_valM = this.memoryService.getLong(addr.toNumber());
     }
     if (this.mem_write(icode)) {
-      memory.putLong(mreg.getvalA().getOutput(), addr);
+      this.memoryService.putLong(mreg.getvalA().getOutput(), addr.toNumber());
     }
 
-    this.error = memory.getError();
+    this.error = this.memoryService.getError();
     this.M_stat = this.m_stat(mreg);
 
     this.setWInput(wreg, this.M_stat, icode, valE, this.M_valM, dstE, dstM);

@@ -118,3 +118,6 @@ export const SINS = 4 // invalid instruction
 export const VALC_BYTES = 8;
 export const REG_BYTES = 2;
 export const PC_INCREMENT = 1;
+
+// sizes
+export const MEMSIZE = 0x1000;
