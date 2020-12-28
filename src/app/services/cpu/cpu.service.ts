@@ -56,10 +56,10 @@ export class CpuService {
     this.error = false;
   }
 
-    /*
-    * doSimulation
-    * performs simulation for the pipeline
-    */
+  /*
+  * doSimulation
+  * performs simulation for the pipeline
+  */
   doSimulation(lineObject: Line, freg: F, dreg: D, ereg: E, mreg: M, wreg: W): void {
 
     console.log("----------START-------------")
@@ -73,16 +73,16 @@ export class CpuService {
     console.log("----------END-------------")
   }
 
-    /*
-    * ==============================================================
-    *                    F E T C H     S T A G E
-    * ==============================================================
-    */
+  /*
+  * ==============================================================
+  *                    F E T C H     S T A G E
+  * ==============================================================
+  */
 
-    /*
-    * doFetchStage
-    * performs clock low and clock high for the fetch stage
-    */
+  /*
+  * doFetchStage
+  * performs clock low and clock high for the fetch stage
+  */
   doFetchStage(lineObject: Line, freg: F, dreg: D, ereg: E, mreg: M, wreg: W): void {
     this.doFetchClockLow(lineObject, freg, dreg, ereg, mreg, wreg);
     this.doFetchClockHigh(freg, dreg);
@@ -152,13 +152,13 @@ export class CpuService {
   }
 
   setDInput(dreg: D, stat: Long, icode: Long, ifun: Long, rA: Long, rB: Long, valC: Long, valP: Long): void {
-      dreg.getstat().setInput(stat);
-      dreg.geticode().setInput(icode);
-      dreg.getifun().setInput(ifun);
-      dreg.getrA().setInput(rA);
-      dreg.getrB().setInput(rB);
-      dreg.getvalC().setInput(valC);
-      dreg.getvalP().setInput(valP);
+    dreg.getstat().setInput(stat);
+    dreg.geticode().setInput(icode);
+    dreg.getifun().setInput(ifun);
+    dreg.getrA().setInput(rA);
+    dreg.getrB().setInput(rB);
+    dreg.getvalC().setInput(valC);
+    dreg.getvalP().setInput(valP);
   }
 
   needRegister(icode: Long): boolean {
@@ -317,12 +317,12 @@ export class CpuService {
     let e_icode = ereg.geticode().getOutput(),
       e_dstM = ereg.getdstM().getOutput();
 
-    console.log("e_icode: " + e_icode);  
+    console.log("e_icode: " + e_icode);
     console.log("e_dstM: " + e_dstM);
     console.log("d_srcB: " + this.D_srcB);
     console.log("d_srcA: " + this.D_srcA);
 
-    return (e_icode.equals(Long.fromNumber(Constants.MRMOVQ)) || 
+    return (e_icode.equals(Long.fromNumber(Constants.MRMOVQ)) ||
       e_icode.equals(Long.fromNumber(Constants.POPQ))) &&
       (e_dstM.equals(this.D_srcA) || e_dstM.equals(this.D_srcB));
   }
@@ -351,20 +351,20 @@ export class CpuService {
     console.log("dbubble: " + this.dbubble)
   }
 
-    /*
-    * getPredPC
-    * @returns an Observable of type <any> for the predPC 
-    * to pass to the F pipeline register
-    */
+  /*
+  * getPredPC
+  * @returns an Observable of type <any> for the predPC 
+  * to pass to the F pipeline register
+  */
   getPredPC(): Observable<any> {
     return this.f_pred.asObservable();
   }
 
-    /*
-    * ==============================================================
-    *                    D E C O D E     S T A G E
-    * ==============================================================
-    */
+  /*
+  * ==============================================================
+  *                    D E C O D E     S T A G E
+  * ==============================================================
+  */
 
   doDecodeStage(lineObject: Line, freg: F, dreg: D, ereg: E, mreg: M, wreg: W): void {
     this.doDecodeClockLow(lineObject, freg, dreg, ereg, mreg, wreg);
@@ -419,17 +419,17 @@ export class CpuService {
   }
 
   setEInput(ereg: E, stat: Long, icode: Long, ifun: Long, valC: Long, valA: Long,
-    valB: Long, dstE: Long, dstM: Long, srcA: Long, srcB: Long): void {    
-      ereg.getstat().setInput(stat);
-      ereg.geticode().setInput(icode);
-      ereg.getifun().setInput(ifun);
-      ereg.getvalA().setInput(valA);
-      ereg.getvalB().setInput(valB);
-      ereg.getvalC().setInput(valC);
-      ereg.getdstE().setInput(dstE);
-      ereg.getdstM().setInput(dstM);
-      ereg.getsrcA().setInput(srcA);
-      ereg.getsrcB().setInput(srcB);
+    valB: Long, dstE: Long, dstM: Long, srcA: Long, srcB: Long): void {
+    ereg.getstat().setInput(stat);
+    ereg.geticode().setInput(icode);
+    ereg.getifun().setInput(ifun);
+    ereg.getvalA().setInput(valA);
+    ereg.getvalB().setInput(valB);
+    ereg.getvalC().setInput(valC);
+    ereg.getdstE().setInput(dstE);
+    ereg.getdstM().setInput(dstM);
+    ereg.getsrcA().setInput(srcA);
+    ereg.getsrcB().setInput(srcB);
   }
 
   set_D_srcA(dreg: D): Long {
@@ -623,13 +623,13 @@ export class CpuService {
 
   setMInput(mreg: M, icode: Long, Cnd: Long, stat: Long, valE: Long, valA: Long,
     dstE: Long, dstM: Long) {
-      mreg.getstat().setInput(stat);
-      mreg.geticode().setInput(icode);
-      mreg.getCnd().setInput(Cnd);
-      mreg.getvalA().setInput(valA);
-      mreg.getvalE().setInput(valE);
-      mreg.getdstE().setInput(dstE);
-      mreg.getdstM().setInput(dstM);
+    mreg.getstat().setInput(stat);
+    mreg.geticode().setInput(icode);
+    mreg.getCnd().setInput(Cnd);
+    mreg.getvalA().setInput(valA);
+    mreg.getvalE().setInput(valE);
+    mreg.getdstE().setInput(dstE);
+    mreg.getdstM().setInput(dstM);
   }
 
   alu_A(ereg: E): Long {
@@ -862,12 +862,12 @@ export class CpuService {
 
   setWInput(wreg: W, stat: Long, icode: Long, valE: Long,
     valM: Long, dstE: Long, dstM: Long): void {
-      wreg.getstat().setInput(stat);
-      wreg.geticode().setInput(icode);
-      wreg.getvalE().setInput(valE);
-      wreg.getvalM().setInput(valM);
-      wreg.getdstE().setInput(dstE);
-      wreg.getdstM().setInput(dstM);
+    wreg.getstat().setInput(stat);
+    wreg.geticode().setInput(icode);
+    wreg.getvalE().setInput(valE);
+    wreg.getvalM().setInput(valM);
+    wreg.getdstE().setInput(dstE);
+    wreg.getdstM().setInput(dstM);
 
   }
 
