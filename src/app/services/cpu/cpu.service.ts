@@ -16,11 +16,6 @@ import { Observable, Subject } from 'rxjs';
 })
 export class CpuService {
   error: boolean;
-  freg: F;
-  dreg: D;
-  ereg: E;
-  mreg: M;
-  wreg: W;
 
   // Observables for passing values to the pipeline register component
   f_pred = new Subject<any>();
@@ -66,23 +61,14 @@ export class CpuService {
     * performs simulation for the pipeline
     */
   doSimulation(lineObject: Line, freg: F, dreg: D, ereg: E, mreg: M, wreg: W): void {
-    this.freg = freg;
-    this.dreg = dreg;
-    this.ereg = ereg;
-    this.mreg = mreg;
-    this.wreg = wreg;
 
     console.log("----------START-------------")
 
     this.doWritebackStage(wreg);
     this.doMemoryStage(lineObject, freg, dreg, ereg, mreg, wreg);
-    this.w_reg.next(wreg);
     this.doExecuteStage(lineObject, freg, dreg, ereg, mreg, wreg);
-    this.m_reg.next(mreg);
     this.doDecodeStage(lineObject, freg, dreg, ereg, mreg, wreg);
-    this.e_reg.next(ereg);
     this.doFetchStage(lineObject, freg, dreg, ereg, mreg, wreg);
-    this.d_reg.next(dreg);
 
     console.log("----------END-------------")
   }
@@ -98,12 +84,6 @@ export class CpuService {
     * performs clock low and clock high for the fetch stage
     */
   doFetchStage(lineObject: Line, freg: F, dreg: D, ereg: E, mreg: M, wreg: W): void {
-    this.freg = freg;
-    this.dreg = dreg;
-    this.ereg = ereg;
-    this.mreg = mreg;
-    this.wreg = wreg;
-
     this.doFetchClockLow(lineObject, freg, dreg, ereg, mreg, wreg);
     this.doFetchClockHigh(freg, dreg);
   }
@@ -143,6 +123,7 @@ export class CpuService {
     freg.getPredPC().setInput(f_predPC);
 
     this.setDInput(dreg, stat, icode, ifun, rA, rB, valC, valP);
+
   }
 
   doFetchClockHigh(freg: F, dreg: D): void {
@@ -150,7 +131,6 @@ export class CpuService {
       freg.getPredPC().normal();
     }
     if (this.dbubble) {
-      console.log("d bubble")
       dreg.getstat().bubble(Long.fromNumber(Constants.SAOK));
       dreg.geticode().bubble(Long.fromNumber(Constants.NOP));
       dreg.getifun().bubble(Long.ZERO);
@@ -160,7 +140,6 @@ export class CpuService {
       dreg.getvalP().bubble(Long.ZERO);
     }
     if (!this.dbubble && !this.dstall) {
-      console.log("d normal")
       dreg.getstat().normal();
       dreg.geticode().normal();
       dreg.getifun().normal();
@@ -169,18 +148,17 @@ export class CpuService {
       dreg.getvalC().normal();
       dreg.getvalP().normal();
     }
+    this.d_reg.next(dreg);
   }
 
   setDInput(dreg: D, stat: Long, icode: Long, ifun: Long, rA: Long, rB: Long, valC: Long, valP: Long): void {
-    dreg.getstat().setInput(stat);
-    dreg.geticode().setInput(icode);
-    console.log("icode in setDInput: " + icode)
-    dreg.getifun().setInput(ifun);
-    dreg.getrA().setInput(rA);
-    dreg.getrB().setInput(rB);
-    console.log("rb before in f: " + rB + " rb after: " + dreg.getrB().getOutput())
-    dreg.getvalC().setInput(valC);
-    dreg.getvalP().setInput(valP);
+      dreg.getstat().setInput(stat);
+      dreg.geticode().setInput(icode);
+      dreg.getifun().setInput(ifun);
+      dreg.getrA().setInput(rA);
+      dreg.getrB().setInput(rB);
+      dreg.getvalC().setInput(valC);
+      dreg.getvalP().setInput(valP);
   }
 
   needRegister(icode: Long): boolean {
@@ -339,12 +317,14 @@ export class CpuService {
     let e_icode = ereg.geticode().getOutput(),
       e_dstM = ereg.getdstM().getOutput();
 
-      console.log("e_dstM: " + e_dstM);
-      console.log("d_srcA: " + this.D_srcA)
-      console.log("d_srcB: " + this.D_srcB)
+    console.log("e_icode: " + e_icode);  
+    console.log("e_dstM: " + e_dstM);
+    console.log("d_srcB: " + this.D_srcB);
+    console.log("d_srcA: " + this.D_srcA);
 
-    return (e_icode.equals(Long.fromNumber(Constants.MRMOVQ)) || e_icode.equals(Long.fromNumber(Constants.POPQ))) &&
-        (e_dstM.equals(this.D_srcA) || e_dstM.equals(this.D_srcB));
+    return (e_icode.equals(Long.fromNumber(Constants.MRMOVQ)) || 
+      e_icode.equals(Long.fromNumber(Constants.POPQ))) &&
+      (e_dstM.equals(this.D_srcA) || e_dstM.equals(this.D_srcB));
   }
 
   d_bubble(dreg: D, ereg: E, mreg: M): boolean {
@@ -355,9 +335,9 @@ export class CpuService {
       Cnd = this.E_Cnd;
 
     return (e_icode.equals(Long.fromNumber(Constants.JXX)) && !Cnd) ||
-        (!((e_icode.equals(Long.fromNumber(Constants.MRMOVQ)) || e_icode.equals(Long.fromNumber(Constants.POPQ))) &&
+      (!((e_icode.equals(Long.fromNumber(Constants.MRMOVQ)) || e_icode.equals(Long.fromNumber(Constants.POPQ))) &&
         (e_dstM.equals(this.D_srcA) || e_dstM.equals(this.D_srcB))) &&
-        (e_icode.equals(Long.fromNumber(Constants.RET)) || d_icode.equals(Long.fromNumber(Constants.RET)) || 
+        (e_icode.equals(Long.fromNumber(Constants.RET)) || d_icode.equals(Long.fromNumber(Constants.RET)) ||
           m_icode.equals(Long.fromNumber(Constants.RET))));
   }
 
@@ -387,18 +367,11 @@ export class CpuService {
     */
 
   doDecodeStage(lineObject: Line, freg: F, dreg: D, ereg: E, mreg: M, wreg: W): void {
-    this.freg = freg;
-    this.dreg = dreg;
-    this.ereg = ereg;
-    this.mreg = mreg;
-    this.wreg = wreg;
-
     this.doDecodeClockLow(lineObject, freg, dreg, ereg, mreg, wreg);
     this.doDecodeClockHigh(ereg);
   }
 
   doDecodeClockLow(lineObject: Line, freg: F, dreg: D, ereg: E, mreg: M, wreg: W): void {
-
     let line = lineObject.parsedLine.instruction;
 
     this.D_srcA = this.set_D_srcA(dreg);
@@ -442,20 +415,21 @@ export class CpuService {
       ereg.getsrcA().normal();
       ereg.getsrcB().normal();
     }
+    this.e_reg.next(ereg);
   }
 
   setEInput(ereg: E, stat: Long, icode: Long, ifun: Long, valC: Long, valA: Long,
-    valB: Long, dstE: Long, dstM: Long, srcA: Long, srcB: Long): void {
-    ereg.getstat().setInput(stat);
-    ereg.geticode().setInput(icode);
-    ereg.getifun().setInput(ifun);
-    ereg.getvalA().setInput(valA);
-    ereg.getvalB().setInput(valB);
-    ereg.getvalC().setInput(valC);
-    ereg.getdstE().setInput(dstE);
-    ereg.getdstM().setInput(dstM);
-    ereg.getsrcA().setInput(srcA);
-    ereg.getsrcB().setInput(srcB);
+    valB: Long, dstE: Long, dstM: Long, srcA: Long, srcB: Long): void {    
+      ereg.getstat().setInput(stat);
+      ereg.geticode().setInput(icode);
+      ereg.getifun().setInput(ifun);
+      ereg.getvalA().setInput(valA);
+      ereg.getvalB().setInput(valB);
+      ereg.getvalC().setInput(valC);
+      ereg.getdstE().setInput(dstE);
+      ereg.getdstM().setInput(dstM);
+      ereg.getsrcA().setInput(srcA);
+      ereg.getsrcB().setInput(srcB);
   }
 
   set_D_srcA(dreg: D): Long {
@@ -479,12 +453,9 @@ export class CpuService {
     let icode = dreg.geticode().getOutput(),
       rB = dreg.getrB().getOutput();
 
-      console.log("rb: " + rB)
-
     if (icode.equals(Long.fromNumber(Constants.OPQ)) ||
       icode.equals(Long.fromNumber(Constants.RMMOVQ)) ||
       icode.equals(Long.fromNumber(Constants.MRMOVQ))) {
-      console.log("get in")
       return rB;
     }
     if (icode.equals(Long.fromNumber(Constants.PUSHQ)) ||
@@ -572,12 +543,8 @@ export class CpuService {
     let icode = dreg.geticode().getOutput(),
       rA = dreg.getrA().getOutput();
 
-    console.log("rA in d: " + rA)
-    console.log("icode in d: " + icode)
-
     if (icode.equals(Long.fromNumber(Constants.POPQ)) ||
       icode.equals(Long.fromNumber(Constants.MRMOVQ))) {
-      console.log("d_dstM is rA")
       return rA;
     }
     return Long.fromNumber(Constants.RNONE);
@@ -591,28 +558,22 @@ export class CpuService {
         (e_dstM.equals(this.D_srcA) || e_dstM.equals(this.D_srcB))));
   }
 
-    /*
-    * getDreg
-    * @returns an Observable of type <D> for the dreg 
-    * to pass to the D pipeline register
-    */
+  /*
+  * getDreg
+  * @returns an Observable of type <D> for the dreg 
+  * to pass to the D pipeline register
+  */
   getDreg(): Observable<D> {
     return this.d_reg.asObservable();
   }
 
-    /*
-    * ==============================================================
-    *                    E X E C U T E     S T A G E
-    * ==============================================================
-    */
+  /*
+  * ==============================================================
+  *                    E X E C U T E     S T A G E
+  * ==============================================================
+  */
 
   doExecuteStage(lineObject: Line, freg: F, dreg: D, ereg: E, mreg: M, wreg: W): void {
-    this.freg = freg;
-    this.dreg = dreg;
-    this.ereg = ereg;
-    this.mreg = mreg;
-    this.wreg = wreg;
-
     this.doExecuteClockLow(lineObject, freg, dreg, ereg, mreg, wreg);
     this.doExecuteClockHigh(mreg);
   }
@@ -635,10 +596,10 @@ export class CpuService {
     this.setMInput(mreg, icode, this.E_Cnd, stat, this.E_valE, valA, this.E_dstE, dstM);
   }
 
-    /*
-    * doExecuteClockHigh
-    * applies to appropriate control signals to the M register
-    */
+  /*
+  * doExecuteClockHigh
+  * applies to appropriate control signals to the M register
+  */
   doExecuteClockHigh(mreg: M): void {
     if (!this.mbubble) {
       mreg.getstat().normal();
@@ -657,17 +618,18 @@ export class CpuService {
       mreg.getdstE().bubble(Long.fromNumber(Constants.RNONE));
       mreg.getdstM().bubble(Long.fromNumber(Constants.RNONE));
     }
+    this.m_reg.next(mreg);
   }
 
   setMInput(mreg: M, icode: Long, Cnd: Long, stat: Long, valE: Long, valA: Long,
     dstE: Long, dstM: Long) {
-    mreg.getstat().setInput(stat);
-    mreg.geticode().setInput(icode);
-    mreg.getCnd().setInput(Cnd);
-    mreg.getvalA().setInput(valA);
-    mreg.getvalE().setInput(valE);
-    mreg.getdstE().setInput(dstE);
-    mreg.getdstM().setInput(dstM);
+      mreg.getstat().setInput(stat);
+      mreg.geticode().setInput(icode);
+      mreg.getCnd().setInput(Cnd);
+      mreg.getvalA().setInput(valA);
+      mreg.getvalE().setInput(valE);
+      mreg.getdstE().setInput(dstE);
+      mreg.getdstM().setInput(dstM);
   }
 
   alu_A(ereg: E): Long {
@@ -793,11 +755,11 @@ export class CpuService {
     return ereg.getdstE().getOutput();
   }
 
-    /*
-    * chooseValE
-    * return the appropriate valE based on icode
-    * calls alu() if the icode is an OPQ
-    */
+  /*
+  * chooseValE
+  * return the appropriate valE based on icode
+  * calls alu() if the icode is an OPQ
+  */
   chooseValE(ereg: E, wreg: W): Long {
     let icode = ereg.geticode().getOutput(),
       valA = ereg.getvalA().getOutput(),
@@ -831,10 +793,10 @@ export class CpuService {
     return valC;
   }
 
-    /*
-    * e_calculateControlSignals
-    * check to see if the M register need to bubble or not
-    */
+  /*
+  * e_calculateControlSignals
+  * check to see if the M register need to bubble or not
+  */
   e_calculateControlSignals(wreg: W): void {
     let w_stat = wreg.getstat().getOutput();
 
@@ -846,28 +808,22 @@ export class CpuService {
         w_stat.equals(Long.fromNumber(Constants.SHLT))));
   }
 
-    /*
-    * getEreg
-    * @returns an Observable of type <E> for the ereg 
-    * to pass to the E pipeline register
-    */
+  /*
+  * getEreg
+  * @returns an Observable of type <E> for the ereg 
+  * to pass to the E pipeline register
+  */
   getEreg(): Observable<E> {
     return this.e_reg.asObservable();
   }
 
-    /*
-    * ==============================================================
-    *                    M E M O R Y     S T A G E
-    * ==============================================================
-    */
+  /*
+  * ==============================================================
+  *                    M E M O R Y     S T A G E
+  * ==============================================================
+  */
 
   doMemoryStage(lineObject: Line, freg: F, dreg: D, ereg: E, mreg: M, wreg: W): void {
-    this.freg = freg;
-    this.dreg = dreg;
-    this.ereg = ereg;
-    this.mreg = mreg;
-    this.wreg = wreg;
-
     this.doMemoryClockLow(lineObject, freg, dreg, ereg, mreg, wreg);
     this.doMemoryClockHigh(wreg);
   }
@@ -901,44 +857,46 @@ export class CpuService {
     wreg.getvalM().normal();
     wreg.getdstE().normal();
     wreg.getdstM().normal();
+    this.w_reg.next(wreg);
   }
 
   setWInput(wreg: W, stat: Long, icode: Long, valE: Long,
-    valM: Long, dstE: Long, dstM: Long) {
-    wreg.getstat().setInput(stat);
-    wreg.geticode().setInput(icode);
-    wreg.getvalE().setInput(valE);
-    wreg.getvalM().setInput(valM);
-    wreg.getdstE().setInput(dstE);
-    wreg.getdstM().setInput(dstM);
+    valM: Long, dstE: Long, dstM: Long): void {
+      wreg.getstat().setInput(stat);
+      wreg.geticode().setInput(icode);
+      wreg.getvalE().setInput(valE);
+      wreg.getvalM().setInput(valM);
+      wreg.getdstE().setInput(dstE);
+      wreg.getdstM().setInput(dstM);
+
   }
 
-    /*
-    * mem_read
-    * if the instruction requires memory access,
-    * this methods returns true
-    */
+  /*
+  * mem_read
+  * if the instruction requires memory access,
+  * this methods returns true
+  */
   mem_read(icode: Long): boolean {
     return icode.equals(Long.fromNumber(Constants.MRMOVQ)) ||
       icode.equals(Long.fromNumber(Constants.POPQ)) ||
       icode.equals(Long.fromNumber(Constants.RET));
   }
 
-    /*
-    * mem_write
-    * if the instruction requires writing to memory,
-    * this methods returns true
-    */
+  /*
+  * mem_write
+  * if the instruction requires writing to memory,
+  * this methods returns true
+  */
   mem_write(icode: Long): boolean {
     return icode.equals(Long.fromNumber(Constants.RMMOVQ)) ||
       icode.equals(Long.fromNumber(Constants.PUSHQ)) ||
       icode.equals(Long.fromNumber(Constants.CALL));
   }
 
-    /*
-    * mem_addr
-    * returns the address that is used to access memory using icode.
-    */
+  /*
+  * mem_addr
+  * returns the address that is used to access memory using icode.
+  */
   mem_addr(mreg: M): Long {
     let icode = mreg.geticode().getOutput();
     if (icode.equals(Long.fromNumber(Constants.RMMOVQ)) ||
@@ -954,33 +912,31 @@ export class CpuService {
     }
   }
 
-    /*
-    * m_stat
-    * sets the M_stat variable based on error from accessing memory
-    */
+  /*
+  * m_stat
+  * sets the M_stat variable based on error from accessing memory
+  */
   m_stat(mreg: M): Long {
     if (this.error) return Long.fromNumber(Constants.SADR);
     else return mreg.getstat().getOutput();
   }
 
-    /*
-    * getMreg--
-    * @returns an Observable of type <M> for the mreg 
-    * to pass to the M pipeline register
-    */
+  /*
+  * getMreg--
+  * @returns an Observable of type <M> for the mreg 
+  * to pass to the M pipeline register
+  */
   getMreg(): Observable<M> {
     return this.m_reg.asObservable();
   }
 
-    /*
-    * ==============================================================
-    *               W R I T E B A C K     S T A G E
-    * ==============================================================
-    */
+  /*
+  * ==============================================================
+  *               W R I T E B A C K     S T A G E
+  * ==============================================================
+  */
 
   doWritebackStage(wreg: W): void {
-    this.wreg = wreg;
-
     let stop = this.doWritebackClockLow(wreg);
     this.doWritebackClockHigh(wreg);
   }
@@ -1003,43 +959,43 @@ export class CpuService {
     this.registerService.setValueByRegister(r_dstM, valM);
   }
 
-    /*
-    * getWreg
-    * @returns an Observable of type <W> for the wreg 
-    * to pass to the W pipeline register
-    */
+  /*
+  * getWreg
+  * @returns an Observable of type <W> for the wreg 
+  * to pass to the W pipeline register
+  */
   getWreg(): Observable<W> {
     return this.w_reg.asObservable();
   }
 
-    /*
-    * ==============================================================
-    *                        C O L O R I N G
-    * ==============================================================
-    */
-    getFColor(): string {
-      return this.fstall ? "STALL" : "NORMAL";
-    }
+  /*
+  * ==============================================================
+  *                        C O L O R I N G
+  * ==============================================================
+  */
+  getFColor(): string {
+    return this.fstall ? "STALL" : "NORMAL";
+  }
 
-    getDColor(): string {
-      if (this.dbubble) {
-        return "BUBBLE";
-      } else if (this.dstall) {
-        return "STALL";
-      } else {
-        return "NORMAL";
-      }
-    }
-
-    getEColor(): string {
-      return this.ebubble ? "BUBBLE" : "NORMAL";
-    }
-
-    getMColor(): string {
-      return this.mbubble ? "BUBBLE" : "NORMAL";
-    }
-
-    getWColor(): string {
+  getDColor(): string {
+    if (this.dbubble) {
+      return "BUBBLE";
+    } else if (this.dstall) {
+      return "STALL";
+    } else {
       return "NORMAL";
     }
+  }
+
+  getEColor(): string {
+    return this.ebubble ? "BUBBLE" : "NORMAL";
+  }
+
+  getMColor(): string {
+    return this.mbubble ? "BUBBLE" : "NORMAL";
+  }
+
+  getWColor(): string {
+    return "NORMAL";
+  }
 }
