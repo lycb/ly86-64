@@ -1,0 +1,14 @@
+.wrapper {
+	margin-top: 1%;
+	margin-left: 5%;
+	width: 50vh;
+	height: 15vh;
+	border: 2px dotted black;
+	border-radius: 5px;
+	font-family: monospace;
+}
+
+.logic {
+	margin: 1%;
+	word-wrap: normal;
+}

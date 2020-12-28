@@ -9,11 +9,11 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./pipeline-reg.component.css']
 })
 export class PipelineRegComponent implements OnInit {
-	f_state: string;
-	d_state: string;
-	e_state: string;
-	m_state: string;
-	w_state: string;
+  f_state: string;
+  d_state: string;
+  e_state: string;
+  m_state: string;
+  w_state: string;
 
   fpredPCsubsription: Subscription;
   dregSubscription: Subscription;
@@ -28,7 +28,7 @@ export class PipelineRegComponent implements OnInit {
   wreg: W;
 
   f_predPC: string;
-   
+
   d_stat: string;
   d_icode: string;
   d_ifun: string;
@@ -64,7 +64,7 @@ export class PipelineRegComponent implements OnInit {
   w_dstE: string;
   w_dstM: string;
 
-  constructor(private cpuService: CpuService) { 
+  constructor(private cpuService: CpuService) {
     this.d_stat = "1";
     this.d_icode = "1";
     this.d_ifun = "0";
@@ -121,7 +121,7 @@ export class PipelineRegComponent implements OnInit {
     this.fpredPCsubsription = this.cpuService.getPredPC().subscribe(pc => {
       if (pc) {
         this.f_predPC = pc;
-        // this.setColor();
+        this.setColor();
       } else {
         this.f_predPC = "error";
       }
@@ -149,7 +149,7 @@ export class PipelineRegComponent implements OnInit {
         this.d_valC = "0";
         this.d_valP = "0";
       }
-    })
+    });
   }
 
   getEreg() {
@@ -166,7 +166,7 @@ export class PipelineRegComponent implements OnInit {
         this.e_dstM = ereg.dstM.state.toString(16);
         this.e_srcA = ereg.srcA.state.toString(16);
         this.e_srcB = ereg.srcB.state.toString(16);
-        // this.setColor();
+        this.setColor();
       } else {
         this.e_stat = "1";
         this.e_icode = "1";
@@ -179,7 +179,7 @@ export class PipelineRegComponent implements OnInit {
         this.e_srcA = "f";
         this.e_srcB = "f";
       }
-    })
+    });
   }
 
   getMreg() {
@@ -193,7 +193,7 @@ export class PipelineRegComponent implements OnInit {
         this.m_valA = mreg.valA.state.toString(16);
         this.m_dstE = mreg.dstE.state.toString(16);
         this.m_dstM = mreg.dstM.state.toString(16);
-        // this.setColor();
+        this.setColor();
       } else {
         this.m_stat = "1";
         this.m_icode = "1";
@@ -203,7 +203,7 @@ export class PipelineRegComponent implements OnInit {
         this.m_dstE = "f";
         this.m_dstM = "f";
       }
-    })
+    });
   }
 
   getWreg() {
@@ -216,7 +216,7 @@ export class PipelineRegComponent implements OnInit {
         this.w_valM = wreg.valM.state.toString(16);
         this.w_dstE = wreg.dstE.state.toString(16);
         this.w_dstM = wreg.dstM.state.toString(16);
-        // this.setColor();
+        this.setColor();
       } else {
         this.w_stat = "1";
         this.w_icode = "1";
@@ -225,17 +225,26 @@ export class PipelineRegComponent implements OnInit {
         this.w_dstE = "f";
         this.w_dstM = "f";
       }
-    })
+    });
   }
 
+  /*
+  * setColor
+  * sets the coloring for the pipeline registers
+  */
   setColor() {
-        this.f_state = this.cpuService.getFColor();
-        this.d_state = this.cpuService.getDColor();
-        this.e_state = this.cpuService.getEColor();
-        this.m_state = this.cpuService.getMColor();
-        this.w_state = this.cpuService.getWColor();
+    this.f_state = this.cpuService.getFColor();
+    this.d_state = this.cpuService.getDColor();
+    this.e_state = this.cpuService.getEColor();
+    this.m_state = this.cpuService.getMColor();
+    this.w_state = this.cpuService.getWColor();
   }
 
+  /*
+  * ngOnDestroy
+  * unsubscribes all subcriptions to prevent memory leaks
+  * happens when the pipeline reg component is destroyed
+  */
   ngOnDestroy() {
     this.fpredPCsubsription.unsubscribe();
     this.dregSubscription.unsubscribe();

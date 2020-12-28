@@ -24,6 +24,14 @@ export class CpuService {
   m_reg = new Subject<M>();
   w_reg = new Subject<W>();
 
+  // Observables for passing values to the control logic component
+  logic = new Subject<string>();
+
+  f_logic_string = "";
+  d_logic_string = "";
+  e_logic_string = "";
+  logic_string = "";
+
   // Stalling, bubbling logic variables
   fstall: boolean;
 
@@ -61,17 +69,30 @@ export class CpuService {
   * performs simulation for the pipeline
   */
   doSimulation(lineObject: Line, freg: F, dreg: D, ereg: E, mreg: M, wreg: W): boolean {
+    this.logic_string = "";
+
     let stop = this.doWritebackClockLow(wreg);
     this.doMemoryClockLow(lineObject, freg, dreg, ereg, mreg, wreg);
     this.doExecuteClockLow(lineObject, freg, dreg, ereg, mreg, wreg);
     this.doDecodeClockLow(lineObject, freg, dreg, ereg, mreg, wreg);
     this.doFetchClockLow(lineObject, freg, dreg, ereg, mreg, wreg);
 
+    if (this.fstall) {
+      this.logic_string += "F: " + this.f_logic_string;
+    }
+    if (this.dstall || this.dbubble) {
+      this.logic_string += "D: " + this.d_logic_string;
+    }
+    if (this.ebubble) {
+      this.logic_string += "E: " + this.e_logic_string;
+    }
+
     this.doWritebackClockHigh(wreg);
     this.doMemoryClockHigh(wreg);
     this.doExecuteClockHigh(mreg);
     this.doDecodeClockHigh(ereg);
     this.doFetchClockHigh(freg, dreg);
+    this.logic.next(this.logic_string);
     return stop;
   }
 
@@ -290,10 +311,34 @@ export class CpuService {
   * stalling logic for F register
   */
   f_stall(dreg: D, ereg: E, mreg: M): boolean {
+    this.f_logic_string = "";
+
     let e_icode = ereg.geticode().getOutput(),
       d_icode = dreg.geticode().getOutput(),
       m_icode = mreg.geticode().getOutput(),
       e_dstM = ereg.getdstM().getOutput();
+
+    if (e_icode.equals(Long.fromNumber(Constants.MRMOVQ))) {
+      this.f_logic_string += "e_icode == MRMOVQ | ";
+    }
+    if (e_icode.equals(Long.fromNumber(Constants.POPQ))) {
+      this.f_logic_string += "e_icode == POPQ | ";
+    }
+    if (e_dstM.equals(this.D_srcA)) {
+      this.f_logic_string += "e_dstM == D_srcA | ";
+    }
+    if (e_dstM.equals(this.D_srcB)) {
+      this.f_logic_string += "e_dstM == D_srcB | ";
+    }
+    if (e_icode.equals(Long.fromNumber(Constants.RET))) {
+      this.f_logic_string += "e_icode == RET | ";
+    }
+    if (d_icode.equals(Long.fromNumber(Constants.RET))) {
+      this.f_logic_string += "d_icode == RET | ";
+    }
+    if (m_icode.equals(Long.fromNumber(Constants.RET))) {
+      this.f_logic_string += "m_icode == RET";
+    }
 
     return ((e_icode.equals(Long.fromNumber(Constants.MRMOVQ)) ||
       e_icode.equals(Long.fromNumber(Constants.POPQ)) &&
@@ -308,9 +353,23 @@ export class CpuService {
   * stalling logic for D register
   */
   d_stall(ereg: E): boolean {
+    this.d_logic_string = "";
+
     let e_icode = ereg.geticode().getOutput(),
       e_dstM = ereg.getdstM().getOutput();
 
+    if (e_icode.equals(Long.fromNumber(Constants.MRMOVQ))) {
+      this.d_logic_string += "e_icode == MRMOVQ | ";
+    }
+    if (e_icode.equals(Long.fromNumber(Constants.POPQ))) {
+      this.d_logic_string += "e_icode == POPQ | ";
+    }
+    if (e_dstM.equals(this.D_srcA)) {
+      this.d_logic_string += "e_dstM == D_srcA | ";
+    }
+    if (e_dstM.equals(this.D_srcB)) {
+      this.d_logic_string += "e_dstM == D_srcB | ";
+    }
 
     return (e_icode.equals(Long.fromNumber(Constants.MRMOVQ)) ||
       e_icode.equals(Long.fromNumber(Constants.POPQ))) &&
@@ -335,17 +394,8 @@ export class CpuService {
     this.fstall = this.f_stall(dreg, ereg, mreg);
     this.dstall = this.d_stall(ereg);
     this.dbubble = this.d_bubble(dreg, ereg, mreg);
-
   }
 
-  /*
-  * getPredPC
-  * @returns an Observable of type <any> for the predPC 
-  * to pass to the F pipeline register
-  */
-  getPredPC(): Observable<any> {
-    return this.f_pred.asObservable();
-  }
 
   /*
   * ==============================================================
@@ -541,16 +591,6 @@ export class CpuService {
       ((e_icode.equals(Long.fromNumber(Constants.MRMOVQ)) || e_icode.equals(Long.fromNumber(Constants.POPQ))) &&
         (e_dstM.equals(this.D_srcA) || e_dstM.equals(this.D_srcB))));
   }
-
-  /*
-  * getDreg
-  * @returns an Observable of type <D> for the dreg 
-  * to pass to the D pipeline register
-  */
-  getDreg(): Observable<D> {
-    return this.d_reg.asObservable();
-  }
-
   /*
   * ==============================================================
   *                    E X E C U T E     S T A G E
@@ -789,15 +829,6 @@ export class CpuService {
   }
 
   /*
-  * getEreg
-  * @returns an Observable of type <E> for the ereg 
-  * to pass to the E pipeline register
-  */
-  getEreg(): Observable<E> {
-    return this.e_reg.asObservable();
-  }
-
-  /*
   * ==============================================================
   *                    M E M O R Y     S T A G E
   * ==============================================================
@@ -897,15 +928,6 @@ export class CpuService {
   }
 
   /*
-  * getMreg--
-  * @returns an Observable of type <M> for the mreg 
-  * to pass to the M pipeline register
-  */
-  getMreg(): Observable<M> {
-    return this.m_reg.asObservable();
-  }
-
-  /*
   * ==============================================================
   *               W R I T E B A C K     S T A G E
   * ==============================================================
@@ -929,14 +951,7 @@ export class CpuService {
     this.registerService.setValueByRegister(r_dstM, valM);
   }
 
-  /*
-  * getWreg
-  * @returns an Observable of type <W> for the wreg 
-  * to pass to the W pipeline register
-  */
-  getWreg(): Observable<W> {
-    return this.w_reg.asObservable();
-  }
+  
 
   /*
   * ==============================================================
@@ -967,5 +982,59 @@ export class CpuService {
 
   getWColor(): string {
     return "NORMAL";
+  }
+
+  /*
+  * ==============================================================
+  *                        O B S E R V A B L E S 
+  * ==============================================================
+  */
+  getLogic(): Observable<string> {
+    return this.logic.asObservable();
+  }
+
+  /*
+  * getPredPC
+  * @returns an Observable of type <any> for the predPC 
+  * to pass to the F pipeline register
+  */
+  getPredPC(): Observable<any> {
+    return this.f_pred.asObservable();
+  }
+
+  /*
+  * getMreg--
+  * @returns an Observable of type <M> for the mreg 
+  * to pass to the M pipeline register
+  */
+  getMreg(): Observable<M> {
+    return this.m_reg.asObservable();
+  }
+
+  /*
+  * getDreg
+  * @returns an Observable of type <D> for the dreg 
+  * to pass to the D pipeline register
+  */
+  getDreg(): Observable<D> {
+    return this.d_reg.asObservable();
+  }
+
+  /*
+  * getEreg
+  * @returns an Observable of type <E> for the ereg 
+  * to pass to the E pipeline register
+  */
+  getEreg(): Observable<E> {
+    return this.e_reg.asObservable();
+  }
+
+  /*
+  * getWreg
+  * @returns an Observable of type <W> for the wreg 
+  * to pass to the W pipeline register
+  */
+  getWreg(): Observable<W> {
+    return this.w_reg.asObservable();
   }
 }

@@ -1,17 +1,17 @@
 .register-table-wrapper {
 	font-family: monospace;
-	margin: 5%;
+	margin-top: 5%;
+	margin-left: 5%;
+	margin-bottom: 2%;
 }
 
 .registers-title {
 	color: gray;
-	padding-left: 10px;
 	padding-right: 10px;
 	text-align: left;
 }
 
 .registers-value {
-	padding-left: 10px;
 	padding-right: 10px;
 	text-align: left;
 
