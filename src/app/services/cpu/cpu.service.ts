@@ -61,8 +61,6 @@ export class CpuService {
   * performs simulation for the pipeline
   */
   doSimulation(lineObject: Line, freg: F, dreg: D, ereg: E, mreg: M, wreg: W): boolean {
-
-
     let stop = this.doWritebackClockLow(wreg);
     this.doMemoryClockLow(lineObject, freg, dreg, ereg, mreg, wreg);
     this.doExecuteClockLow(lineObject, freg, dreg, ereg, mreg, wreg);
@@ -81,6 +79,10 @@ export class CpuService {
     this.f_pred.next("0");
     freg.getPredPC().setInput(Long.ZERO);
     freg.getPredPC().normal();
+  }
+
+  holdHighlight(): boolean {
+    return this.fstall
   }
 
   /*

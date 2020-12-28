@@ -111,8 +111,10 @@ export class ButtonsComponent implements OnInit {
     for (let i = current.id + 1; i < this.fileContent.length; i++) {
       let next = this.fileContent[i];
       if (next.parsedLine != null) {
-        next.isCurrent = true;
-        this.parserService.setCurrent(next);
+        if (!this.cpuService.holdHighlight()) {
+          next.isCurrent = true;
+          this.parserService.setCurrent(next);
+        } 
         if (next.parsedLine.address != 0 && current.parsedLine != null &&
           current.parsedLine.address != next.parsedLine.address &&
           current.parsedLine.address != 0) {
