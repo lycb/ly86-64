@@ -11,13 +11,12 @@ export class MemoryService {
   error: boolean;
 
   constructor(private utilsService: UtilsService) {
-    this.memory = new Array<Long>(Constants.MEMSIZE);
+    this.memory = [];
+    this.error = false;
 
     for (let i = 0; i < Constants.MEMSIZE; i++) {
-      this.memory[i] = Long.ZERO;
+      this.memory.push(Long.ZERO);
     }
-
-    this.error = false;
   }
 
   putLong(value: Long, address: number): void {
