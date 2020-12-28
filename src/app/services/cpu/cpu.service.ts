@@ -60,17 +60,24 @@ export class CpuService {
   * doSimulation
   * performs simulation for the pipeline
   */
-  doSimulation(lineObject: Line, freg: F, dreg: D, ereg: E, mreg: M, wreg: W): void {
+  doSimulation(lineObject: Line, freg: F, dreg: D, ereg: E, mreg: M, wreg: W): boolean {
 
-    console.log("----------START-------------")
+    // console.log("----------START-------------")
 
-    this.doWritebackStage(wreg);
-    this.doMemoryStage(lineObject, freg, dreg, ereg, mreg, wreg);
-    this.doExecuteStage(lineObject, freg, dreg, ereg, mreg, wreg);
-    this.doDecodeStage(lineObject, freg, dreg, ereg, mreg, wreg);
-    this.doFetchStage(lineObject, freg, dreg, ereg, mreg, wreg);
+    let stop = this.doWritebackClockLow(wreg);
+    this.doMemoryClockLow(lineObject, freg, dreg, ereg, mreg, wreg);
+    this.doExecuteClockLow(lineObject, freg, dreg, ereg, mreg, wreg);
+    this.doDecodeClockLow(lineObject, freg, dreg, ereg, mreg, wreg);
+    this.doFetchClockLow(lineObject, freg, dreg, ereg, mreg, wreg);
 
-    console.log("----------END-------------")
+    this.doWritebackClockHigh(wreg);
+    this.doMemoryClockHigh(wreg);
+    this.doExecuteClockHigh(mreg);
+    this.doDecodeClockHigh(ereg);
+    this.doFetchClockHigh(freg, dreg);
+
+    // console.log("----------END-------------")
+    return stop;
   }
 
   /*
@@ -78,15 +85,6 @@ export class CpuService {
   *                    F E T C H     S T A G E
   * ==============================================================
   */
-
-  /*
-  * doFetchStage
-  * performs clock low and clock high for the fetch stage
-  */
-  doFetchStage(lineObject: Line, freg: F, dreg: D, ereg: E, mreg: M, wreg: W): void {
-    this.doFetchClockLow(lineObject, freg, dreg, ereg, mreg, wreg);
-    this.doFetchClockHigh(freg, dreg);
-  }
 
   doFetchClockLow(lineObject: Line, freg: F, dreg: D, ereg: E, mreg: M, wreg: W): void {
     let line = lineObject.parsedLine.instruction;
@@ -121,6 +119,7 @@ export class CpuService {
     // setting Observable to read for pipeline register
     this.f_pred.next(f_predPC.toString(16));
     freg.getPredPC().setInput(f_predPC);
+
 
     this.setDInput(dreg, stat, icode, ifun, rA, rB, valC, valP);
 
@@ -317,7 +316,7 @@ export class CpuService {
     let e_icode = ereg.geticode().getOutput(),
       e_dstM = ereg.getdstM().getOutput();
 
-    console.log("e_icode: " + e_icode);
+    console.log("e_icode in d_stall: " + e_icode);
     console.log("e_dstM: " + e_dstM);
     console.log("d_srcB: " + this.D_srcB);
     console.log("d_srcA: " + this.D_srcA);
@@ -366,10 +365,6 @@ export class CpuService {
   * ==============================================================
   */
 
-  doDecodeStage(lineObject: Line, freg: F, dreg: D, ereg: E, mreg: M, wreg: W): void {
-    this.doDecodeClockLow(lineObject, freg, dreg, ereg, mreg, wreg);
-    this.doDecodeClockHigh(ereg);
-  }
 
   doDecodeClockLow(lineObject: Line, freg: F, dreg: D, ereg: E, mreg: M, wreg: W): void {
     let line = lineObject.parsedLine.instruction;
@@ -385,6 +380,8 @@ export class CpuService {
       valC = dreg.getvalC().getOutput(),
       dstE = this.d_dstE(dreg),
       dstM = this.d_dstM(dreg);
+
+    console.log("d_icode: " + icode)
 
     this.d_calculateControlSignals(ereg);
 
@@ -573,11 +570,6 @@ export class CpuService {
   * ==============================================================
   */
 
-  doExecuteStage(lineObject: Line, freg: F, dreg: D, ereg: E, mreg: M, wreg: W): void {
-    this.doExecuteClockLow(lineObject, freg, dreg, ereg, mreg, wreg);
-    this.doExecuteClockHigh(mreg);
-  }
-
   doExecuteClockLow(lineObject: Line, freg: F, dreg: D, ereg: E, mreg: M, wreg: W): void {
     let line = lineObject.parsedLine.instruction;
 
@@ -586,6 +578,8 @@ export class CpuService {
       stat = ereg.getstat().getOutput(),
       valA = ereg.getvalA().getOutput(),
       dstM = ereg.getdstM().getOutput();
+
+    console.log("e_icode in Execute: " + icode);
 
     this.E_Cnd = this.get_E_Cnd(icode, ifun);
     this.E_dstE = this.set_E_dstE(ereg);
@@ -823,11 +817,6 @@ export class CpuService {
   * ==============================================================
   */
 
-  doMemoryStage(lineObject: Line, freg: F, dreg: D, ereg: E, mreg: M, wreg: W): void {
-    this.doMemoryClockLow(lineObject, freg, dreg, ereg, mreg, wreg);
-    this.doMemoryClockHigh(wreg);
-  }
-
   doMemoryClockLow(lineObject: Line, freg: F, dreg: D, ereg: E, mreg: M, wreg: W): void {
     let icode = mreg.geticode().getOutput(),
       valE = mreg.getvalE().getOutput(),
@@ -935,11 +924,6 @@ export class CpuService {
   *               W R I T E B A C K     S T A G E
   * ==============================================================
   */
-
-  doWritebackStage(wreg: W): void {
-    let stop = this.doWritebackClockLow(wreg);
-    this.doWritebackClockHigh(wreg);
-  }
 
   doWritebackClockLow(wreg: W): boolean {
     let stat = wreg.getstat().getOutput();
