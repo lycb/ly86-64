@@ -62,7 +62,6 @@ export class CpuService {
   */
   doSimulation(lineObject: Line, freg: F, dreg: D, ereg: E, mreg: M, wreg: W): boolean {
 
-    // console.log("----------START-------------")
 
     let stop = this.doWritebackClockLow(wreg);
     this.doMemoryClockLow(lineObject, freg, dreg, ereg, mreg, wreg);
@@ -75,9 +74,13 @@ export class CpuService {
     this.doExecuteClockHigh(mreg);
     this.doDecodeClockHigh(ereg);
     this.doFetchClockHigh(freg, dreg);
-
-    // console.log("----------END-------------")
     return stop;
+  }
+
+  resetValues(freg: F, dreg: D, ereg: E, mreg: M, wreg: W): void {
+    this.f_pred.next("0");
+    freg.getPredPC().setInput(Long.ZERO);
+    freg.getPredPC().normal();
   }
 
   /*
@@ -116,13 +119,8 @@ export class CpuService {
 
     this.f_calculateControlSignals(dreg, ereg, mreg);
 
-    // setting Observable to read for pipeline register
-    this.f_pred.next(f_predPC.toString(16));
     freg.getPredPC().setInput(f_predPC);
-
-
     this.setDInput(dreg, stat, icode, ifun, rA, rB, valC, valP);
-
   }
 
   doFetchClockHigh(freg: F, dreg: D): void {
@@ -147,6 +145,7 @@ export class CpuService {
       dreg.getvalC().normal();
       dreg.getvalP().normal();
     }
+    this.f_pred.next(freg.getPredPC().getOutput().toString(16));
     this.d_reg.next(dreg);
   }
 
@@ -267,12 +266,6 @@ export class CpuService {
     }
   }
 
-  resetValues(freg: F, dreg: D, ereg: E, mreg: M, wreg: W): void {
-    this.f_pred.next("0");
-    freg.getPredPC().setInput(Long.ZERO);
-    freg.getPredPC().normal();
-  }
-
   isInstructionValid(icode: Long): boolean {
     return (
       icode.equals(Long.fromNumber(Constants.NOP)) ||
@@ -316,10 +309,6 @@ export class CpuService {
     let e_icode = ereg.geticode().getOutput(),
       e_dstM = ereg.getdstM().getOutput();
 
-    console.log("e_icode in d_stall: " + e_icode);
-    console.log("e_dstM: " + e_dstM);
-    console.log("d_srcB: " + this.D_srcB);
-    console.log("d_srcA: " + this.D_srcA);
 
     return (e_icode.equals(Long.fromNumber(Constants.MRMOVQ)) ||
       e_icode.equals(Long.fromNumber(Constants.POPQ))) &&
@@ -345,9 +334,6 @@ export class CpuService {
     this.dstall = this.d_stall(ereg);
     this.dbubble = this.d_bubble(dreg, ereg, mreg);
 
-    console.log("fstall: " + this.fstall)
-    console.log("dstall: " + this.dstall)
-    console.log("dbubble: " + this.dbubble)
   }
 
   /*
@@ -381,7 +367,6 @@ export class CpuService {
       dstE = this.d_dstE(dreg),
       dstM = this.d_dstM(dreg);
 
-    console.log("d_icode: " + icode)
 
     this.d_calculateControlSignals(ereg);
 
@@ -579,7 +564,6 @@ export class CpuService {
       valA = ereg.getvalA().getOutput(),
       dstM = ereg.getdstM().getOutput();
 
-    console.log("e_icode in Execute: " + icode);
 
     this.E_Cnd = this.get_E_Cnd(icode, ifun);
     this.E_dstE = this.set_E_dstE(ereg);
