@@ -2,10 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { ParserService } from '../../services/parser/parser.service';
 import { CpuService } from '../../services/cpu/cpu.service';
 import { UtilsService } from '../../services/utils/utils.service';
+import { MemoryService } from '../../services/memory/memory.service';
 import { Line } from '../../models/Line';
-import { MemoryFunc } from "../../models/Memory";
 import { AddressLine } from "../../models/AddressLine";
 import { F, D, E, M, W } from "../../models/PipeReg";
+import Long from 'long';
 
 @Component({
   selector: 'app-buttons',
@@ -27,7 +28,8 @@ export class ButtonsComponent implements OnInit {
 
   constructor(private parserService: ParserService,
     private cpuService: CpuService,
-    private utilsService: UtilsService) {
+    private utilsService: UtilsService,
+    private memoryService: MemoryService) {
   }
 
   ngOnInit() {
@@ -109,8 +111,10 @@ export class ButtonsComponent implements OnInit {
     for (let i = current.id + 1; i < this.fileContent.length; i++) {
       let next = this.fileContent[i];
       if (next.parsedLine != null) {
-        next.isCurrent = true;
-        this.parserService.setCurrent(next);
+        if (!this.cpuService.holdHighlight()) {
+          next.isCurrent = true;
+          this.parserService.setCurrent(next);
+        } 
         if (next.parsedLine.address != 0 && current.parsedLine != null &&
           current.parsedLine.address != next.parsedLine.address &&
           current.parsedLine.address != 0) {
@@ -123,7 +127,6 @@ export class ButtonsComponent implements OnInit {
   }
 
   loadline(line: AddressLine): void {
-    let memory = MemoryFunc.getInstance(this.utilsService);
     let bytes = line.instruction.length / 2;
     let position = 0;
     let address = line.address;
@@ -131,7 +134,7 @@ export class ButtonsComponent implements OnInit {
       let value = parseInt(line.instruction.substring(position, position + 2), 16);
       position += 2;
       bytes--;
-      memory.putByte(value, address);
+      this.memoryService.putByte(Long.fromNumber(value), address);
       address++;
     }
   }

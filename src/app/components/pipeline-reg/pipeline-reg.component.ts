@@ -121,6 +121,7 @@ export class PipelineRegComponent implements OnInit {
     this.fpredPCsubsription = this.cpuService.getPredPC().subscribe(pc => {
       if (pc) {
         this.f_predPC = pc;
+        // this.setColor();
       } else {
         this.f_predPC = "error";
       }
@@ -131,13 +132,14 @@ export class PipelineRegComponent implements OnInit {
     this.dregSubscription = this.cpuService.getDreg().subscribe(dreg => {
       if (dreg) {
         this.dreg = dreg;
-        this.d_stat = dreg.stat.input.toString(16);
-        this.d_icode = dreg.icode.input.toString(16);
-        this.d_ifun = dreg.ifun.input.toString(16);
-        this.d_rA = dreg.rA.input.toString(16);
-        this.d_rB = dreg.rB.input.toString(16);
-        this.d_valC = dreg.valC.input.toString(16);
-        this.d_valP = dreg.valP.input.toString(16);
+        this.d_stat = dreg.stat.state.toString(16);
+        this.d_icode = dreg.icode.state.toString(16);
+        this.d_ifun = dreg.ifun.state.toString(16);
+        this.d_rA = dreg.rA.state.toString(16);
+        this.d_rB = dreg.rB.state.toString(16);
+        this.d_valC = dreg.valC.state.toString(16);
+        this.d_valP = dreg.valP.state.toString(16);
+        // this.setColor();
       } else {
         this.d_stat = "1";
         this.d_icode = "1";
@@ -154,16 +156,17 @@ export class PipelineRegComponent implements OnInit {
     this.eregSubscription = this.cpuService.getEreg().subscribe(ereg => {
       if (ereg) {
         this.ereg = ereg;
-        this.e_stat = ereg.stat.input.toString(16);
-        this.e_icode = ereg.icode.input.toString(16);
-        this.e_ifun = ereg.ifun.input.toString(16);
-        this.e_valC = ereg.valC.input.toString(16);
-        this.e_valA = ereg.valA.input.toString(16);
-        this.e_valB = ereg.valB.input.toString(16);
-        this.e_dstE = ereg.dstE.input.toString(16);
-        this.e_dstM = ereg.dstM.input.toString(16);
-        this.e_srcA = ereg.srcA.input.toString(16);
-        this.e_srcB = ereg.srcB.input.toString(16);
+        this.e_stat = ereg.stat.state.toString(16);
+        this.e_icode = ereg.icode.state.toString(16);
+        this.e_ifun = ereg.ifun.state.toString(16);
+        this.e_valC = ereg.valC.state.toString(16);
+        this.e_valA = ereg.valA.state.toString(16);
+        this.e_valB = ereg.valB.state.toString(16);
+        this.e_dstE = ereg.dstE.state.toString(16);
+        this.e_dstM = ereg.dstM.state.toString(16);
+        this.e_srcA = ereg.srcA.state.toString(16);
+        this.e_srcB = ereg.srcB.state.toString(16);
+        // this.setColor();
       } else {
         this.e_stat = "1";
         this.e_icode = "1";
@@ -183,13 +186,14 @@ export class PipelineRegComponent implements OnInit {
     this.mregSubscription = this.cpuService.getMreg().subscribe(mreg => {
       if (mreg) {
         this.mreg = mreg;
-        this.m_stat = mreg.stat.input.toString(16);
-        this.m_icode = mreg.icode.input.toString(16);
-        this.m_cnd = mreg.Cnd.input.toString(16);
-        this.m_valE = mreg.valE.input.toString(16);
-        this.m_valA = mreg.valA.input.toString(16);
-        this.m_dstE = mreg.dstE.input.toString(16);
-        this.m_dstM = mreg.dstM.input.toString(16);
+        this.m_stat = mreg.stat.state.toString(16);
+        this.m_icode = mreg.icode.state.toString(16);
+        this.m_cnd = mreg.Cnd.state.toString(16);
+        this.m_valE = mreg.valE.state.toString(16);
+        this.m_valA = mreg.valA.state.toString(16);
+        this.m_dstE = mreg.dstE.state.toString(16);
+        this.m_dstM = mreg.dstM.state.toString(16);
+        // this.setColor();
       } else {
         this.m_stat = "1";
         this.m_icode = "1";
@@ -206,12 +210,13 @@ export class PipelineRegComponent implements OnInit {
     this.wregSubscription = this.cpuService.getWreg().subscribe(wreg => {
       if (wreg) {
         this.wreg = wreg;
-        this.w_stat = wreg.stat.input.toString(16);
-        this.w_icode = wreg.icode.input.toString(16);
-        this.w_valE = wreg.valE.input.toString(16);
-        this.w_valM = wreg.valM.input.toString(16);
-        this.w_dstE = wreg.dstE.input.toString(16);
-        this.w_dstM = wreg.dstM.input.toString(16);
+        this.w_stat = wreg.stat.state.toString(16);
+        this.w_icode = wreg.icode.state.toString(16);
+        this.w_valE = wreg.valE.state.toString(16);
+        this.w_valM = wreg.valM.state.toString(16);
+        this.w_dstE = wreg.dstE.state.toString(16);
+        this.w_dstM = wreg.dstM.state.toString(16);
+        // this.setColor();
       } else {
         this.w_stat = "1";
         this.w_icode = "1";
@@ -221,6 +226,14 @@ export class PipelineRegComponent implements OnInit {
         this.w_dstM = "f";
       }
     })
+  }
+
+  setColor() {
+        this.f_state = this.cpuService.getFColor();
+        this.d_state = this.cpuService.getDColor();
+        this.e_state = this.cpuService.getEColor();
+        this.m_state = this.cpuService.getMColor();
+        this.w_state = this.cpuService.getWColor();
   }
 
   ngOnDestroy() {
