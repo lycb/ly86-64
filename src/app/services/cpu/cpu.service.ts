@@ -25,12 +25,13 @@ export class CpuService {
   w_reg = new Subject<W>();
 
   // Observables for passing values to the control logic component
-  logic = new Subject<string>();
+  logic = new Subject<string[]>();
 
+  logic_string = ["", "", ""];
   f_logic_string = "";
   d_logic_string = "";
   e_logic_string = "";
-  logic_string = "";
+
 
   // Stalling, bubbling logic variables
   fstall: boolean;
@@ -43,15 +44,15 @@ export class CpuService {
   mbubble: boolean;
 
   // Global variables for passing in between stages
-  D_srcA: Long;
-  D_srcB: Long;
+  d_srcA: Long;
+  d_srcB: Long;
 
-  E_dstE: Long;
-  E_valE: Long;
-  E_Cnd: Long;
+  e_dstE: Long;
+  e_valE: Long;
+  e_Cnd: Long;
 
-  M_valM: Long;
-  M_stat: Long;
+  m_valM: Long;
+  m_stat: Long;
 
   constructor(
     private instructionService: InstructionService,
@@ -69,7 +70,7 @@ export class CpuService {
   * performs simulation for the pipeline
   */
   doSimulation(lineObject: Line, freg: F, dreg: D, ereg: E, mreg: M, wreg: W): boolean {
-    this.logic_string = "";
+    this.logic_string = ["", "", ""];
 
     let stop = this.doWritebackClockLow(wreg);
     this.doMemoryClockLow(lineObject, freg, dreg, ereg, mreg, wreg);
@@ -78,13 +79,13 @@ export class CpuService {
     this.doFetchClockLow(lineObject, freg, dreg, ereg, mreg, wreg);
 
     if (this.fstall) {
-      this.logic_string += "F: " + this.f_logic_string;
+      this.logic_string[0] = this.f_logic_string;
     }
     if (this.dstall || this.dbubble) {
-      this.logic_string += "D: " + this.d_logic_string;
+      this.logic_string[1] = this.d_logic_string;
     }
     if (this.ebubble) {
-      this.logic_string += "E: " + this.e_logic_string;
+      this.logic_string[2] = this.e_logic_string;
     }
 
     this.doWritebackClockHigh(wreg);
@@ -311,81 +312,45 @@ export class CpuService {
   * stalling logic for F register
   */
   f_stall(dreg: D, ereg: E, mreg: M): boolean {
-    this.f_logic_string = "";
-
     let e_icode = ereg.geticode().getOutput(),
       d_icode = dreg.geticode().getOutput(),
       m_icode = mreg.geticode().getOutput(),
       e_dstM = ereg.getdstM().getOutput();
 
-    if (e_icode.equals(Long.fromNumber(Constants.MRMOVQ))) {
-      this.f_logic_string += "e_icode == MRMOVQ | ";
-    }
-    if (e_icode.equals(Long.fromNumber(Constants.POPQ))) {
-      this.f_logic_string += "e_icode == POPQ | ";
-    }
-    if (e_dstM.equals(this.D_srcA)) {
-      this.f_logic_string += "e_dstM == D_srcA | ";
-    }
-    if (e_dstM.equals(this.D_srcB)) {
-      this.f_logic_string += "e_dstM == D_srcB | ";
-    }
-    if (e_icode.equals(Long.fromNumber(Constants.RET))) {
-      this.f_logic_string += "e_icode == RET | ";
-    }
-    if (d_icode.equals(Long.fromNumber(Constants.RET))) {
-      this.f_logic_string += "d_icode == RET | ";
-    }
-    if (m_icode.equals(Long.fromNumber(Constants.RET))) {
-      this.f_logic_string += "m_icode == RET";
-    }
-
     return ((e_icode.equals(Long.fromNumber(Constants.MRMOVQ)) ||
       e_icode.equals(Long.fromNumber(Constants.POPQ)) &&
-      (e_dstM.equals(this.D_srcA) || e_dstM.equals(this.D_srcB))) ||
+      (e_dstM.equals(this.d_srcA) || e_dstM.equals(this.d_srcB))) ||
       (e_icode.equals(Long.fromNumber(Constants.RET)) ||
         d_icode.equals(Long.fromNumber(Constants.RET)) ||
         m_icode.equals(Long.fromNumber(Constants.RET))));
   }
 
+  
   /*
   * D_stall
   * stalling logic for D register
   */
   d_stall(ereg: E): boolean {
-    this.d_logic_string = "";
-
     let e_icode = ereg.geticode().getOutput(),
       e_dstM = ereg.getdstM().getOutput();
 
-    if (e_icode.equals(Long.fromNumber(Constants.MRMOVQ))) {
-      this.d_logic_string += "e_icode == MRMOVQ | ";
-    }
-    if (e_icode.equals(Long.fromNumber(Constants.POPQ))) {
-      this.d_logic_string += "e_icode == POPQ | ";
-    }
-    if (e_dstM.equals(this.D_srcA)) {
-      this.d_logic_string += "e_dstM == D_srcA | ";
-    }
-    if (e_dstM.equals(this.D_srcB)) {
-      this.d_logic_string += "e_dstM == D_srcB | ";
-    }
-
     return (e_icode.equals(Long.fromNumber(Constants.MRMOVQ)) ||
       e_icode.equals(Long.fromNumber(Constants.POPQ))) &&
-      (e_dstM.equals(this.D_srcA) || e_dstM.equals(this.D_srcB));
+      (e_dstM.equals(this.d_srcA) || e_dstM.equals(this.d_srcB));
   }
 
   d_bubble(dreg: D, ereg: E, mreg: M): boolean {
+    this.d_logic_string = "";
+
     let e_icode = ereg.geticode().getOutput(),
       d_icode = dreg.geticode().getOutput(),
       m_icode = mreg.geticode().getOutput(),
       e_dstM = ereg.getdstM().getOutput(),
-      Cnd = this.E_Cnd;
+      Cnd = this.e_Cnd;
 
     return (e_icode.equals(Long.fromNumber(Constants.JXX)) && !Cnd) ||
       (!((e_icode.equals(Long.fromNumber(Constants.MRMOVQ)) || e_icode.equals(Long.fromNumber(Constants.POPQ))) &&
-        (e_dstM.equals(this.D_srcA) || e_dstM.equals(this.D_srcB))) &&
+        (e_dstM.equals(this.d_srcA) || e_dstM.equals(this.d_srcB))) &&
         (e_icode.equals(Long.fromNumber(Constants.RET)) || d_icode.equals(Long.fromNumber(Constants.RET)) ||
           m_icode.equals(Long.fromNumber(Constants.RET))));
   }
@@ -394,6 +359,17 @@ export class CpuService {
     this.fstall = this.f_stall(dreg, ereg, mreg);
     this.dstall = this.d_stall(ereg);
     this.dbubble = this.d_bubble(dreg, ereg, mreg);
+
+    if (this.fstall) {
+      this.f_logic_string = "F (stalled): " + this.formFStallLogicString(dreg, ereg, mreg);
+    }
+    if (this.dbubble) {
+      this.d_logic_string = "D (bubbled): " + this.formDBubbleLogicString(dreg, ereg, mreg);
+    }
+    else if (this.dstall) {
+      this.d_logic_string = "D (stalled): " + this.formDStallLogicString(ereg);
+    }
+
   }
 
 
@@ -407,8 +383,8 @@ export class CpuService {
   doDecodeClockLow(lineObject: Line, freg: F, dreg: D, ereg: E, mreg: M, wreg: W): void {
     let line = lineObject.parsedLine.instruction;
 
-    this.D_srcA = this.set_D_srcA(dreg);
-    this.D_srcB = this.set_D_srcB(dreg);
+    this.d_srcA = this.set_d_srcA(dreg);
+    this.d_srcB = this.set_d_srcB(dreg);
 
     let icode = dreg.geticode().getOutput(),
       ifun = dreg.getifun().getOutput(),
@@ -422,7 +398,7 @@ export class CpuService {
 
     this.d_calculateControlSignals(ereg);
 
-    this.setEInput(ereg, stat, icode, ifun, valC, valA, valB, dstE, dstM, this.D_srcA, this.D_srcB);
+    this.setEInput(ereg, stat, icode, ifun, valC, valA, valB, dstE, dstM, this.d_srcA, this.d_srcB);
   }
 
   doDecodeClockHigh(ereg: E): void {
@@ -466,7 +442,7 @@ export class CpuService {
     ereg.getsrcB().setInput(srcB);
   }
 
-  set_D_srcA(dreg: D): Long {
+  set_d_srcA(dreg: D): Long {
     let icode = dreg.geticode().getOutput(),
       rA = dreg.getrA().getOutput();
 
@@ -483,7 +459,7 @@ export class CpuService {
     return Long.fromNumber(Constants.RNONE);
   }
 
-  set_D_srcB(dreg: D): Long {
+  set_d_srcB(dreg: D): Long {
     let icode = dreg.geticode().getOutput(),
       rB = dreg.getrB().getOutput();
 
@@ -508,50 +484,50 @@ export class CpuService {
       icode.equals(Long.fromNumber(Constants.JXX))) {
       return dreg.getvalP().getOutput();
     }
-    if (this.D_srcA.equals(Long.fromNumber(Constants.RNONE))) {
+    if (this.d_srcA.equals(Long.fromNumber(Constants.RNONE))) {
       return Long.ZERO;
     }
-    if (this.D_srcA.equals(this.E_dstE)) {
-      return this.E_valE;
+    if (this.d_srcA.equals(this.e_dstE)) {
+      return this.e_valE;
     }
-    if (this.D_srcA.equals(mreg.getdstM().getOutput())) {
-      return this.M_valM;
+    if (this.d_srcA.equals(mreg.getdstM().getOutput())) {
+      return this.m_valM;
     }
-    if (this.D_srcA.equals(mreg.getdstE().getOutput())) {
+    if (this.d_srcA.equals(mreg.getdstE().getOutput())) {
       return mreg.getvalE().getOutput();
     }
-    if (this.D_srcA.equals(wreg.getdstM().getOutput())) {
+    if (this.d_srcA.equals(wreg.getdstM().getOutput())) {
       return wreg.getvalE().getOutput();
     }
-    if (this.D_srcA.equals(wreg.getdstE().getOutput())) {
+    if (this.d_srcA.equals(wreg.getdstE().getOutput())) {
       return wreg.getvalE().getOutput();
     }
 
-    let register = this.registerService.index2register(this.D_srcA.toNumber())
+    let register = this.registerService.index2register(this.d_srcA.toNumber())
     return this.registerService.getValueByRegister(register);
   }
 
   d_valB(mreg: M, wreg: W): Long {
-    if (this.D_srcB.equals(Long.fromNumber(Constants.RNONE))) {
+    if (this.d_srcB.equals(Long.fromNumber(Constants.RNONE))) {
       return Long.ZERO;
     }
-    if (this.D_srcB.equals(this.E_dstE)) {
-      return this.E_valE;
+    if (this.d_srcB.equals(this.e_dstE)) {
+      return this.e_valE;
     }
-    if (this.D_srcB.equals(mreg.getdstM().getOutput())) {
-      return this.M_valM;
+    if (this.d_srcB.equals(mreg.getdstM().getOutput())) {
+      return this.m_valM;
     }
-    if (this.D_srcB.equals(mreg.getdstE().getOutput())) {
+    if (this.d_srcB.equals(mreg.getdstE().getOutput())) {
       return mreg.getvalE().getOutput();
     }
-    if (this.D_srcB.equals(wreg.getdstM().getOutput())) {
+    if (this.d_srcB.equals(wreg.getdstM().getOutput())) {
       return wreg.getvalM().getOutput();
     }
-    if (this.D_srcB.equals(wreg.getdstE().getOutput())) {
+    if (this.d_srcB.equals(wreg.getdstE().getOutput())) {
       return wreg.getvalE().getOutput();
     }
 
-    let register = this.registerService.index2register(this.D_srcB.toNumber());
+    let register = this.registerService.index2register(this.d_srcB.toNumber());
     return this.registerService.getValueByRegister(register);
   }
 
@@ -587,10 +563,17 @@ export class CpuService {
   d_calculateControlSignals(ereg: E): void {
     let e_dstM = ereg.getdstM().getOutput(),
       e_icode = ereg.geticode().getOutput();
-    this.ebubble = ((e_icode.equals(Long.fromNumber(Constants.JXX)) && !this.E_Cnd) ||
+
+
+    this.ebubble = ((e_icode.equals(Long.fromNumber(Constants.JXX)) && !this.e_Cnd) ||
       ((e_icode.equals(Long.fromNumber(Constants.MRMOVQ)) || e_icode.equals(Long.fromNumber(Constants.POPQ))) &&
-        (e_dstM.equals(this.D_srcA) || e_dstM.equals(this.D_srcB))));
+        (e_dstM.equals(this.d_srcA) || e_dstM.equals(this.d_srcB))));
+
+    if (this.ebubble) {
+      this.e_logic_string = "E (bubbled): " + this.formEBubbleLogicString(ereg);
+    }
   }
+
   /*
   * ==============================================================
   *                    E X E C U T E     S T A G E
@@ -607,13 +590,13 @@ export class CpuService {
       dstM = ereg.getdstM().getOutput();
 
 
-    this.E_Cnd = this.get_E_Cnd(icode, ifun);
-    this.E_dstE = this.set_E_dstE(ereg);
-    this.E_valE = this.chooseValE(ereg, wreg);
+    this.e_Cnd = this.get_e_Cnd(icode, ifun);
+    this.e_dstE = this.set_e_dstE(ereg);
+    this.e_valE = this.chooseValE(ereg, wreg);
 
     this.e_calculateControlSignals(wreg);
 
-    this.setMInput(mreg, icode, this.E_Cnd, stat, this.E_valE, valA, this.E_dstE, dstM);
+    this.setMInput(mreg, icode, this.e_Cnd, stat, this.e_valE, valA, this.e_dstE, dstM);
   }
 
   /*
@@ -702,13 +685,13 @@ export class CpuService {
 
   set_cc(ereg: E, wreg: W): boolean {
     let icode = ereg.geticode().getOutput(),
-      M_stat = this.M_stat,
+      m_stat = this.m_stat,
       w_stat = wreg.getstat().getOutput();
 
     return (icode.equals(Long.fromNumber(Constants.OPQ))
-      && !(M_stat.equals(Long.fromNumber(Constants.SADR)) ||
-        M_stat.equals(Long.fromNumber(Constants.SINS)) ||
-        M_stat.equals(Long.fromNumber(Constants.SHLT)))
+      && !(m_stat.equals(Long.fromNumber(Constants.SADR)) ||
+        m_stat.equals(Long.fromNumber(Constants.SINS)) ||
+        m_stat.equals(Long.fromNumber(Constants.SHLT)))
       && !(w_stat.equals(Long.fromNumber(Constants.SADR)) ||
         w_stat.equals(Long.fromNumber(Constants.SINS)) ||
         w_stat.equals(Long.fromNumber(Constants.SHLT))));
@@ -746,7 +729,7 @@ export class CpuService {
     this.conditionCodesService.setZF(ZF ? Long.ONE : Long.ZERO);
   }
 
-  get_E_Cnd(icode: Long, ifun: Long): Long {
+  get_e_Cnd(icode: Long, ifun: Long): Long {
     let OF = this.conditionCodesService.getOF(),
       SF = this.conditionCodesService.getSF(),
       ZF = this.conditionCodesService.getZF();
@@ -766,10 +749,10 @@ export class CpuService {
     else { return Long.NEG_ONE; }
   }
 
-  set_E_dstE(ereg: E): Long {
+  set_e_dstE(ereg: E): Long {
     let icode = ereg.geticode().getOutput();
 
-    if (icode.equals(Long.fromNumber(Constants.RRMOVQ)) && !this.E_Cnd) {
+    if (icode.equals(Long.fromNumber(Constants.RRMOVQ)) && !this.e_Cnd) {
       return Long.fromNumber(Constants.RNONE);
     }
     return ereg.getdstE().getOutput();
@@ -820,9 +803,9 @@ export class CpuService {
   e_calculateControlSignals(wreg: W): void {
     let w_stat = wreg.getstat().getOutput();
 
-    this.mbubble = ((this.M_stat.equals(Long.fromNumber(Constants.SADR)) ||
-      this.M_stat.equals(Long.fromNumber(Constants.SINS)) ||
-      this.M_stat.equals(Long.fromNumber(Constants.SHLT))) ||
+    this.mbubble = ((this.m_stat.equals(Long.fromNumber(Constants.SADR)) ||
+      this.m_stat.equals(Long.fromNumber(Constants.SINS)) ||
+      this.m_stat.equals(Long.fromNumber(Constants.SHLT))) ||
       (w_stat.equals(Long.fromNumber(Constants.SADR)) ||
         w_stat.equals(Long.fromNumber(Constants.SINS)) ||
         w_stat.equals(Long.fromNumber(Constants.SHLT))));
@@ -840,20 +823,20 @@ export class CpuService {
       dstE = mreg.getdstE().getOutput(),
       dstM = mreg.getdstM().getOutput();
 
-    this.M_valM = Long.ZERO;
+    this.m_valM = Long.ZERO;
 
     let addr = this.mem_addr(mreg);
     if (this.mem_read(icode)) {
-      this.M_valM = this.memoryService.getLong(addr.toNumber());
+      this.m_valM = this.memoryService.getLong(addr.toNumber());
     }
     if (this.mem_write(icode)) {
       this.memoryService.putLong(mreg.getvalA().getOutput(), addr.toNumber());
     }
 
     this.error = this.memoryService.getError();
-    this.M_stat = this.m_stat(mreg);
+    this.m_stat = this.mstat(mreg);
 
-    this.setWInput(wreg, this.M_stat, icode, valE, this.M_valM, dstE, dstM);
+    this.setWInput(wreg, this.m_stat, icode, valE, this.m_valM, dstE, dstM);
   }
 
   doMemoryClockHigh(wreg: W): void {
@@ -920,9 +903,9 @@ export class CpuService {
 
   /*
   * m_stat
-  * sets the M_stat variable based on error from accessing memory
+  * sets the m_stat variable based on error from accessing memory
   */
-  m_stat(mreg: M): Long {
+  mstat(mreg: M): Long {
     if (this.error) return Long.fromNumber(Constants.SADR);
     else return mreg.getstat().getOutput();
   }
@@ -951,7 +934,7 @@ export class CpuService {
     this.registerService.setValueByRegister(r_dstM, valM);
   }
 
-  
+
 
   /*
   * ==============================================================
@@ -989,7 +972,7 @@ export class CpuService {
   *                        O B S E R V A B L E S 
   * ==============================================================
   */
-  getLogic(): Observable<string> {
+  getLogic(): Observable<string[]> {
     return this.logic.asObservable();
   }
 
@@ -1036,5 +1019,218 @@ export class CpuService {
   */
   getWreg(): Observable<W> {
     return this.w_reg.asObservable();
+  }
+
+  /*
+  * ==============================================================
+  *                S T R I N G     F O R M A T S 
+  * ==============================================================
+  */
+
+  /*
+  * formFStallLogicString
+  * forms the string for F stalling
+  * 
+  * HCL:
+  *  bool F_stall = E_icode in { IMRMOVQ, IPOPQ } &&  E_dstM in { d_srcA, d_srcB } || 
+  *            IRET in { D_icode, E_icode, M_icode }; 
+  */
+  formFStallLogicString(dreg: D, ereg: E, mreg: M): string {
+    let e_icode = ereg.geticode().getOutput(),
+      d_icode = dreg.geticode().getOutput(),
+      m_icode = mreg.geticode().getOutput(),
+      e_dstM = ereg.getdstM().getOutput();
+
+    let icodes_list = [];
+    let dstm_list = [];
+    let ret_list = [];
+    let str = "";
+
+    if (e_icode.equals(Long.fromNumber(Constants.MRMOVQ))) {
+      icodes_list.push("MRMOVQ");
+    }
+    if (e_icode.equals(Long.fromNumber(Constants.POPQ))) {
+      icodes_list.push("POPQ");
+    }
+    if (e_dstM.equals(this.d_srcA)) {
+      dstm_list.push("d_srcA")
+    }
+    if (e_dstM.equals(this.d_srcB)) {
+      dstm_list.push("d_srcB")
+    }
+    if (e_icode.equals(Long.fromNumber(Constants.RET))) {
+      ret_list.push("E_icode")
+    }
+    if (d_icode.equals(Long.fromNumber(Constants.RET))) {
+      ret_list.push("D_icode")
+    }
+    if (m_icode.equals(Long.fromNumber(Constants.RET))) {
+      ret_list.push("M_icode")
+    }
+
+    if (icodes_list.length > 0) {
+      str += "E_icode in {" + icodes_list + "}";
+      if (dstm_list.length > 0) {
+        str += " && E_dstM in {" + dstm_list + "}";
+      }
+    }
+
+    if (ret_list.length > 0) {
+      str += " || IRET in {" + ret_list + "}";
+    }
+    return str;
+  }
+
+  /*
+  * formDStallLogicString
+  * forms the string for D stalling
+  * 
+  * HCL:
+  *  bool D_stall = E_icode in { IMRMOVQ, IPOPQ } &&  E_dstM in { d_srcA, d_srcB } 
+  */
+  formDStallLogicString(ereg: E): string {
+    let icodes_list = [];
+    let dstm_list = [];
+    let ret_list = [];
+
+    let str = "";
+
+    let e_icode = ereg.geticode().getOutput(),
+      e_dstM = ereg.getdstM().getOutput();
+
+    if (e_icode.equals(Long.fromNumber(Constants.MRMOVQ))) {
+      icodes_list.push("MRMOVQ");
+    }
+    if (e_icode.equals(Long.fromNumber(Constants.POPQ))) {
+      icodes_list.push("POPQ");
+    }
+    if (e_dstM.equals(this.d_srcA)) {
+      dstm_list.push("d_srcA")
+    }
+    if (e_dstM.equals(this.d_srcB)) {
+      dstm_list.push("d_srcB")
+    }
+
+    if (icodes_list.length > 0) {
+      str += "E_icode in {" + icodes_list + "}";
+      if (dstm_list.length > 0) {
+        str += " && E_dstM in {" + dstm_list + "}";
+      }
+    }
+    return str;
+  }
+
+  
+  /*
+  * formDBubbleLogicString
+  * forms the string for D bubbling
+  * 
+  * HCL:
+  *  bool D_bubble = ( E_icode == IJXX && !e_Cnd ) ||
+  *   !( E_icode in { IMRMOVQ, IPOPQ } && E_dstM in { d_srcA, d_srcB }) && 
+  *   IRET in { D_icode, E_icode, M_icode };
+  */
+  formDBubbleLogicString(dreg: D, ereg: E, mreg: M): string {
+    let e_icode = ereg.geticode().getOutput(),
+      d_icode = dreg.geticode().getOutput(),
+      m_icode = mreg.geticode().getOutput(),
+      e_dstM = ereg.getdstM().getOutput(),
+      Cnd = this.e_Cnd;
+
+    let icodes_list = [];
+    let dstm_list = [];
+    let ret_list = [];
+
+    let str = "";
+
+
+    if (e_icode.equals(Long.fromNumber(Constants.JXX)) && !Cnd) {
+      str = "(E_icode in JXX && !e_Cnd)";
+    }
+    if (e_icode.equals(Long.fromNumber(Constants.MRMOVQ))) {
+      icodes_list.push("MRMOVQ");
+    }
+    if (e_icode.equals(Long.fromNumber(Constants.POPQ))) {
+      icodes_list.push("POPQ");
+    }
+    if (e_dstM.equals(this.d_srcA)) {
+      dstm_list.push("d_srcA")
+    }
+    if (e_dstM.equals(this.d_srcB)) {
+      dstm_list.push("d_srcB")
+    }
+    if (e_icode.equals(Long.fromNumber(Constants.RET))) {
+      ret_list.push("E_icode")
+    }
+    if (d_icode.equals(Long.fromNumber(Constants.RET))) {
+      ret_list.push("D_icode")
+    }
+    if (m_icode.equals(Long.fromNumber(Constants.RET))) {
+      ret_list.push("M_icode")
+    }
+
+    if (icodes_list.length > 0) {
+      str += "|| !(E_icode in {" + icodes_list + "}";
+      if (dstm_list.length > 0) {
+        str += " && E_dstM in {" + dstm_list + "})";
+      }
+    }
+
+    if (ret_list.length > 0) {
+      str += " && IRET in {" + ret_list + "}";
+    }
+
+    return str;
+  }
+
+  /*
+  * formEBubbleLogicString
+  * forms the string for E bubbling
+  * 
+  * HCL:
+  *  bool E_bubble = ( E_icode == IJXX && !e_Cnd ) ||  
+  *             ( E_icode in { IMRMOVQ, IPOPQ } &&  E_dstM in { d_srcA, d_srcB } );
+  */
+  formEBubbleLogicString(ereg: E): string {
+    let icodes_list = [];
+    let dstm_list = [];
+    let ret_list = [];
+
+    let str = "";
+
+    
+
+    let e_dstM = ereg.getdstM().getOutput(),
+      e_icode = ereg.geticode().getOutput();
+
+    if (e_icode.equals(Long.fromNumber(Constants.JXX)) && !this.e_Cnd) {
+      str = "(E_icode in JXX && !e_Cnd)";
+    }
+    if (e_icode.equals(Long.fromNumber(Constants.MRMOVQ))) {
+      icodes_list.push("MRMOVQ");
+    }
+    if (e_icode.equals(Long.fromNumber(Constants.POPQ))) {
+      icodes_list.push("POPQ");
+    }
+    if (e_dstM.equals(this.d_srcA)) {
+      dstm_list.push("d_srcA")
+    }
+    if (e_dstM.equals(this.d_srcB)) {
+      dstm_list.push("d_srcB")
+
+
+      if (icodes_list.length > 0) {
+        str += "E_icode in {" + icodes_list + "}";
+        if (dstm_list.length > 0) {
+          str += " && E_dstM in {" + dstm_list + "}";
+        }
+      }
+
+      if (ret_list.length > 0) {
+        str += " && IRET in {" + ret_list + "}";
+      }
+
+      return str;
+    }
   }
 }

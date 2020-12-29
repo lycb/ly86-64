@@ -8,11 +8,15 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./control-logic.component.css']
 })
 export class ControlLogicComponent implements OnInit {
-  logic: string;
+  Flogic: string;
+  Dlogic: string;
+  Elogic: string;
   logicSubscription: Subscription;
 
   constructor(private cpuService: CpuService) {
-    this.logic = ""
+    this.Flogic = "";
+    this.Dlogic = "";
+    this.Elogic = "";
 
     this.getLogic();
   }
@@ -24,9 +28,13 @@ export class ControlLogicComponent implements OnInit {
   getLogic() {
     this.logicSubscription = this.cpuService.getLogic().subscribe(value => {
       if (value) {
-        this.logic = value;
+        this.Flogic = value[0];
+        this.Dlogic = value[1];
+        this.Elogic = value[2];
       } else {
-        this.logic = "";
+        this.Flogic = "";
+        this.Dlogic = "";
+        this.Elogic = "";
       }
     });
   }
