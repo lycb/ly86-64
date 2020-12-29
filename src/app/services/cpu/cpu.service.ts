@@ -395,6 +395,7 @@ export class CpuService {
       dstE = this.d_dstE(dreg),
       dstM = this.d_dstM(dreg);
 
+    console.log("valA in D: " + valA)
 
     this.d_calculateControlSignals(ereg);
 
@@ -424,6 +425,7 @@ export class CpuService {
       ereg.getdstM().normal();
       ereg.getsrcA().normal();
       ereg.getsrcB().normal();
+      console.log(ereg.getvalA().getOutput())
     }
     this.e_reg.next(ereg);
   }
@@ -482,26 +484,35 @@ export class CpuService {
 
     if (icode.equals(Long.fromNumber(Constants.CALL)) ||
       icode.equals(Long.fromNumber(Constants.JXX))) {
+      console.log("1")
       return dreg.getvalP().getOutput();
     }
     if (this.d_srcA.equals(Long.fromNumber(Constants.RNONE))) {
+      console.log("2")
       return Long.ZERO;
     }
     if (this.d_srcA.equals(this.e_dstE)) {
+      console.log("3 valE: " + this.e_valE)
       return this.e_valE;
     }
     if (this.d_srcA.equals(mreg.getdstM().getOutput())) {
+      console.log("4")
       return this.m_valM;
     }
     if (this.d_srcA.equals(mreg.getdstE().getOutput())) {
+      console.log("5")
       return mreg.getvalE().getOutput();
     }
     if (this.d_srcA.equals(wreg.getdstM().getOutput())) {
+      console.log("6")
       return wreg.getvalE().getOutput();
     }
     if (this.d_srcA.equals(wreg.getdstE().getOutput())) {
+      console.log("7")
       return wreg.getvalE().getOutput();
     }
+
+    console.log("8")
 
     let register = this.registerService.index2register(this.d_srcA.toNumber())
     return this.registerService.getValueByRegister(register);
@@ -593,6 +604,7 @@ export class CpuService {
     this.e_Cnd = this.get_e_Cnd(icode, ifun);
     this.e_dstE = this.set_e_dstE(ereg);
     this.e_valE = this.chooseValE(ereg, wreg);
+    console.log("e_valE in Execute: " + this.e_valE)
 
     this.e_calculateControlSignals(wreg);
 
@@ -743,16 +755,26 @@ export class CpuService {
     if (ifun.equals(Long.fromNumber(Constants.EQUAL))) { return ZF; }
     if (ifun.equals(Long.fromNumber(Constants.NOTEQUAL))) { return ZF.equals(Long.ZERO) ? Long.ONE : Long.ZERO; } // !ZF 
     if (ifun.equals(Long.fromNumber(Constants.GREATER))) {
-      return (SF.xor(OF)).negate() && ZF.negate();
+      let condition = SF.xor(OF);
+      return (condition.equals(Long.ZERO) ? Long.ONE : Long.ZERO) && (ZF.equals(Long.ZERO) ? Long.ONE : Long.ZERO);
     }
-    if (ifun.equals(Long.fromNumber(Constants.GREATEREQ))) { return (SF.xor(OF)).negate(); }
-    else { return Long.NEG_ONE; }
+    if (ifun.equals(Long.fromNumber(Constants.GREATEREQ))) {
+      let condition =  SF.xor(OF);
+      return condition.equals(Long.ZERO) ? Long.ONE : Long.ZERO;
+    }
+    alert("e_Cnd returns -1")
+    return Long.NEG_ONE; 
   }
 
   set_e_dstE(ereg: E): Long {
     let icode = ereg.geticode().getOutput();
 
-    if (icode.equals(Long.fromNumber(Constants.RRMOVQ)) && !this.e_Cnd) {
+    console.log("set_e_dstE icode: " + icode);
+    console.log("e_cnd: " + this.e_Cnd)
+
+    if (icode.equals(Long.fromNumber(Constants.RRMOVQ)) && 
+      (this.e_Cnd.equals(Long.ZERO) ? Long.ONE : Long.ZERO)) {
+      console.log("GOT IN")
       return Long.fromNumber(Constants.RNONE);
     }
     return ereg.getdstE().getOutput();
@@ -771,28 +793,35 @@ export class CpuService {
       BYTE = 8;
 
     if (this.set_cc(ereg, wreg)) {
+      console.log("alu")
       return this.alu(ereg);
     }
     if (icode.equals(Long.fromNumber(Constants.CMOVXX))) {
+      console.log("valA " + valA);
       return valA;
     }
     if (icode.equals(Long.fromNumber(Constants.RMMOVQ)) ||
       icode.equals(Long.fromNumber(Constants.MRMOVQ))) {
+      console.log("valB + valC")
       return valB.add(valC); //valB + valC
     }
     if (icode.equals(Long.fromNumber(Constants.CALL)) ||
       icode.equals(Long.fromNumber(Constants.PUSHQ))) {
+      console.log("valB - byte")
       return valB.subtract(Long.fromNumber(BYTE)); //valB - BYTE
     }
     if (icode.equals(Long.fromNumber(Constants.RET)) ||
       icode.equals(Long.fromNumber(Constants.POPQ))) {
+      console.log("valB + byte")
       return valB.add(Long.fromNumber(BYTE)); //valB + BYTE
     }
     if (icode.equals(Long.fromNumber(Constants.JXX)) ||
       icode.equals(Long.fromNumber(Constants.NOP)) ||
       icode.equals(Long.fromNumber(Constants.HALT))) {
+      console.log("0")
       return Long.ZERO;
     }
+    console.log("valC")
     return valC;
   }
 

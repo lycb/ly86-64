@@ -1,0 +1,6 @@
+cycle 8:
+e_valA is ffffffff but getting 0
+
+cycle 25:
+M_valE = e, but getting ffffffff1
+valA = fffffffff, but getting 0
