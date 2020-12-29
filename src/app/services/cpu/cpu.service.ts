@@ -929,7 +929,7 @@ export class CpuService {
       dstM = wreg.getdstM().getOutput(),
       r_dstE = this.registerService.index2register(dstE.toNumber()),
       r_dstM = this.registerService.index2register(dstM.toNumber());
-
+   
     this.registerService.setValueByRegister(r_dstE, valE);
     this.registerService.setValueByRegister(r_dstM, valM);
   }

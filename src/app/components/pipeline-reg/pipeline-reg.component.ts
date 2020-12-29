@@ -137,8 +137,8 @@ export class PipelineRegComponent implements OnInit {
         this.d_ifun = dreg.ifun.state.toString(16);
         this.d_rA = dreg.rA.state.toString(16);
         this.d_rB = dreg.rB.state.toString(16);
-        this.d_valC = dreg.valC.state.toString(16);
-        this.d_valP = dreg.valP.state.toString(16);
+        this.d_valC = dreg.valC.state.toUnsigned().toString(16);
+        this.d_valP = dreg.valP.state.toUnsigned().toString(16);
         // this.setColor();
       } else {
         this.d_stat = "1";
@@ -159,9 +159,9 @@ export class PipelineRegComponent implements OnInit {
         this.e_stat = ereg.stat.state.toString(16);
         this.e_icode = ereg.icode.state.toString(16);
         this.e_ifun = ereg.ifun.state.toString(16);
-        this.e_valC = ereg.valC.state.toString(16);
-        this.e_valA = ereg.valA.state.toString(16);
-        this.e_valB = ereg.valB.state.toString(16);
+        this.e_valC = ereg.valC.state.toUnsigned().toString(16);
+        this.e_valA = ereg.valA.state.toUnsigned().toString(16);
+        this.e_valB = ereg.valB.state.toUnsigned().toString(16);
         this.e_dstE = ereg.dstE.state.toString(16);
         this.e_dstM = ereg.dstM.state.toString(16);
         this.e_srcA = ereg.srcA.state.toString(16);
@@ -189,8 +189,8 @@ export class PipelineRegComponent implements OnInit {
         this.m_stat = mreg.stat.state.toString(16);
         this.m_icode = mreg.icode.state.toString(16);
         this.m_cnd = mreg.Cnd.state.toString(16);
-        this.m_valE = mreg.valE.state.toString(16);
-        this.m_valA = mreg.valA.state.toString(16);
+        this.m_valE = mreg.valE.state.toUnsigned().toString(16);
+        this.m_valA = mreg.valA.state.toUnsigned().toString(16);
         this.m_dstE = mreg.dstE.state.toString(16);
         this.m_dstM = mreg.dstM.state.toString(16);
         this.setColor();
@@ -212,8 +212,8 @@ export class PipelineRegComponent implements OnInit {
         this.wreg = wreg;
         this.w_stat = wreg.stat.state.toString(16);
         this.w_icode = wreg.icode.state.toString(16);
-        this.w_valE = wreg.valE.state.toString(16);
-        this.w_valM = wreg.valM.state.toString(16);
+        this.w_valE = wreg.valE.state.toUnsigned().toString(16);
+        this.w_valM = wreg.valM.state.toUnsigned().toString(16);
         this.w_dstE = wreg.dstE.state.toString(16);
         this.w_dstM = wreg.dstM.state.toString(16);
         this.setColor();

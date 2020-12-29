@@ -9,7 +9,7 @@ export class UtilsService {
   constructor() { }
 
   buildLong(arr: Long[]): Long {
-    let ret = Long.ZERO;
+    let ret = arr[7];
     for (let i = 6; i >= 0; i--) {
       ret = ret.shiftLeft(8);
       ret = ret.add(arr[i]);
@@ -67,6 +67,9 @@ export class UtilsService {
     let result;
     if (num < 0) {
       result = (num >>> 0).toString(16);
+      while(result.length < width) {
+        result = 'f' + result;
+      }
     } else {
       result = num.toString(16);
       while (result.length < width) {
