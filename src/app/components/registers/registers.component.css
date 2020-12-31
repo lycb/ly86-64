@@ -1,8 +1,10 @@
 .register-table-wrapper {
 	font-family: monospace;
 	margin-top: 5%;
-	margin-left: 5%;
+	margin-left: 2%;
 	margin-bottom: 2%;
+	margin-right: 0;
+	width: 60%;
 }
 
 .registers-title {

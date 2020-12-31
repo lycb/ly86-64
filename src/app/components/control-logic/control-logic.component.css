@@ -1,11 +1,13 @@
 .wrapper {
 	margin-top: 1%;
-	margin-left: 5%;
-	width: 60vh;
-	height: 15vh;
+	margin-left: 2%;
+	width: 50%;
+	height: 15%;
 	border: 2px dotted black;
 	border-radius: 5px;
 	font-family: monospace;
+	overflow: scroll;
+	/*background-color: blue;*/
 }
 
 .logic {
