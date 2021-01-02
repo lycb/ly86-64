@@ -32,6 +32,10 @@ export class CpuService {
   d_logic_string = "";
   e_logic_string = "";
 
+  // Observables for passing values to the condition flags component
+  condition_flag = new Subject<number[]>();
+
+  cc_list = [0, 0, 0];
 
   // Stalling, bubbling logic variables
   fstall: boolean;
@@ -72,6 +76,8 @@ export class CpuService {
   doSimulation(lineObject: Line, freg: F, dreg: D, ereg: E, mreg: M, wreg: W): boolean {
     this.logic_string = ["", "", ""];
 
+    console.log("----------START----------")
+
     let stop = this.doWritebackClockLow(wreg);
     this.doMemoryClockLow(lineObject, freg, dreg, ereg, mreg, wreg);
     this.doExecuteClockLow(lineObject, freg, dreg, ereg, mreg, wreg);
@@ -94,6 +100,8 @@ export class CpuService {
     this.doDecodeClockHigh(ereg);
     this.doFetchClockHigh(freg, dreg);
     this.logic.next(this.logic_string);
+
+    console.log("----------END----------")
     return stop;
   }
 
@@ -482,38 +490,40 @@ export class CpuService {
   d_valA(dreg: D, mreg: M, wreg: W): Long {
     let icode = dreg.geticode().getOutput();
 
+    console.log("d_srcA: " + this.d_srcA);
+    console.log("M_dstE: " + mreg.getdstE().getOutput())
+
     if (icode.equals(Long.fromNumber(Constants.CALL)) ||
       icode.equals(Long.fromNumber(Constants.JXX))) {
-      console.log("1")
+      console.log("1 icode is call or jxx")
       return dreg.getvalP().getOutput();
     }
     if (this.d_srcA.equals(Long.fromNumber(Constants.RNONE))) {
-      console.log("2")
+      console.log("2 d_srca = RNONE")
       return Long.ZERO;
     }
     if (this.d_srcA.equals(this.e_dstE)) {
-      console.log("3 valE: " + this.e_valE)
+      console.log("3 d_srcA = e_dstE --> valE: " + this.e_valE)
       return this.e_valE;
     }
     if (this.d_srcA.equals(mreg.getdstM().getOutput())) {
-      console.log("4")
+      console.log("4 d_srca = M_dstM")
       return this.m_valM;
     }
     if (this.d_srcA.equals(mreg.getdstE().getOutput())) {
-      console.log("5")
+      console.log("5 d_srcA = M_dstE")
       return mreg.getvalE().getOutput();
     }
     if (this.d_srcA.equals(wreg.getdstM().getOutput())) {
-      console.log("6")
+      console.log("6 d_srcA = W_dstM")
       return wreg.getvalE().getOutput();
     }
     if (this.d_srcA.equals(wreg.getdstE().getOutput())) {
-      console.log("7")
+      console.log("7 d_srcA = W_dstE")
       return wreg.getvalE().getOutput();
     }
 
-    console.log("8")
-
+    console.log("8 register")
     let register = this.registerService.index2register(this.d_srcA.toNumber())
     return this.registerService.getValueByRegister(register);
   }
@@ -716,6 +726,7 @@ export class CpuService {
 
     if (this.alufun(ereg).equals(Long.fromNumber(Constants.ADD))) {
       valE = A.add(B);
+      console.log("valE in alu: " + valE)
       this.cc(valE.isNegative(), valE.isZero(),
         this.utilsService.addOverflow(A, B))
     }
@@ -736,15 +747,24 @@ export class CpuService {
   }
 
   cc(SF: boolean, ZF: boolean, OF: boolean): void {
+    console.log("OF: " + OF + " SF: " + SF + " ZF: " + ZF)
+
     this.conditionCodesService.setOF(OF ? Long.ONE : Long.ZERO);
     this.conditionCodesService.setSF(SF ? Long.ONE : Long.ZERO);
     this.conditionCodesService.setZF(ZF ? Long.ONE : Long.ZERO);
+
+    this.cc_list[0] = this.conditionCodesService.getOF().toNumber();
+    this.cc_list[1] = this.conditionCodesService.getSF().toNumber();
+    this.cc_list[2] = this.conditionCodesService.getZF().toNumber();
+
+    this.condition_flag.next(this.cc_list)
   }
 
   get_e_Cnd(icode: Long, ifun: Long): Long {
     let OF = this.conditionCodesService.getOF(),
       SF = this.conditionCodesService.getSF(),
       ZF = this.conditionCodesService.getZF();
+
 
     let ret;
 
@@ -760,7 +780,8 @@ export class CpuService {
     }
     if (ifun.equals(Long.fromNumber(Constants.GREATEREQ))) {
       let condition =  SF.xor(OF);
-      return condition.equals(Long.ZERO) ? Long.ONE : Long.ZERO;
+      console.log("condition: " + condition)
+      return (condition.equals(Long.ZERO)) ? Long.ONE : Long.ZERO;
     }
     alert("e_Cnd returns -1")
     return Long.NEG_ONE; 
@@ -771,10 +792,10 @@ export class CpuService {
 
     console.log("set_e_dstE icode: " + icode);
     console.log("e_cnd: " + this.e_Cnd)
+    console.log("ereg.dstE: " + ereg.getdstE().getOutput());
 
     if (icode.equals(Long.fromNumber(Constants.RRMOVQ)) && 
       (this.e_Cnd.equals(Long.ZERO) ? Long.ONE : Long.ZERO)) {
-      console.log("GOT IN")
       return Long.fromNumber(Constants.RNONE);
     }
     return ereg.getdstE().getOutput();
@@ -1001,6 +1022,10 @@ export class CpuService {
   *                        O B S E R V A B L E S 
   * ==============================================================
   */
+  getCC(): Observable<number[]> {
+    return this.condition_flag.asObservable();
+  }
+
   getLogic(): Observable<string[]> {
     return this.logic.asObservable();
   }

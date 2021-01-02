@@ -1,6 +1,18 @@
 cycle 8:
 e_valA is ffffffff but getting 0
 
+cycle 9:
+e_valA is ffffffff but getting 0
+e_valB is 0000000000000001 but getting ffffffffffffe
+m_valE is 1 but getting fffffffe
+m_valA is fffffff but getting 0
+
+cycle 10:
+e_valA is 2 but getting ffffffffffffe
+m_valE is 2 but getting ffffffffffffe
+m_valA is ffffffffff but getting 0
+w_valE is 1 but getting ffffffffffffe
+
 cycle 25:
 M_valE = e, but getting ffffffff1
 valA = fffffffff, but getting 0
