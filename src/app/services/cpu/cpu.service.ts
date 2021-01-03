@@ -287,7 +287,7 @@ export class CpuService {
   selectPC(freg: F, mreg: M, wreg: W): Long {
     const m_icode = mreg.geticode().getOutput();
     const w_icode = wreg.geticode().getOutput();
-    const m_Cnd = mreg.getCnd().getOutput();
+    const m_Cnd = mreg.getCnd().getOutput() == Long.ONE ? true : false;
 
     if (m_icode.equals(Long.fromNumber(Constants.JXX)) && !m_Cnd) {
       return mreg.getvalA().getOutput();
@@ -354,7 +354,7 @@ export class CpuService {
       d_icode = dreg.geticode().getOutput(),
       m_icode = mreg.geticode().getOutput(),
       e_dstM = ereg.getdstM().getOutput(),
-      Cnd = this.e_Cnd;
+      Cnd = this.e_Cnd == Long.ONE ? true: false;
 
     return (e_icode.equals(Long.fromNumber(Constants.JXX)) && !Cnd) ||
       (!((e_icode.equals(Long.fromNumber(Constants.MRMOVQ)) || e_icode.equals(Long.fromNumber(Constants.POPQ))) &&
@@ -585,8 +585,9 @@ export class CpuService {
     let e_dstM = ereg.getdstM().getOutput(),
       e_icode = ereg.geticode().getOutput();
 
+    let Cnd = this.e_Cnd == Long.ONE ? true : false;
 
-    this.ebubble = ((e_icode.equals(Long.fromNumber(Constants.JXX)) && !this.e_Cnd) ||
+    this.ebubble = ((e_icode.equals(Long.fromNumber(Constants.JXX)) && !Cnd) ||
       ((e_icode.equals(Long.fromNumber(Constants.MRMOVQ)) || e_icode.equals(Long.fromNumber(Constants.POPQ))) &&
         (e_dstM.equals(this.d_srcA) || e_dstM.equals(this.d_srcB))));
 
@@ -795,7 +796,8 @@ export class CpuService {
     console.log("ereg.dstE: " + ereg.getdstE().getOutput());
 
     if (icode.equals(Long.fromNumber(Constants.RRMOVQ)) && 
-      (this.e_Cnd.equals(Long.ZERO) ? Long.ONE : Long.ZERO)) {
+      (this.e_Cnd.equals(Long.ZERO) ? true : false)) {
+      console.log("RNONE E_DSTE")
       return Long.fromNumber(Constants.RNONE);
     }
     return ereg.getdstE().getOutput();
@@ -1189,7 +1191,7 @@ export class CpuService {
       d_icode = dreg.geticode().getOutput(),
       m_icode = mreg.geticode().getOutput(),
       e_dstM = ereg.getdstM().getOutput(),
-      Cnd = this.e_Cnd;
+      Cnd = this.e_Cnd ? true : false;
 
     let icodes_list = [];
     let dstm_list = [];
@@ -1252,12 +1254,12 @@ export class CpuService {
 
     let str = "";
 
-    
+    let Cnd = this.e_Cnd == Long.ONE ? true : false;
 
     let e_dstM = ereg.getdstM().getOutput(),
       e_icode = ereg.geticode().getOutput();
 
-    if (e_icode.equals(Long.fromNumber(Constants.JXX)) && !this.e_Cnd) {
+    if (e_icode.equals(Long.fromNumber(Constants.JXX)) && !Cnd) {
       str = "(E_icode in JXX && !e_Cnd)";
     }
     if (e_icode.equals(Long.fromNumber(Constants.MRMOVQ))) {
