@@ -16,6 +16,7 @@ import Long from 'long';
 export class ButtonsComponent implements OnInit {
   fileContent: Line[];
   counter: number;
+  stop: boolean;
   loadComponent: boolean;
   nextLine: boolean;
   isFirstAddressCurrent: boolean;
@@ -34,6 +35,7 @@ export class ButtonsComponent implements OnInit {
 
   ngOnInit() {
     this.counter = 0;
+    this.stop = false;
     this.loadComponent = false;
     this.nextLine = true;
     this.isFirstAddressCurrent = false;
@@ -67,8 +69,8 @@ export class ButtonsComponent implements OnInit {
     var current = this.parserService.getCurrentLine();
     var nextId = current.id + 1;
     if (current.id < this.fileContent.length && nextId < this.fileContent.length) {
-      if (current.parsedLine.instruction != "") {
-        this.cpuService.doSimulation(current, this.freg, this.dreg, this.ereg, this.mreg, this.wreg);
+      if (current.parsedLine.instruction != "" && !this.stop) {
+          this.stop = this.cpuService.doSimulation(current, this.freg, this.dreg, this.ereg, this.mreg, this.wreg);
       }
       this.nextCurrentLine(current);
     }
@@ -111,7 +113,7 @@ export class ButtonsComponent implements OnInit {
     for (let i = current.id + 1; i < this.fileContent.length; i++) {
       let next = this.fileContent[i];
       if (next.parsedLine != null) {
-        if (!this.cpuService.holdHighlight()) {
+        if (!this.cpuService.holdHighlight(this.dreg)) {
           next.isCurrent = true;
           this.parserService.setCurrent(next);
         } 

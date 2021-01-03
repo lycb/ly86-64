@@ -108,8 +108,8 @@ export class CpuService {
     freg.getPredPC().normal();
   }
 
-  holdHighlight(): boolean {
-    return this.fstall
+  holdHighlight(dreg: D): boolean {
+    return this.fstall || dreg.geticode().getOutput().equals(Long.ZERO)
   }
 
   /*
