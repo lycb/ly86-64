@@ -11,12 +11,14 @@ export class ControlLogicComponent implements OnInit {
   Flogic: string;
   Dlogic: string;
   Elogic: string;
+  Mlogic: string;
   logicSubscription: Subscription;
 
   constructor(private cpuService: CpuService) {
     this.Flogic = "";
     this.Dlogic = "";
     this.Elogic = "";
+    this.Mlogic = "";
 
     this.getLogic();
   }
@@ -31,10 +33,12 @@ export class ControlLogicComponent implements OnInit {
         this.Flogic = value[0];
         this.Dlogic = value[1];
         this.Elogic = value[2];
+        this.Mlogic = value[3];
       } else {
         this.Flogic = "";
         this.Dlogic = "";
         this.Elogic = "";
+        this.Mlogic = "";
       }
     });
   }

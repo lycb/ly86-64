@@ -27,10 +27,11 @@ export class CpuService {
   // Observables for passing values to the control logic component
   logic = new Subject<string[]>();
 
-  logic_string = ["", "", ""];
+  logic_string = ["", "", "", ""];
   f_logic_string = "";
   d_logic_string = "";
   e_logic_string = "";
+  m_logic_string = "";
 
   // Observables for passing values to the condition flags component
   condition_flag = new Subject<number[]>();
@@ -1255,5 +1256,25 @@ export class CpuService {
 
       return str;
     }
+  }
+
+  /*
+  * formMBubbleLogicString
+  * forms the string for M bubbling
+  * 
+  * HCL:
+  *  bool M_bubble = m_stat in { SADR, SINS, SHLT } || W_stat in { SADR, SINS, SHLT };
+  */
+  formMBubbleLogicString(wreg: W): string {
+    let str = "";
+    let w_stat = wreg.getstat().getOutput();
+
+    this.mbubble = ((this.m_stat.equals(Long.fromNumber(Constants.SADR)) ||
+      this.m_stat.equals(Long.fromNumber(Constants.SINS)) ||
+      this.m_stat.equals(Long.fromNumber(Constants.SHLT))) ||
+      (w_stat.equals(Long.fromNumber(Constants.SADR)) ||
+        w_stat.equals(Long.fromNumber(Constants.SINS)) ||
+        w_stat.equals(Long.fromNumber(Constants.SHLT))));
+    return str;
   }
 }
