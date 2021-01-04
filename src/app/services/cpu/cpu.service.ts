@@ -92,6 +92,9 @@ export class CpuService {
     if (this.ebubble) {
       this.logic_string[2] = this.e_logic_string;
     }
+    if (this.mbubble) {
+      this.logic_string[3] = this.m_logic_string;
+    }
 
     this.doWritebackClockHigh(wreg);
     this.doMemoryClockHigh(wreg);
@@ -829,6 +832,10 @@ export class CpuService {
       (w_stat.equals(Long.fromNumber(Constants.SADR)) ||
         w_stat.equals(Long.fromNumber(Constants.SINS)) ||
         w_stat.equals(Long.fromNumber(Constants.SHLT))));
+
+    if (this.mbubble) {
+      this.m_logic_string = "M (bubbled): " + this.formMBubbleLogicString(wreg);
+    }
   }
 
   /*
@@ -1269,12 +1276,36 @@ export class CpuService {
     let str = "";
     let w_stat = wreg.getstat().getOutput();
 
-    this.mbubble = ((this.m_stat.equals(Long.fromNumber(Constants.SADR)) ||
-      this.m_stat.equals(Long.fromNumber(Constants.SINS)) ||
-      this.m_stat.equals(Long.fromNumber(Constants.SHLT))) ||
-      (w_stat.equals(Long.fromNumber(Constants.SADR)) ||
-        w_stat.equals(Long.fromNumber(Constants.SINS)) ||
-        w_stat.equals(Long.fromNumber(Constants.SHLT))));
+    let m_stat_list = [];
+    let w_stat_list = [];
+
+    if (this.m_stat.equals(Long.fromNumber(Constants.SADR))) {
+      m_stat_list.push("SADR");
+    }
+    if (this.m_stat.equals(Long.fromNumber(Constants.SINS))) {
+      m_stat_list.push("SINS");
+    }
+    if (this.m_stat.equals(Long.fromNumber(Constants.SHLT))) {
+      m_stat_list.push("SHLT");
+    }
+    if (w_stat.equals(Long.fromNumber(Constants.SADR))) {
+      w_stat_list.push("SADR");
+    }
+    if (w_stat.equals(Long.fromNumber(Constants.SINS))) {
+      w_stat_list.push("SINS");
+    }
+    if (w_stat.equals(Long.fromNumber(Constants.SHLT))) {
+      w_stat_list.push("SHLT");
+    }
+
+    if (m_stat_list.length > 0) {
+      str += "m_stat in {" + m_stat_list + "}";
+    }
+
+    if (w_stat_list.length > 0) {
+      str += "|| W_stat in {" + w_stat_list + "}";
+    }
+
     return str;
   }
 }
