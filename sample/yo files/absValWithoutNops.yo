@@ -44,6 +44,7 @@
 0x09c: 6331                 | xorq %rbx, %rcx
 0x09e: 6131                 | subq %rbx, %rcx
 0x0a0: 40102000000000000000 | rmmovq %rcx, 32(%rax)
+0x0aa: 00                   | halt
                             | 
 0x0b0:                      | .align 8
 0x0b0: feffffffffffffff     | list: .quad -2            #at end: 2

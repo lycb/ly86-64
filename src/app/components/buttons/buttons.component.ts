@@ -63,7 +63,9 @@ export class ButtonsComponent implements OnInit {
   }
 
   onClickContinue(): void {
-
+    while(!this.stop) {
+      this.onClickStep();
+    }
   }
 
   onClickStep(): void {
