@@ -1303,7 +1303,7 @@ export class CpuService {
     }
 
     if (w_stat_list.length > 0) {
-      str += "|| W_stat in {" + w_stat_list + "}";
+      str += "W_stat in {" + w_stat_list + "}";
     }
 
     return str;

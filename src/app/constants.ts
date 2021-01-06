@@ -109,10 +109,9 @@ export const OF = 2
 
 // status
 export const SAOK = 1 // ok status
-export const SHLT = 2 // if icode is halt
-export const SADR = 3
-export const SINS = 4 // invalid instruction
-
+export const SADR = 2
+export const SINS = 3 // invalid instruction
+export const SHLT = 4 // if icode is halt
 
 // number of bytes
 export const VALC_BYTES = 8;

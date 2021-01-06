@@ -17,6 +17,7 @@ export class ButtonsComponent implements OnInit {
   fileContent: Line[];
   counter: number;
   stop: boolean;
+  counterStop: boolean;
   loadComponent: boolean;
   nextLine: boolean;
   isFirstAddressCurrent: boolean;
@@ -36,6 +37,7 @@ export class ButtonsComponent implements OnInit {
   ngOnInit() {
     this.counter = 0;
     this.stop = false;
+    this.counterStop = false;
     this.loadComponent = false;
     this.nextLine = true;
     this.isFirstAddressCurrent = false;
@@ -117,10 +119,12 @@ export class ButtonsComponent implements OnInit {
           next.isCurrent = true;
           this.parserService.setCurrent(next);
         } 
+
         if (next.parsedLine.address != 0 && current.parsedLine != null &&
           current.parsedLine.address != next.parsedLine.address &&
-          current.parsedLine.address != 0) {
+          current.parsedLine.address != 0 && !this.counterStop) {
           //increment the clock-cycle
+          if (this.stop) this.counterStop = true;
           this.counter++;
         }
         break;
