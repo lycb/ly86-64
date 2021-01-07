@@ -334,7 +334,7 @@ export class CpuService {
         m_icode.equals(Long.fromNumber(Constants.RET))));
   }
 
-  
+
   /*
   * D_stall
   * stalling logic for D register
@@ -355,7 +355,7 @@ export class CpuService {
       d_icode = dreg.geticode().getOutput(),
       m_icode = mreg.geticode().getOutput(),
       e_dstM = ereg.getdstM().getOutput(),
-      Cnd = this.e_Cnd == Long.ONE ? true: false;
+      Cnd = this.e_Cnd == Long.ONE ? true : false;
 
     return (e_icode.equals(Long.fromNumber(Constants.JXX)) && !Cnd) ||
       (!((e_icode.equals(Long.fromNumber(Constants.MRMOVQ)) || e_icode.equals(Long.fromNumber(Constants.POPQ))) &&
@@ -764,17 +764,17 @@ export class CpuService {
       return (condition.equals(Long.ZERO) ? Long.ONE : Long.ZERO) && (ZF.equals(Long.ZERO) ? Long.ONE : Long.ZERO);
     }
     if (ifun.equals(Long.fromNumber(Constants.GREATEREQ))) {
-      let condition =  SF.xor(OF);
+      let condition = SF.xor(OF);
       return (condition.equals(Long.ZERO)) ? Long.ONE : Long.ZERO;
     }
     alert("error with e_Cnd")
-    return Long.NEG_ONE; 
+    return Long.NEG_ONE;
   }
 
   set_e_dstE(ereg: E): Long {
     let icode = ereg.geticode().getOutput();
-    
-    if (icode.equals(Long.fromNumber(Constants.RRMOVQ)) && 
+
+    if (icode.equals(Long.fromNumber(Constants.RRMOVQ)) &&
       (this.e_Cnd.equals(Long.ZERO) ? true : false)) {
       return Long.fromNumber(Constants.RNONE);
     }
@@ -956,7 +956,7 @@ export class CpuService {
       dstM = wreg.getdstM().getOutput(),
       r_dstE = this.registerService.index2register(dstE.toNumber()),
       r_dstM = this.registerService.index2register(dstM.toNumber());
-   
+
     this.registerService.setValueByRegister(r_dstE, valE);
     this.registerService.setValueByRegister(r_dstM, valM);
   }
@@ -1151,7 +1151,7 @@ export class CpuService {
     return str;
   }
 
-  
+
   /*
   * formDBubbleLogicString
   * forms the string for D bubbling
@@ -1223,6 +1223,7 @@ export class CpuService {
   *             ( E_icode in { IMRMOVQ, IPOPQ } &&  E_dstM in { d_srcA, d_srcB } );
   */
   formEBubbleLogicString(ereg: E): string {
+    console.log("called")
     let icodes_list = [];
     let dstm_list = [];
     let ret_list = [];
@@ -1248,21 +1249,22 @@ export class CpuService {
     }
     if (e_dstM.equals(this.d_srcB)) {
       dstm_list.push("d_srcB")
-
-
-      if (icodes_list.length > 0) {
-        str += "E_icode in {" + icodes_list + "}";
-        if (dstm_list.length > 0) {
-          str += " && E_dstM in {" + dstm_list + "}";
-        }
-      }
-
-      if (ret_list.length > 0) {
-        str += " && IRET in {" + ret_list + "}";
-      }
-
-      return str;
     }
+
+
+    if (icodes_list.length > 0) {
+      str += "E_icode in {" + icodes_list + "}";
+      if (dstm_list.length > 0) {
+        str += " && E_dstM in {" + dstm_list + "}";
+      }
+    }
+
+    if (ret_list.length > 0) {
+      str += " && IRET in {" + ret_list + "}";
+    }
+
+    return str;
+
   }
 
   /*

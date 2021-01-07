@@ -1,0 +1,17 @@
+0x000:                      |         .pos 0
+0x000: 30f0ffffffffffffffff |         irmovq $0xffffffffffffffff, %rax
+0x00a: 6200                 |         andq %rax, %rax
+0x00c: 722900000000000000   |         jl targt1     # jl taken
+0x015: 30f00200000000000000 |         irmovq $2, %rax
+0x01f: 30f10300000000000000 |         irmovq $3, %rcx
+0x029: 30f20400000000000000 | targt1: irmovq $4, %rdx  # %rdx = 4
+0x033: 30f30500000000000000 |         irmovq $5, %rbx  # %rbx = 5
+0x03d: 30f0ffffffffffffff7f |         irmovq $0x7fffffffffffffff, %rax
+0x047: 6200                 |         andq %rax, %rax
+0x049: 726700000000000000   |         jl targt2     # jl not taken
+0x052: 30f60600000000000000 |         irmovq $6, %rsi  # %rsi = 6
+0x05c: 30f70700000000000000 |         irmovq $7, %rdi  # %rdi = 7
+0x066: 00                   |         halt
+0x067: 30f80800000000000000 | targt2: irmovq $8, %r8
+0x071: 30f90900000000000000 |         irmovq $9, %r9
+0x07b: 00                   |         halt

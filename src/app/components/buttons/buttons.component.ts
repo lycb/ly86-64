@@ -114,16 +114,30 @@ export class ButtonsComponent implements OnInit {
   * return false if there isn't another line to read (i.e. EOF)
   */
   nextCurrentLine(current: Line): void {
+    let nextIndex = this.fileContent.findIndex((line) => {
+      if (line.parsedLine !== null) {
+        return line.parsedLine.address == this.freg.getPredPC().getOutput().toNumber();
+      }
+      else {
+        return line.id;
+      }
+    })
+    if (nextIndex == 0) {
+      nextIndex++;
+    }
     for (let i = current.id + 1; i < this.fileContent.length; i++) {
       let next = this.fileContent[i];
+      console.log(this.fileContent)
+        console.log("NEXT: ")
+        console.log(next)
+        console.log("CURRENT: ")
+        console.log(current)
       if (next.parsedLine != null) {
         if (!this.cpuService.holdHighlight(this.dreg)) {
           next.isCurrent = true;
           this.parserService.setCurrent(next);
         } 
-
         if (next.parsedLine.address != 0 && current.parsedLine != null &&
-          current.parsedLine.address != next.parsedLine.address &&
           current.parsedLine.address != 0 && !this.counterStop) {
           //increment the clock-cycle
           if (this.stop) this.counterStop = true;

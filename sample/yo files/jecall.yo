@@ -1,0 +1,18 @@
+0x000:                      |           .pos 0
+0x000: 30f40002000000000000 |           irmovq stack, %rsp
+0x00a: 30f70300000000000000 |           irmovq $3, %rdi   # %rdi = 3
+0x014: 30f00200000000000000 |           irmovq $2, %rax   # %rax = 2
+0x01e: 6200                 |           andq %rax, %rax
+0x020: 732a00000000000000   |           je target   # should be not taken
+0x029: 00                   |           halt        # halt here
+                            | # none of the statements below here should be executed
+0x02a: 803e00000000000000   | target:   call addOne
+0x033: 30f30400000000000000 |           irmovq $4, %rbx
+0x03d: 00                   |           halt
+0x03e: 30f00100000000000000 | addOne:   irmovq $1, %rax
+0x048: 6070                 |           addq %rdi, %rax
+0x04a: 90                   |           ret 
+0x04b: 30f60500000000000000 |           irmovq $5, %rsi  # shou
+0x055: 30f80600000000000000 |           irmovq $6, %r8
+0x200:                      |           .pos 0x200
+0x200:                      | stack: 
