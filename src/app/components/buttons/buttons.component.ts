@@ -125,26 +125,20 @@ export class ButtonsComponent implements OnInit {
     if (nextIndex == 0) {
       nextIndex++;
     }
-    for (let i = current.id + 1; i < this.fileContent.length; i++) {
+    for (let i = nextIndex; i < this.fileContent.length; i++) {
       let next = this.fileContent[i];
-      console.log(this.fileContent)
-        console.log("NEXT: ")
-        console.log(next)
-        console.log("CURRENT: ")
-        console.log(current)
       if (next.parsedLine != null) {
         if (!this.cpuService.holdHighlight(this.dreg)) {
           next.isCurrent = true;
           this.parserService.setCurrent(next);
         } 
-        if (next.parsedLine.address != 0 && current.parsedLine != null &&
-          current.parsedLine.address != 0 && !this.counterStop) {
-          //increment the clock-cycle
-          if (this.stop) this.counterStop = true;
-          this.counter++;
-        }
-        break;
       }
+      if (current.parsedLine != null && current.parsedLine.address != 0 && !this.counterStop) {
+        //increment the clock-cycle
+        if (this.stop) this.counterStop = true;
+        this.counter++;
+      }
+      break;
     }
   }
 
