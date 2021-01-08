@@ -16,6 +16,7 @@ import Long from 'long';
 export class ButtonsComponent implements OnInit {
   fileContent: Line[];
   counter: number;
+  instructionLength: number;
   stop: boolean;
   counterStop: boolean;
   loadComponent: boolean;
@@ -41,6 +42,7 @@ export class ButtonsComponent implements OnInit {
     this.loadComponent = false;
     this.nextLine = true;
     this.isFirstAddressCurrent = false;
+    this.instructionLength = 0;
 
     this.freg = new F();
     this.dreg = new D();
@@ -74,7 +76,7 @@ export class ButtonsComponent implements OnInit {
     var nextId = current.id + 1;
     if (current.id < this.fileContent.length && nextId < this.fileContent.length) {
       if (current.parsedLine.instruction != "" && !this.stop) {
-          this.stop = this.cpuService.doSimulation(current, this.freg, this.dreg, this.ereg, this.mreg, this.wreg);
+        this.stop = this.cpuService.doSimulation(this.fileContent, current, this.freg, this.dreg, this.ereg, this.mreg, this.wreg);
       }
       this.nextCurrentLine(current);
     }
@@ -128,7 +130,8 @@ export class ButtonsComponent implements OnInit {
     for (let i = nextIndex; i < this.fileContent.length; i++) {
       let next = this.fileContent[i];
       if (next.parsedLine != null) {
-        if (!this.cpuService.holdHighlight(this.dreg)) {
+        let eof = next.id >= this.instructionLength;
+        if (!this.cpuService.holdHighlight(this.dreg, eof)) {
           next.isCurrent = true;
           this.parserService.setCurrent(next);
         } 
@@ -169,6 +172,13 @@ export class ButtonsComponent implements OnInit {
             isCurrent: false,
             parsedLine: this.parserService.parse(line),
           });
+ 
+          if (this.fileContent[index].parsedLine.instruction != "" && // has an instruction
+            (this.fileContent[index].parsedLine.instruction[0] != "0" || // not halt or constants
+            (this.fileContent[index].parsedLine.instruction[0] == "0" && this.fileContent[index].parsedLine.instruction[1] == "0"))) //is halt 
+          {
+            this.instructionLength++;
+          }
           index++;
         } else {
           this.fileContent.push({

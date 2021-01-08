@@ -74,14 +74,14 @@ export class CpuService {
   * doSimulation
   * performs simulation for the pipeline
   */
-  doSimulation(lineObject: Line, freg: F, dreg: D, ereg: E, mreg: M, wreg: W): boolean {
+  doSimulation(fileContent: Line[], lineObject: Line, freg: F, dreg: D, ereg: E, mreg: M, wreg: W): boolean {
     this.logic_string = ["", "", ""];
 
     let stop = this.doWritebackClockLow(wreg);
     this.doMemoryClockLow(lineObject, freg, dreg, ereg, mreg, wreg);
     this.doExecuteClockLow(lineObject, freg, dreg, ereg, mreg, wreg);
     this.doDecodeClockLow(lineObject, freg, dreg, ereg, mreg, wreg);
-    this.doFetchClockLow(lineObject, freg, dreg, ereg, mreg, wreg);
+    this.doFetchClockLow(fileContent, lineObject, freg, dreg, ereg, mreg, wreg);
 
     if (this.fstall) {
       this.logic_string[0] = this.f_logic_string;
@@ -112,8 +112,8 @@ export class CpuService {
     freg.getPredPC().normal();
   }
 
-  holdHighlight(dreg: D): boolean {
-    return this.fstall || dreg.geticode().getOutput().equals(Long.ZERO)
+  holdHighlight(dreg: D, eof: boolean): boolean {
+    return this.fstall || dreg.geticode().getOutput().equals(Long.ZERO) && eof;
   }
 
   /*
@@ -122,8 +122,25 @@ export class CpuService {
   * ==============================================================
   */
 
-  doFetchClockLow(lineObject: Line, freg: F, dreg: D, ereg: E, mreg: M, wreg: W): void {
+  doFetchClockLow(fileContent: Line[], lineObject: Line, freg: F, dreg: D, ereg: E, mreg: M, wreg: W): void {
+    let f_pc = this.selectPC(freg, mreg, wreg);
+
     let line = lineObject.parsedLine.instruction;
+
+    if (f_pc.toNumber() != lineObject.parsedLine.address) {
+      let index = fileContent.findIndex((line) => {
+        if (line.parsedLine !== null) {
+          return line.parsedLine.address == f_pc.toNumber();
+        }
+        else {
+          return line.id;
+        }
+      })
+      if (fileContent[index].parsedLine !== null &&
+        fileContent[index].parsedLine.instruction !== "") {
+        line = fileContent[index].parsedLine.instruction;
+      }
+    }
 
     let icode = Long.ZERO,
       ifun = Long.ZERO,
@@ -141,7 +158,7 @@ export class CpuService {
       rA = registers[0];
       rB = registers[1];
     }
-    let f_pc = this.selectPC(freg, mreg, wreg);
+
 
     stat = this.f_status(icode, this.error);
     icode = this.f_icode(icode, this.error);
@@ -267,22 +284,23 @@ export class CpuService {
 
   predictPC(icode: Long, valC: Long, valP: Long): Long {
     if (icode.equals(Long.fromNumber(Constants.JXX)) ||
-      icode.equals(Long.fromNumber(Constants.CALL))) return valC;
-    else return valP;
+      icode.equals(Long.fromNumber(Constants.CALL))) {
+      return valC;
+    }
+    else {
+      return valP;
+    }
   }
 
   PCincrement(f_pc: Long, icode: Long): number {
-    if (this.needValC(icode)) {
-      if (this.needRegister(icode)) {
-        return f_pc.toNumber() + Constants.VALC_BYTES + Constants.REG_BYTES;
-      } else {
-        return f_pc.toNumber() + Constants.VALC_BYTES + Constants.PC_INCREMENT;
-      }
-    } else if (!this.needValC(icode) && this.needRegister(icode)) {
-      return f_pc.toNumber() + Constants.REG_BYTES;
-    } else {
-      return f_pc.toNumber() + Constants.PC_INCREMENT;
+    let num = 1;
+    if (this.needRegister(icode)) {
+      num += 1;
     }
+    if (this.needValC(icode)) {
+      num += 8;
+    }
+    return f_pc.toNumber() + num;
   }
 
   selectPC(freg: F, mreg: M, wreg: W): Long {
@@ -1165,15 +1183,15 @@ export class CpuService {
     let e_icode = ereg.geticode().getOutput(),
       d_icode = dreg.geticode().getOutput(),
       m_icode = mreg.geticode().getOutput(),
-      e_dstM = ereg.getdstM().getOutput(),
-      Cnd = this.e_Cnd ? true : false;
+      e_dstM = ereg.getdstM().getOutput();
+
+    let Cnd = this.e_Cnd == Long.ONE ? true : false;
 
     let icodes_list = [];
     let dstm_list = [];
     let ret_list = [];
 
     let str = "";
-
 
     if (e_icode.equals(Long.fromNumber(Constants.JXX)) && !Cnd) {
       str = "(E_icode in JXX && !e_Cnd)";
@@ -1223,7 +1241,6 @@ export class CpuService {
   *             ( E_icode in { IMRMOVQ, IPOPQ } &&  E_dstM in { d_srcA, d_srcB } );
   */
   formEBubbleLogicString(ereg: E): string {
-    console.log("called")
     let icodes_list = [];
     let dstm_list = [];
     let ret_list = [];
