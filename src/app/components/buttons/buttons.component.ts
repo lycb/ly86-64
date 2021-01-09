@@ -15,12 +15,11 @@ import Long from 'long';
 })
 export class ButtonsComponent implements OnInit {
   fileContent: Line[];
-  counter: number;
+  cycle: number;
   instructionLength: number;
   stop: boolean;
   counterStop: boolean;
   loadComponent: boolean;
-  nextLine: boolean;
   isFirstAddressCurrent: boolean;
 
   freg: F;
@@ -36,11 +35,10 @@ export class ButtonsComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.counter = 0;
+    this.cycle = 0;
     this.stop = false;
     this.counterStop = false;
     this.loadComponent = false;
-    this.nextLine = true;
     this.isFirstAddressCurrent = false;
     this.instructionLength = 0;
 
@@ -51,6 +49,11 @@ export class ButtonsComponent implements OnInit {
     this.wreg = new W();
   }
 
+  /*
+  * onFileSelect
+  * check for file extension
+  * load lines into an array -> this.fileContent
+  */
   onFileSelect(input: HTMLInputElement): void {
     this.fileContent = [];
     const file = input.files[0];
@@ -84,7 +87,7 @@ export class ButtonsComponent implements OnInit {
 
   onClickReset(): void {
     this.setFirstAddressCurrent();
-    this.counter = 0;
+    this.cycle = 0;
     this.cpuService.resetValues(this.freg, this.dreg, this.ereg, this.mreg, this.wreg);
   }
 
@@ -111,21 +114,13 @@ export class ButtonsComponent implements OnInit {
   }
 
   /*
-  * nextCurrentLine --
+  * nextCurrentLine
+  * sets the next valid instruction to be the new current line
   */
   nextCurrentLine(): void {
     let current = this.parserService.getCurrentLine();
-    let nextIndex = 0;
-
-    for (let i = 0; i < this.fileContent.length; i++) {
-      if (this.fileContent[i].parsedLine !== null && this.fileContent[i].parsedLine.instruction !== "") {
-        if (this.fileContent[i].parsedLine.address == this.freg.getPredPC().getOutput().toNumber()) {
-          nextIndex = i;
-          break;
-        }
-        nextIndex = current.id;
-      }
-    }
+    
+    let nextIndex = this.findNextIndex();
 
     if (nextIndex == 0) {
       nextIndex++;
@@ -141,10 +136,24 @@ export class ButtonsComponent implements OnInit {
       if (current.parsedLine != null && current.parsedLine.address != 0 && !this.counterStop) {
         //increment the clock-cycle
         if (this.stop) this.counterStop = true;
-        this.counter++;
+        this.cycle++;
       }
       break;
     }
+  }
+
+  findNextIndex(): number {
+    let index = 0;
+    for (let i = 0; i < this.fileContent.length; i++) {
+      if (this.fileContent[i].parsedLine !== null && this.fileContent[i].parsedLine.instruction !== "") {
+        if (this.fileContent[i].parsedLine.address == this.freg.getPredPC().getOutput().toNumber()) {
+          index = i;
+          break;
+        }
+        index = this.parserService.getCurrentLine().id;
+      }
+    }
+    return index;
   }
 
   loadline(line: AddressLine): void {

@@ -52,11 +52,4 @@ export class ParserService {
   getCurrentLine(): Line {
     return this.currentLine;
   }
-
-  getCurrentLineParsedInstruction() {
-    var instruction = this.currentLine.parsedLine.instruction;
-    if (instruction !== "") {
-      return this.instructionService.icodeifun2instr(instruction[0], instruction[1]);
-    }
-  }
 }

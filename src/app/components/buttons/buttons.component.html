@@ -7,7 +7,7 @@
 		<button class="step-button" (click)="onClickStep()" [disabled]="!loadComponent">Step</button>
 		<button class="reset-button" (click)="onClickReset()" [disabled]="!loadComponent">Reset</button>
 	</div>
-	<app-clock-cycle [counter]="counter"></app-clock-cycle>
+	<app-clock-cycle [cycle]="cycle"></app-clock-cycle>
 </div>
 
 <app-code [fileContent]="fileContent"></app-code>
