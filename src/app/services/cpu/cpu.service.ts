@@ -375,8 +375,8 @@ export class CpuService {
       m_icode = mreg.geticode().getOutput(),
       e_dstM = ereg.getdstM().getOutput();
 
-    return ((e_icode.equals(Long.fromNumber(Constants.MRMOVQ)) ||
-      e_icode.equals(Long.fromNumber(Constants.POPQ)) &&
+    return (((e_icode.equals(Long.fromNumber(Constants.MRMOVQ)) ||
+      e_icode.equals(Long.fromNumber(Constants.POPQ))) &&
       (e_dstM.equals(this.d_srcA) || e_dstM.equals(this.d_srcB))) ||
       (e_icode.equals(Long.fromNumber(Constants.RET)) ||
         d_icode.equals(Long.fromNumber(Constants.RET)) ||
@@ -1353,7 +1353,7 @@ export class CpuService {
     }
 
     if (w_stat_list.length > 0) {
-      str += "W_stat in {" + w_stat_list + "}";
+      str += " W_stat in {" + w_stat_list + "}";
     }
 
     return str;
