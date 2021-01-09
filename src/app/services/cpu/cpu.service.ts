@@ -67,6 +67,11 @@ export class CpuService {
     private utilsService: UtilsService,
     private memoryService: MemoryService
   ) {
+    this.fstall = false;
+    this.dstall = false;
+    this.dbubble = false;
+    this.ebubble = false;
+    this.mbubble = false;
     this.error = false;
   }
 
@@ -128,17 +133,14 @@ export class CpuService {
     let line = lineObject.parsedLine.instruction;
 
     if (f_pc.toNumber() != lineObject.parsedLine.address) {
-      let index = fileContent.findIndex((line) => {
-        if (line.parsedLine !== null) {
-          return line.parsedLine.address == f_pc.toNumber();
+      for (let i = 0; i < fileContent.length; i++) {
+        if (fileContent[i].parsedLine !== null && fileContent[i].parsedLine.instruction !== "") {
+          if (fileContent[i].parsedLine.address == f_pc.toNumber()) {
+            line = fileContent[i].parsedLine.instruction;
+            this.parserService.setCurrent(fileContent[i])
+            break;
+          }
         }
-        else {
-          return line.id;
-        }
-      })
-      if (fileContent[index].parsedLine !== null &&
-        fileContent[index].parsedLine.instruction !== "") {
-        line = fileContent[index].parsedLine.instruction;
       }
     }
 

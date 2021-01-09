@@ -65,7 +65,7 @@ export class ButtonsComponent implements OnInit {
   }
 
   onClickContinue(): void {
-    while(!this.stop) {
+    while (!this.stop) {
       this.onClickStep();
     }
   }
@@ -78,7 +78,7 @@ export class ButtonsComponent implements OnInit {
       if (current.parsedLine.instruction != "" && !this.stop) {
         this.stop = this.cpuService.doSimulation(this.fileContent, current, this.freg, this.dreg, this.ereg, this.mreg, this.wreg);
       }
-      this.nextCurrentLine(current);
+      this.nextCurrentLine();
     }
   }
 
@@ -112,18 +112,21 @@ export class ButtonsComponent implements OnInit {
 
   /*
   * nextCurrentLine --
-  * return true if there is a next "current" line to highlight
-  * return false if there isn't another line to read (i.e. EOF)
   */
-  nextCurrentLine(current: Line): void {
-    let nextIndex = this.fileContent.findIndex((line) => {
-      if (line.parsedLine !== null) {
-        return line.parsedLine.address == this.freg.getPredPC().getOutput().toNumber();
+  nextCurrentLine(): void {
+    let current = this.parserService.getCurrentLine();
+    let nextIndex = 0;
+
+    for (let i = 0; i < this.fileContent.length; i++) {
+      if (this.fileContent[i].parsedLine !== null && this.fileContent[i].parsedLine.instruction !== "") {
+        if (this.fileContent[i].parsedLine.address == this.freg.getPredPC().getOutput().toNumber()) {
+          nextIndex = i;
+          break;
+        }
+        nextIndex = current.id;
       }
-      else {
-        return line.id;
-      }
-    })
+    }
+
     if (nextIndex == 0) {
       nextIndex++;
     }
@@ -132,9 +135,8 @@ export class ButtonsComponent implements OnInit {
       if (next.parsedLine != null) {
         let eof = next.id >= this.instructionLength;
         if (!this.cpuService.holdHighlight(this.dreg, eof)) {
-          next.isCurrent = true;
           this.parserService.setCurrent(next);
-        } 
+        }
       }
       if (current.parsedLine != null && current.parsedLine.address != 0 && !this.counterStop) {
         //increment the clock-cycle
@@ -172,10 +174,10 @@ export class ButtonsComponent implements OnInit {
             isCurrent: false,
             parsedLine: this.parserService.parse(line),
           });
- 
+
           if (this.fileContent[index].parsedLine.instruction != "" && // has an instruction
             (this.fileContent[index].parsedLine.instruction[0] != "0" || // not halt or constants
-            (this.fileContent[index].parsedLine.instruction[0] == "0" && this.fileContent[index].parsedLine.instruction[1] == "0"))) //is halt 
+              (this.fileContent[index].parsedLine.instruction[0] == "0" && this.fileContent[index].parsedLine.instruction[1] == "0"))) //is halt 
           {
             this.instructionLength++;
           }

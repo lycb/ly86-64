@@ -42,6 +42,7 @@ export class ParserService {
     } else {
       this.currentLine = line;
     }
+    this.currentLine.isCurrent = true;
   }
 
   getCurrentIndex(): number {
