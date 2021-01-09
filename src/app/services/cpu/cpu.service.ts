@@ -375,12 +375,12 @@ export class CpuService {
       m_icode = mreg.geticode().getOutput(),
       e_dstM = ereg.getdstM().getOutput();
 
-    return (((e_icode.equals(Long.fromNumber(Constants.MRMOVQ)) ||
+    return ((e_icode.equals(Long.fromNumber(Constants.MRMOVQ)) ||
       e_icode.equals(Long.fromNumber(Constants.POPQ))) &&
-      (e_dstM.equals(this.d_srcA) || e_dstM.equals(this.d_srcB))) ||
+      ((e_dstM.equals(this.d_srcA) || e_dstM.equals(this.d_srcB)) ||
       (e_icode.equals(Long.fromNumber(Constants.RET)) ||
         d_icode.equals(Long.fromNumber(Constants.RET)) ||
-        m_icode.equals(Long.fromNumber(Constants.RET))));
+        m_icode.equals(Long.fromNumber(Constants.RET)))));
   }
 
 
@@ -403,8 +403,9 @@ export class CpuService {
     let e_icode = ereg.geticode().getOutput(),
       d_icode = dreg.geticode().getOutput(),
       m_icode = mreg.geticode().getOutput(),
-      e_dstM = ereg.getdstM().getOutput(),
-      Cnd = this.e_Cnd == Long.ONE ? true : false;
+      e_dstM = ereg.getdstM().getOutput();
+
+    let Cnd = this.e_Cnd == Long.ONE ? true : false;
 
     return (e_icode.equals(Long.fromNumber(Constants.JXX)) && !Cnd) ||
       (!((e_icode.equals(Long.fromNumber(Constants.MRMOVQ)) || e_icode.equals(Long.fromNumber(Constants.POPQ))) &&
@@ -1151,12 +1152,12 @@ export class CpuService {
     if (icodes_list.length > 0) {
       str += "E_icode in {" + icodes_list + "}";
       if (dstm_list.length > 0) {
-        str += " && E_dstM in {" + dstm_list + "}";
+        str += " E_dstM in {" + dstm_list + "}";
       }
     }
 
     if (ret_list.length > 0) {
-      str += " || IRET in {" + ret_list + "}";
+      str += "IRET in {" + ret_list + "}";
     }
     return str;
   }
@@ -1194,7 +1195,7 @@ export class CpuService {
     if (icodes_list.length > 0) {
       str += "E_icode in {" + icodes_list + "}";
       if (dstm_list.length > 0) {
-        str += " && E_dstM in {" + dstm_list + "}";
+        str += " E_dstM in {" + dstm_list + "}";
       }
     }
     return str;
@@ -1250,14 +1251,14 @@ export class CpuService {
     }
 
     if (icodes_list.length > 0) {
-      str += "|| !(E_icode in {" + icodes_list + "}";
+      str += "!(E_icode in {" + icodes_list + "}";
       if (dstm_list.length > 0) {
-        str += " && E_dstM in {" + dstm_list + "})";
+        str += " E_dstM in {" + dstm_list + "})";
       }
     }
 
     if (ret_list.length > 0) {
-      str += " && IRET in {" + ret_list + "}";
+      str += "IRET in {" + ret_list + "}";
     }
 
     return str;
@@ -1303,12 +1304,12 @@ export class CpuService {
     if (icodes_list.length > 0) {
       str += "E_icode in {" + icodes_list + "}";
       if (dstm_list.length > 0) {
-        str += " && E_dstM in {" + dstm_list + "}";
+        str += " E_dstM in {" + dstm_list + "}";
       }
     }
 
     if (ret_list.length > 0) {
-      str += " && IRET in {" + ret_list + "}";
+      str += "IRET in {" + ret_list + "}";
     }
 
     return str;

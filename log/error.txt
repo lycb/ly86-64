@@ -1,18 +1,4 @@
-insertBST
-* cycle 10:
-- M_valE is supposed to be 5 but got fffffd6a
-- M_valA is supposed to be 5 but got 2a0
-
-* cycle 12: 
-- SF is supposed to be 0 but is 1
-- %rax is supposed to be 5 but is 0xffffffffed8 (-662)
-- M_Cnd is supposed to be 1 but got 0
-- M_dstE is supposed to be 7 but got f
-
-* cycle 13:
-- E_valA and valB are supposed to be 0x218 but got 0x230
-- %rax is supposed to be 5 but is 0xffffffffed8 (-662)
-- M_Cnd is supposed to be 0 but got 1
-- M_dstE is supposed to be f but got 7
-- W_dstE is supposed to be 7 but got f
-
+insertBST:
+* cycle 29: 
+- D and E bubbled when it wasn't supposed to
+- F is supposed to stall but it didn't
