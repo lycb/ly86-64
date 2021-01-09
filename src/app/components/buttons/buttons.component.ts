@@ -55,6 +55,7 @@ export class ButtonsComponent implements OnInit {
   * load lines into an array -> this.fileContent
   */
   onFileSelect(input: HTMLInputElement): void {
+    this.isFirstAddressCurrent = false;
     this.fileContent = [];
     const file = input.files[0];
     if (!file) return;
