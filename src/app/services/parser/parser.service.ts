@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AddressLine } from '../../models/AddressLine';
 import { Line } from '../../models/Line';
-import { InstructionService } from '../instruction/instruction.service';
 
 
 @Injectable({
@@ -13,7 +12,7 @@ export class ParserService {
   fileContent: Line[] = [];
   currentLine: Line;
 
-  constructor(private instructionService: InstructionService) { }
+  constructor() { }
 
   parse(line: string): AddressLine {
     var parts = line.match(/^\s*0[xX]([0-9a-fA-F]+)\s*:\s*([0-9a-fA-F]*)\s*\|.*$/);

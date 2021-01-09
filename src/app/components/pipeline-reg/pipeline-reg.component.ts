@@ -99,11 +99,11 @@ export class PipelineRegComponent implements OnInit {
     this.w_dstE = "f";
     this.w_dstM = "f";
 
-    this.f_state = "NA";
-    this.d_state = "NA";
-    this.e_state = "NA";
-    this.m_state = "NA";
-    this.w_state = "NA";
+    this.f_state = "NORMAL";
+    this.d_state = "NORMAL";
+    this.e_state = "NORMAL";
+    this.m_state = "NORMAL";
+    this.w_state = "NORMAL";
 
     this.f_predPC = "0";
 

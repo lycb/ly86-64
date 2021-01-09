@@ -60,6 +60,24 @@ export class D {
 	getvalP(): PipeRegField {
 		return this.valP;
 	}
+
+	reset(): void {
+		this.stat.setInput(Long.fromNumber(Constants.SAOK));
+		this.icode.setInput(Long.fromNumber(Constants.NOP));
+		this.ifun.setInput(Long.fromNumber(Constants.FNONE));
+		this.rA.setInput(Long.fromNumber(Constants.RNONE));
+		this.rB.setInput(Long.fromNumber(Constants.RNONE));
+		this.valC.setInput(Long.ZERO);
+		this.valP.setInput(Long.ZERO);
+
+		this.stat.normal();
+		this.icode.normal();
+		this.ifun.normal();
+		this.rA.normal();
+		this.rB.normal();
+		this.valC.normal();
+		this.valP.normal();
+	}
 }
 
 export class E {
@@ -126,6 +144,30 @@ export class E {
 	getsrcB(): PipeRegField {
 		return this.srcB;
 	}
+
+	reset(): void {
+		this.stat.setInput(Long.fromNumber(Constants.SAOK));
+		this.icode.setInput(Long.fromNumber(Constants.NOP));
+		this.ifun.setInput(Long.fromNumber(Constants.FNONE));
+		this.valC.setInput(Long.ZERO);
+		this.valA.setInput(Long.ZERO);
+		this.valB.setInput(Long.ZERO);
+		this.dstE.setInput(Long.fromNumber(Constants.RNONE));
+		this.dstM.setInput(Long.fromNumber(Constants.RNONE));
+		this.srcA.setInput(Long.ZERO);
+		this.srcB.setInput(Long.ZERO);
+
+		this.stat.normal();
+		this.icode.normal();
+		this.ifun.normal();
+		this.valC.normal();
+		this.valA.normal();
+		this.valB.normal();
+		this.dstE.normal();
+		this.dstM.normal();
+		this.srcA.normal();
+		this.srcB.normal();
+	}
 }
 
 export class M {
@@ -139,7 +181,7 @@ export class M {
 
 	constructor() {
 		this.stat = new PipeRegField(Long.fromNumber(Constants.SAOK));
-		this.icode = new PipeRegField(Long.fromNumber(Constants.NOP))
+		this.icode = new PipeRegField(Long.fromNumber(Constants.NOP));
 		this.Cnd = new PipeRegField(Long.ZERO);
 		this.valE = new PipeRegField(Long.ZERO);
 		this.valA = new PipeRegField(Long.ZERO);
@@ -173,6 +215,24 @@ export class M {
 
 	getdstM(): PipeRegField {
 		return this.dstM;
+	}
+
+	reset(): void {
+		this.stat.setInput(Long.fromNumber(Constants.SAOK));
+		this.icode.setInput(Long.fromNumber(Constants.NOP));
+		this.Cnd.setInput(Long.ZERO);
+		this.valE.setInput(Long.ZERO);
+		this.valA.setInput(Long.ZERO);
+		this.dstE.setInput(Long.fromNumber(Constants.RNONE));
+		this.dstM.setInput(Long.fromNumber(Constants.RNONE));
+
+		this.stat.normal();
+		this.icode.normal();
+		this.Cnd.normal();
+		this.valE.normal();
+		this.valA.normal();
+		this.dstE.normal();
+		this.dstM.normal();
 	}
 }
 
@@ -215,5 +275,21 @@ export class W {
 
 	getdstM(): PipeRegField {
 		return this.dstM;
+	}
+
+	reset(): void {
+		this.stat.setInput(Long.fromNumber(Constants.SAOK));
+		this.icode.setInput(Long.fromNumber(Constants.NOP));
+		this.valE.setInput(Long.ZERO);
+		this.valM.setInput(Long.ZERO);
+		this.dstE.setInput(Long.fromNumber(Constants.RNONE));
+		this.dstM.setInput(Long.fromNumber(Constants.RNONE));
+
+		this.stat.normal();
+		this.icode.normal();
+		this.valE.normal();
+		this.valM.normal();
+		this.dstE.normal();
+		this.dstM.normal();
 	}
 }

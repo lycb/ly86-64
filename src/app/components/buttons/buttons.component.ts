@@ -66,6 +66,7 @@ export class ButtonsComponent implements OnInit {
       return;
     }
     this.readFileAsText(file);
+    this.onClickReset();
   }
 
   onClickContinue(): void {
@@ -89,7 +90,7 @@ export class ButtonsComponent implements OnInit {
   onClickReset(): void {
     this.setFirstAddressCurrent();
     this.cycle = 0;
-    this.cpuService.resetValues(this.freg, this.dreg, this.ereg, this.mreg, this.wreg);
+    this.cpuService.reset(this.freg, this.dreg, this.ereg, this.mreg, this.wreg);
   }
 
   setFirstAddressCurrent(): void {

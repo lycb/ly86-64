@@ -78,5 +78,10 @@ export class RegisterService {
     }
   }
 
-  
+  reset(): void {
+    for (let i = 0; i < this.register.length; i++) {
+      this.register[i].value = Long.ZERO;
+      this.register[i].hex = "0x0000000000000000";
+    }
+  }
 }

@@ -1,5 +1,4 @@
 import { Injectable } from "@angular/core";
-import { InstructionService } from "../instruction/instruction.service";
 import { ParserService } from "../parser/parser.service";
 import { RegisterService } from "../register/register.service";
 import { ConditionCodesService } from "../condition-codes/condition-codes.service";
@@ -60,7 +59,6 @@ export class CpuService {
   m_stat: Long;
 
   constructor(
-    private instructionService: InstructionService,
     private parserService: ParserService,
     private registerService: RegisterService,
     private conditionCodesService: ConditionCodesService,
@@ -111,10 +109,41 @@ export class CpuService {
     return stop;
   }
 
-  resetValues(freg: F, dreg: D, ereg: E, mreg: M, wreg: W): void {
-    this.f_pred.next("0");
+  reset(freg: F, dreg: D, ereg: E, mreg: M, wreg: W): void {
+    this.logic_string = ["", "", "", ""];
+    this.f_logic_string = "";
+    this.d_logic_string = "";
+    this.e_logic_string = "";
+    this.m_logic_string = "";
+    this.logic.next(this.logic_string)
+
+    this.fstall = false;
+    this.dstall = false;
+    this.dbubble = false;
+    this.ebubble = false;
+    this.mbubble = false;
+    this.error = false;
+
+    this.cc_list = [0, 0, 0];
+
     freg.getPredPC().setInput(Long.ZERO);
     freg.getPredPC().normal();
+    this.f_pred.next(freg.getPredPC().getOutput());
+
+    dreg.reset();
+    this.d_reg.next(dreg);
+
+    ereg.reset();
+    this.e_reg.next(ereg);
+
+    mreg.reset();
+    this.m_reg.next(mreg);
+
+    wreg.reset();
+    this.w_reg.next(wreg);
+
+    this.registerService.reset();
+    this.memoryService.reset();
   }
 
   holdHighlight(dreg: D, eof: boolean): boolean {

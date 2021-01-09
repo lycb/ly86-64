@@ -66,4 +66,10 @@ export class MemoryService {
   getMemory(): Long[] {
     return this.memory;
   }
+
+  reset(): void {
+    for (let i = 0; i < this.memory.length; i++) {
+      this.memory[i] = Long.ZERO;
+    }
+  }
 }
