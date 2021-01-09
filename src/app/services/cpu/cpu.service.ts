@@ -554,7 +554,7 @@ export class CpuService {
       return mreg.getvalE().getOutput();
     }
     if (this.d_srcA.equals(wreg.getdstM().getOutput())) {
-      return wreg.getvalE().getOutput();
+      return wreg.getvalM().getOutput();
     }
     if (this.d_srcA.equals(wreg.getdstE().getOutput())) {
       return wreg.getvalE().getOutput();
