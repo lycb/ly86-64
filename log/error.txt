@@ -1,4 +1,1 @@
 insertBST:
-*cycle 30:
-- F is supposed to stall but it didn't
-- D is not supposed to bubble but did

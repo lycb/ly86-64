@@ -368,6 +368,9 @@ export class CpuService {
   /*
   * F_stall
   * stalling logic for F register
+  * HCL:
+  *  bool F_stall = E_icode in { IMRMOVQ, IPOPQ } &&  E_dstM in { d_srcA, d_srcB } || 
+  *            IRET in { D_icode, E_icode, M_icode }; 
   */
   f_stall(dreg: D, ereg: E, mreg: M): boolean {
     let e_icode = ereg.geticode().getOutput(),
@@ -375,12 +378,12 @@ export class CpuService {
       m_icode = mreg.geticode().getOutput(),
       e_dstM = ereg.getdstM().getOutput();
 
-    return ((e_icode.equals(Long.fromNumber(Constants.MRMOVQ)) ||
+    return (e_icode.equals(Long.fromNumber(Constants.MRMOVQ)) ||
       e_icode.equals(Long.fromNumber(Constants.POPQ))) &&
-      ((e_dstM.equals(this.d_srcA) || e_dstM.equals(this.d_srcB)) ||
+      (e_dstM.equals(this.d_srcA) || e_dstM.equals(this.d_srcB)) ||
       (e_icode.equals(Long.fromNumber(Constants.RET)) ||
         d_icode.equals(Long.fromNumber(Constants.RET)) ||
-        m_icode.equals(Long.fromNumber(Constants.RET)))));
+        m_icode.equals(Long.fromNumber(Constants.RET)));
   }
 
 
@@ -397,6 +400,15 @@ export class CpuService {
       (e_dstM.equals(this.d_srcA) || e_dstM.equals(this.d_srcB));
   }
 
+  /*
+  * d_bubble
+  * bubbling logic for D register
+  *
+  * HCL:
+  *  bool D_bubble = ( E_icode == IJXX && !e_Cnd ) ||
+  *   !( E_icode in { IMRMOVQ, IPOPQ } && E_dstM in { d_srcA, d_srcB }) && 
+  *   IRET in { D_icode, E_icode, M_icode };
+  */
   d_bubble(dreg: D, ereg: E, mreg: M): boolean {
     this.d_logic_string = "";
 
@@ -407,13 +419,13 @@ export class CpuService {
 
     let Cnd = (this.e_Cnd.equals(Long.ONE)) ? true : false;
 
-    console.log("CND: " + Cnd + " e_cnd: " + this.e_Cnd)
-
     return (e_icode.equals(Long.fromNumber(Constants.JXX)) && !Cnd) ||
-      (!((e_icode.equals(Long.fromNumber(Constants.MRMOVQ)) || e_icode.equals(Long.fromNumber(Constants.POPQ))) &&
-        (e_dstM.equals(this.d_srcA) || e_dstM.equals(this.d_srcB))) &&
-        (e_icode.equals(Long.fromNumber(Constants.RET)) || d_icode.equals(Long.fromNumber(Constants.RET)) ||
-          m_icode.equals(Long.fromNumber(Constants.RET))));
+    !(e_icode.equals(Long.fromNumber(Constants.MRMOVQ)) || 
+        e_icode.equals(Long.fromNumber(Constants.POPQ))) && 
+       (e_dstM.equals(this.d_srcA) || e_dstM.equals(this.d_srcB)) &&
+       (e_icode.equals(Long.fromNumber(Constants.RET)) || d_icode.equals(Long.fromNumber(Constants.RET)) ||
+          m_icode.equals(Long.fromNumber(Constants.RET)));
+
   }
 
   f_calculateControlSignals(dreg: D, ereg: E, mreg: M): void {
@@ -802,19 +814,12 @@ export class CpuService {
       SF = this.conditionCodesService.getSF(),
       ZF = this.conditionCodesService.getZF();
 
-
     let ret;
-
-    console.log("icode: " + icode + " ifun: " + ifun)
-    console.log("SF: " + SF + " OF: "+ OF + " ZF: " + ZF)
 
     if (icode.notEquals(Long.fromNumber(Constants.JXX)) && icode.notEquals(Long.fromNumber(Constants.CMOVXX))) { return Long.ZERO; }
     if (ifun.equals(Long.fromNumber(Constants.UNCOND))) { return Long.ONE; }
     if (ifun.equals(Long.fromNumber(Constants.LESSEQ))) { return ((SF.xor(OF)).or(ZF)); }
-    if (ifun.equals(Long.fromNumber(Constants.LESS))) { 
-      console.log(SF.xor(OF))
-      return (SF.xor(OF)); 
-    }
+    if (ifun.equals(Long.fromNumber(Constants.LESS))) { return (SF.xor(OF)); }
     if (ifun.equals(Long.fromNumber(Constants.EQUAL))) { return ZF; }
     if (ifun.equals(Long.fromNumber(Constants.NOTEQUAL))) { return ZF.equals(Long.ZERO) ? Long.ONE : Long.ZERO; } // !ZF 
     if (ifun.equals(Long.fromNumber(Constants.GREATER))) {
@@ -1261,12 +1266,12 @@ export class CpuService {
     if (icodes_list.length > 0) {
       str += "!(E_icode in {" + icodes_list + "}";
       if (dstm_list.length > 0) {
-        str += " E_dstM in {" + dstm_list + "})";
+        str += " && E_dstM in {" + dstm_list + "})";
       }
     }
 
-    if (ret_list.length > 0) {
-      str += "IRET in {" + ret_list + "}";
+    if (ret_list.length > 0 && dstm_list.length > 0) {
+      str += " && IRET in {" + ret_list + "}";
     }
 
     return str;
