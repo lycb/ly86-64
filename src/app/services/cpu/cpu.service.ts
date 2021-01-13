@@ -421,8 +421,8 @@ export class CpuService {
 
     return (e_icode.equals(Long.fromNumber(Constants.JXX)) && !Cnd) ||
     !(e_icode.equals(Long.fromNumber(Constants.MRMOVQ)) || 
-        e_icode.equals(Long.fromNumber(Constants.POPQ))) && 
-       (e_dstM.equals(this.d_srcA) || e_dstM.equals(this.d_srcB)) &&
+        e_icode.equals(Long.fromNumber(Constants.POPQ)) && 
+       (e_dstM.equals(this.d_srcA) || e_dstM.equals(this.d_srcB))) &&
        (e_icode.equals(Long.fromNumber(Constants.RET)) || d_icode.equals(Long.fromNumber(Constants.RET)) ||
           m_icode.equals(Long.fromNumber(Constants.RET)));
 
