@@ -1,7 +1,7 @@
 <div class=top-button-wrapper>
 	<div class="button-wrapper">
 		<button class="file-upload-button">
-			<input  class="file-upload-input" type="file" #fileInput (change)="onFileSelect(fileInput)" />
+			<input  class="file-upload-input" type="file" id="file-input" (change)="onFileSelect()" />
 		</button>
 		<button class="continue-button" (click)="onClickContinue()" [disabled]="!loadComponent">Continue</button>
 		<button class="step-button" (click)="onClickStep()" [disabled]="!loadComponent">Step</button>

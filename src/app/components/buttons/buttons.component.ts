@@ -54,9 +54,10 @@ export class ButtonsComponent implements OnInit {
   * check for file extension
   * load lines into an array -> this.fileContent
   */
-  onFileSelect(input: HTMLInputElement): void {
+  onFileSelect(): void {
     this.isFirstAddressCurrent = false;
     this.fileContent = [];
+    const input = <HTMLInputElement>document.getElementById("file-input")
     const file = input.files[0];
     if (!file) return;
 
