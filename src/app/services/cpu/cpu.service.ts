@@ -420,12 +420,6 @@ export class CpuService {
 
     let Cnd = (this.e_Cnd.equals(Long.ONE)) ? true : false;
 
-    console.log((!(e_icode.equals(Long.fromNumber(Constants.MRMOVQ)) || 
-        e_icode.equals(Long.fromNumber(Constants.POPQ)) && 
-       (e_dstM.equals(this.d_srcA) || e_dstM.equals(this.d_srcB))) &&
-       (e_icode.equals(Long.fromNumber(Constants.RET)) || d_icode.equals(Long.fromNumber(Constants.RET)) ||
-          m_icode.equals(Long.fromNumber(Constants.RET)))))
-
     return (e_icode.equals(Long.fromNumber(Constants.JXX)) && !Cnd) ||
     (!(e_icode.equals(Long.fromNumber(Constants.MRMOVQ)) || 
         e_icode.equals(Long.fromNumber(Constants.POPQ)) && 
