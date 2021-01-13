@@ -91,6 +91,14 @@ export class ButtonsComponent implements OnInit {
     this.setFirstAddressCurrent();
     this.cycle = 0;
     this.cpuService.reset(this.freg, this.dreg, this.ereg, this.mreg, this.wreg);
+
+    this.cycle = 0;
+    this.stop = false;
+    this.counterStop = false;
+    this.isFirstAddressCurrent = false;
+    this.instructionLength = 0;
+
+    this.loadlines();
   }
 
   setFirstAddressCurrent(): void {
@@ -158,6 +166,14 @@ export class ButtonsComponent implements OnInit {
     return index;
   }
 
+  loadlines(): void {
+    for (let i = 0; i < this.fileContent.length; i++) {
+      if (this.fileContent[i].isAnAddress && this.fileContent[i].parsedLine.instruction !== "") {
+        this.loadline(this.fileContent[i].parsedLine);
+      }
+    }
+  }
+
   loadline(line: AddressLine): void {
     let bytes = line.instruction.length / 2;
     let position = 0;
@@ -170,6 +186,8 @@ export class ButtonsComponent implements OnInit {
       address++;
     }
   }
+
+
 
   readFileAsText(file: File): void {
     let fileReader = new FileReader();
@@ -207,11 +225,7 @@ export class ButtonsComponent implements OnInit {
       this.setFirstAddressCurrent();
       this.parserService.setFileContent(this.fileContent);
       this.loadComponent = true;
-      for (let i = 0; i < this.fileContent.length; i++) {
-        if (this.fileContent[i].isAnAddress && this.fileContent[i].parsedLine.instruction !== "") {
-          this.loadline(this.fileContent[i].parsedLine);
-        }
-      }
+      this.loadlines();
     }
     fileReader.readAsText(file);
   }

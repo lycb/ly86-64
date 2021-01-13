@@ -28,6 +28,7 @@ export class MemoryService {
       return;
     }
     this.error = true;
+    console.log("putLong")
   }
 
   getLong(address: number): Long {
@@ -40,6 +41,7 @@ export class MemoryService {
       return this.utilsService.buildLong(longArr);
     }
     this.error = true;
+    console.log("getLong")
   }
 
   putByte(value: Long, address: number): void {

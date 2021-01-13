@@ -337,7 +337,8 @@ export class CpuService {
   selectPC(freg: F, mreg: M, wreg: W): Long {
     const m_icode = mreg.geticode().getOutput();
     const w_icode = wreg.geticode().getOutput();
-    const m_Cnd = mreg.getCnd().getOutput() == Long.ONE ? true : false;
+
+    const m_Cnd = (mreg.getCnd().getOutput().equals(Long.ONE)) ? true : false;
 
     if (m_icode.equals(Long.fromNumber(Constants.JXX)) && !m_Cnd) {
       return mreg.getvalA().getOutput();
