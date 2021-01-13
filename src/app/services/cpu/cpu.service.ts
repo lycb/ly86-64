@@ -405,7 +405,9 @@ export class CpuService {
       m_icode = mreg.geticode().getOutput(),
       e_dstM = ereg.getdstM().getOutput();
 
-    let Cnd = this.e_Cnd == Long.ONE ? true : false;
+    let Cnd = (this.e_Cnd.equals(Long.ONE)) ? true : false;
+
+    console.log("CND: " + Cnd + " e_cnd: " + this.e_Cnd)
 
     return (e_icode.equals(Long.fromNumber(Constants.JXX)) && !Cnd) ||
       (!((e_icode.equals(Long.fromNumber(Constants.MRMOVQ)) || e_icode.equals(Long.fromNumber(Constants.POPQ))) &&
@@ -622,7 +624,7 @@ export class CpuService {
     let e_dstM = ereg.getdstM().getOutput(),
       e_icode = ereg.geticode().getOutput();
 
-    let Cnd = this.e_Cnd == Long.ONE ? true : false;
+    let Cnd = (this.e_Cnd.equals(Long.ONE)) ? true : false;
 
     this.ebubble = ((e_icode.equals(Long.fromNumber(Constants.JXX)) && !Cnd) ||
       ((e_icode.equals(Long.fromNumber(Constants.MRMOVQ)) || e_icode.equals(Long.fromNumber(Constants.POPQ))) &&
@@ -803,10 +805,16 @@ export class CpuService {
 
     let ret;
 
+    console.log("icode: " + icode + " ifun: " + ifun)
+    console.log("SF: " + SF + " OF: "+ OF + " ZF: " + ZF)
+
     if (icode.notEquals(Long.fromNumber(Constants.JXX)) && icode.notEquals(Long.fromNumber(Constants.CMOVXX))) { return Long.ZERO; }
     if (ifun.equals(Long.fromNumber(Constants.UNCOND))) { return Long.ONE; }
     if (ifun.equals(Long.fromNumber(Constants.LESSEQ))) { return ((SF.xor(OF)).or(ZF)); }
-    if (ifun.equals(Long.fromNumber(Constants.LESS))) { return (SF.xor(OF)); }
+    if (ifun.equals(Long.fromNumber(Constants.LESS))) { 
+      console.log(SF.xor(OF))
+      return (SF.xor(OF)); 
+    }
     if (ifun.equals(Long.fromNumber(Constants.EQUAL))) { return ZF; }
     if (ifun.equals(Long.fromNumber(Constants.NOTEQUAL))) { return ZF.equals(Long.ZERO) ? Long.ONE : Long.ZERO; } // !ZF 
     if (ifun.equals(Long.fromNumber(Constants.GREATER))) {

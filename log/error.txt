@@ -1,4 +1,4 @@
 insertBST:
-* cycle 29: 
-- D and E bubbled when it wasn't supposed to
+*cycle 30:
 - F is supposed to stall but it didn't
+- D is not supposed to bubble but did
