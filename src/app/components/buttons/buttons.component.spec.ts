@@ -1,6 +1,9 @@
 import { ComponentFixture, TestBed, waitForAsync, fakeAsync, tick } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ButtonsComponent } from './buttons.component';
+import { CodeComponent } from './../code/code.component';
+import { ClockCycleComponent } from './../clock-cycle/clock-cycle.component';
+import { AddressLine } from '../../models/AddressLine';
 import { ParserService } from '../../services/parser/parser.service';
 
 describe('ButtonsComponent', () => {
@@ -10,7 +13,11 @@ describe('ButtonsComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ButtonsComponent]
+      declarations: [
+      ButtonsComponent,
+      ClockCycleComponent,
+      CodeComponent
+      ]
     })
       .compileComponents();
   }));
@@ -62,7 +69,7 @@ describe('ButtonsComponent', () => {
       .querySelector('.reset-button').disabled).toBeTruthy();
   });
 
-  it('if components have loadrf then buttons should not be disabled', () => {
+  it('if components have loaded then buttons should not be disabled', () => {
     component.loadComponent = true;
     fixture.detectChanges();
     expect(fixture.debugElement.nativeElement
@@ -71,5 +78,70 @@ describe('ButtonsComponent', () => {
       .querySelector('.continue-button').disabled).toBeFalsy();
     expect(fixture.debugElement.nativeElement
       .querySelector('.reset-button').disabled).toBeFalsy();
+  });
+
+  it('should set current index to 0 if setFirstAddressCurrent is called', () => {
+    const mockFileContent =
+      [
+        {
+          'id': 0,
+          'textLine': '',
+          'isAnAddress': true,
+          'isCurrent': false,
+          'parsedLine': {
+            'address': 1,
+            'instruction': ''
+          }
+        },
+        {
+          'id': 1,
+          'textLine': '',
+          'isAnAddress': true,
+          'isCurrent': true,
+          'parsedLine': {
+            'address': 2,
+            'instruction': ''
+          }
+        }
+      ];
+
+     parserService.setFileContent(mockFileContent);
+     parserService.setCurrent(mockFileContent[1]);
+     component.fileContent = parserService.getFileContent();
+     component.setFirstAddressCurrent();
+     expect(parserService.getCurrentIndex()).toBe(0);
+     expect(parserService.getFileContent()[1].isCurrent).toBeFalsy();
+  });
+
+  it('should throw error if trying to set current on a line that is not an address', () => {
+    const mockFileContent =
+      [
+        {
+          'id': 0,
+          'textLine': '',
+          'isAnAddress': false,
+          'isCurrent': true,
+          'parsedLine': {
+            'address': 1,
+            'instruction': ''
+          }
+        },
+        {
+          'id': 1,
+          'textLine': '',
+          'isAnAddress': true,
+          'isCurrent': false,
+          'parsedLine': {
+            'address': 2,
+            'instruction': ''
+          }
+        }
+      ];
+
+     parserService.setFileContent(mockFileContent);
+     component.fileContent = parserService.getFileContent();
+     expect(function() {
+       parserService.setCurrent(mockFileContent[0]); 
+     }).toThrow(new Error('cannot set current on non-address lines'));
   });
 });
