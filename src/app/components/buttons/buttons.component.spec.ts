@@ -96,11 +96,13 @@ describe('ButtonsComponent', () => {
 
   it('isFileExtensionYo -- return false if file extension is not .yo', () => {
     spyOn(component, 'isFileExtensionYo').and.callThrough();
+    spyOn(window, 'alert');
 
     expect(component.isFileExtensionYo(new File([''], 'filename.txt'))).toBeFalsy();
     expect(component.isFileExtensionYo(new File([''], 'filename.pdf'))).toBeFalsy();
     expect(component.isFileExtensionYo(new File([''], 'filename'))).toBeFalsy();
     expect(component.isFileExtensionYo(new File([''], 'filename.docx'))).toBeFalsy();
+    expect(window.alert).toHaveBeenCalledWith('File type is not supported! Please upload a .yo file')
   });
 
   it('setFirstAddressCurrent -- sets first address to be current', () => {
