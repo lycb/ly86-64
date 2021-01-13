@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { REGISTERS } from '../../constants';
 import { Register } from '../../models/Register';
+import { UtilsService } from '../utils/utils.service';
 import Long from 'long';
  
 @Injectable({
@@ -9,12 +10,12 @@ import Long from 'long';
 export class RegisterService {
 	register: Register[];
 
-  constructor() { 
+  constructor(private utilsService: UtilsService) { 
   	this.register = [];
 	  for (let reg of REGISTERS) {
   		this.register.push({
   			name: reg,
-  			value: Long.ZERO,
+  			value: new Long(0, 0, false),
         hex: "0x0000000000000000"
   		});
 	  }
@@ -25,14 +26,14 @@ export class RegisterService {
   }
 
   getValueByRegister(name: string): Long {
-    return this.register[this.register2index(name)].value;
+    return this.register[this.register2index(name)].value.toSigned();
   }
 
   // given a register name and a value, save that number to the register and convert that to a hex string
   setValueByRegister(name: string, value: Long): void {
-    this.register[this.register2index(name)].value = value;
-    var binaryNum = value.toNumber().toString(16);
-    this.register[this.register2index(name)].hex = this.paddingHex(binaryNum, 16);
+    this.register[this.register2index(name)].value = value.toSigned();
+    var binaryNum = value.toString(16);
+    this.register[this.register2index(name)].hex = this.utilsService.paddingHex(binaryNum, 16);
   }
 
   register2index(name: string): number {
@@ -52,7 +53,7 @@ export class RegisterService {
       case "R12": return 12;
       case "R13": return 13;
       case "R14": return 14;
-      default: return -1;
+      default: return 0xf;
     }
   }
 
@@ -73,15 +74,14 @@ export class RegisterService {
       case 12: return 'R12';
       case 13: return 'R13';
       case 14: return 'R14';
-      default: return 'error';
+      default: return 'RNONE';
     }
   }
 
-  paddingHex(num, width): string {
-    var result = num.toString(16);
-    while (result.length < width) {
-      result = '0' + result;
-    } 
-    return "0x" + result;
+  reset(): void {
+    for (let i = 0; i < this.register.length; i++) {
+      this.register[i].value = Long.ZERO;
+      this.register[i].hex = "0x0000000000000000";
+    }
   }
 }

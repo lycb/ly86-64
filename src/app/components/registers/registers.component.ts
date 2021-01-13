@@ -16,7 +16,5 @@ export class RegistersComponent implements OnInit {
 
   ngOnInit() {
   	this.register = this.registerService.getRegisters();
-  	// this.registerService.setValueByRegister('RAX', new Long(16, 0, false))
-  	// console.log(this.registerService.getValueByRegister('RAX'))
   }
 }

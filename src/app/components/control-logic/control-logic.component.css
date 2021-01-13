@@ -1,0 +1,48 @@
+.wrapper::-webkit-scrollbar {
+  display: none;
+}
+
+.logic {
+	margin: 1%;
+	word-wrap: normal;
+}
+
+@media screen and (max-width: 928px) {
+	.wrapper {
+		height: 20%;
+		margin-top: 1%;
+		margin-left: 2%;
+		width: 90%;
+		border: 2px dotted black;
+		border-radius: 5px;
+		font-family: monospace;
+		overflow: scroll;
+	}
+}
+
+@media screen and (min-width: 929px) and (max-width: 1045px) {
+	.wrapper {
+		height: 19%;
+		margin-top: 1%;
+		margin-left: 2%;
+		width: 90%;
+		border: 2px dotted black;
+		border-radius: 5px;
+		font-family: monospace;
+		overflow: scroll;
+	}
+}
+
+@media screen and (min-width: 1046px) {
+	.wrapper {
+		height: 15%;
+		margin-top: 1%;
+		margin-left: 2%;
+		width: 90%;
+		border: 2px dotted black;
+		border-radius: 5px;
+		font-family: monospace;
+		overflow: scroll;
+	}
+}
+

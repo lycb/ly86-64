@@ -23,3 +23,36 @@
 	margin: 0;
 }
 
+@media screen and (max-width: 928px) {
+	.file-content-wrapper {
+		margin-top: 0.5vh;
+		width: 100%;
+		height: 53.5vh;
+		overflow: scroll;
+		border: 2px dotted black;
+		border-radius: 5px;
+	}
+}
+
+@media screen and (min-width: 929px) and (max-width: 1045px) {
+	.file-content-wrapper {
+		margin-top: 0.5vh;
+		width: 100%;
+		height: 54vh;
+		overflow: scroll;
+		border: 2px dotted black;
+		border-radius: 5px;
+	}
+}
+
+@media screen and (min-width: 1046px) {
+	.file-content-wrapper {
+		margin-top: 0.5vh;
+		width: 100%;
+		height: 55vh;
+		overflow: scroll;
+		border: 2px dotted black;
+		border-radius: 5px;
+	}
+}
+

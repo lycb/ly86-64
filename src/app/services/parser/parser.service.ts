@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AddressLine } from '../../models/AddressLine';
 import { Line } from '../../models/Line';
-import { InstructionService } from '../instruction/instruction.service';
 
 
 @Injectable({
@@ -13,7 +12,7 @@ export class ParserService {
   fileContent: Line[] = [];
   currentLine: Line;
 
-  constructor(private instructionService: InstructionService) { }
+  constructor() { }
 
   parse(line: string): AddressLine {
     var parts = line.match(/^\s*0[xX]([0-9a-fA-F]+)\s*:\s*([0-9a-fA-F]*)\s*\|.*$/);
@@ -42,6 +41,7 @@ export class ParserService {
     } else {
       this.currentLine = line;
     }
+    this.currentLine.isCurrent = true;
   }
 
   getCurrentIndex(): number {
@@ -50,12 +50,5 @@ export class ParserService {
 
   getCurrentLine(): Line {
     return this.currentLine;
-  }
-
-  getCurrentLineParsedInstruction() {
-    var instruction = this.currentLine.parsedLine.instruction;
-    if (instruction !== "") {
-      return this.instructionService.icodeifun2instr(instruction[0], instruction[1]);
-    }
   }
 }

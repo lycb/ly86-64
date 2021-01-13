@@ -1,11 +1,12 @@
 import { PipeRegField } from './PipeRegField'
 import * as Constants from "../constants";
+import Long from 'long';
 
 export class F {
 	predPC: PipeRegField;
 
 	constructor() {
-		this.predPC = new PipeRegField(0);
+		this.predPC = new PipeRegField(Long.ZERO);
 	}
 
 	getPredPC(): PipeRegField {
@@ -23,13 +24,13 @@ export class D {
 	valP: PipeRegField;
 
 	constructor() {
-		this.stat = new PipeRegField(Constants.SAOK);
-		this.icode = new PipeRegField(Constants.NOP);
-		this.ifun = new PipeRegField(Constants.FNONE);
-		this.rA = new PipeRegField(Constants.RNONE);
-		this.rB = new PipeRegField(Constants.RNONE);
-		this.valC = new PipeRegField(0);
-		this.valP = new PipeRegField(0);
+		this.stat = new PipeRegField(Long.fromNumber(Constants.SAOK));
+		this.icode = new PipeRegField(Long.fromNumber(Constants.NOP));
+		this.ifun = new PipeRegField(Long.fromNumber(Constants.FNONE));
+		this.rA = new PipeRegField(Long.fromNumber(Constants.RNONE));
+		this.rB = new PipeRegField(Long.fromNumber(Constants.RNONE));
+		this.valC = new PipeRegField(Long.ZERO);
+		this.valP = new PipeRegField(Long.ZERO);
 	}
 
 	getstat(): PipeRegField {
@@ -59,6 +60,24 @@ export class D {
 	getvalP(): PipeRegField {
 		return this.valP;
 	}
+
+	reset(): void {
+		this.stat.setInput(Long.fromNumber(Constants.SAOK));
+		this.icode.setInput(Long.fromNumber(Constants.NOP));
+		this.ifun.setInput(Long.fromNumber(Constants.FNONE));
+		this.rA.setInput(Long.fromNumber(Constants.RNONE));
+		this.rB.setInput(Long.fromNumber(Constants.RNONE));
+		this.valC.setInput(Long.ZERO);
+		this.valP.setInput(Long.ZERO);
+
+		this.stat.normal();
+		this.icode.normal();
+		this.ifun.normal();
+		this.rA.normal();
+		this.rB.normal();
+		this.valC.normal();
+		this.valP.normal();
+	}
 }
 
 export class E {
@@ -74,16 +93,16 @@ export class E {
 	srcB: PipeRegField;
 
 	constructor() {
-		this.stat = new PipeRegField(Constants.SAOK);
-		this.icode = new PipeRegField(Constants.NOP);
-		this.ifun = new PipeRegField(Constants.FNONE);
-		this.valC = new PipeRegField(0);
-		this.valA = new PipeRegField(0);
-		this.valB = new PipeRegField(0);
-		this.dstE = new PipeRegField(Constants.RNONE);
-		this.dstM = new PipeRegField(Constants.RNONE);
-		this.srcA = new PipeRegField(0);
-		this.srcB = new PipeRegField(0);
+		this.stat = new PipeRegField(Long.fromNumber(Constants.SAOK));
+		this.icode = new PipeRegField(Long.fromNumber(Constants.NOP));
+		this.ifun = new PipeRegField(Long.fromNumber(Constants.FNONE));
+		this.valC = new PipeRegField(Long.ZERO);
+		this.valA = new PipeRegField(Long.ZERO);
+		this.valB = new PipeRegField(Long.ZERO);
+		this.dstE = new PipeRegField(Long.fromNumber(Constants.RNONE));
+		this.dstM = new PipeRegField(Long.fromNumber(Constants.RNONE));
+		this.srcA = new PipeRegField(Long.ZERO);
+		this.srcB = new PipeRegField(Long.ZERO);
 	}
 
 	getstat(): PipeRegField {
@@ -125,6 +144,30 @@ export class E {
 	getsrcB(): PipeRegField {
 		return this.srcB;
 	}
+
+	reset(): void {
+		this.stat.setInput(Long.fromNumber(Constants.SAOK));
+		this.icode.setInput(Long.fromNumber(Constants.NOP));
+		this.ifun.setInput(Long.fromNumber(Constants.FNONE));
+		this.valC.setInput(Long.ZERO);
+		this.valA.setInput(Long.ZERO);
+		this.valB.setInput(Long.ZERO);
+		this.dstE.setInput(Long.fromNumber(Constants.RNONE));
+		this.dstM.setInput(Long.fromNumber(Constants.RNONE));
+		this.srcA.setInput(Long.ZERO);
+		this.srcB.setInput(Long.ZERO);
+
+		this.stat.normal();
+		this.icode.normal();
+		this.ifun.normal();
+		this.valC.normal();
+		this.valA.normal();
+		this.valB.normal();
+		this.dstE.normal();
+		this.dstM.normal();
+		this.srcA.normal();
+		this.srcB.normal();
+	}
 }
 
 export class M {
@@ -137,13 +180,13 @@ export class M {
 	dstM: PipeRegField;
 
 	constructor() {
-		this.stat = new PipeRegField(Constants.SAOK);
-		this.icode = new PipeRegField(Constants.NOP);
-		this.Cnd = new PipeRegField(0);
-		this.valE = new PipeRegField(0);
-		this.valA = new PipeRegField(0);
-		this.dstE = new PipeRegField(Constants.RNONE);
-		this.dstM = new PipeRegField(Constants.RNONE);
+		this.stat = new PipeRegField(Long.fromNumber(Constants.SAOK));
+		this.icode = new PipeRegField(Long.fromNumber(Constants.NOP));
+		this.Cnd = new PipeRegField(Long.ZERO);
+		this.valE = new PipeRegField(Long.ZERO);
+		this.valA = new PipeRegField(Long.ZERO);
+		this.dstE = new PipeRegField(Long.fromNumber(Constants.RNONE));
+		this.dstM = new PipeRegField(Long.fromNumber(Constants.RNONE));
 	}
 
 	getstat(): PipeRegField {
@@ -173,6 +216,24 @@ export class M {
 	getdstM(): PipeRegField {
 		return this.dstM;
 	}
+
+	reset(): void {
+		this.stat.setInput(Long.fromNumber(Constants.SAOK));
+		this.icode.setInput(Long.fromNumber(Constants.NOP));
+		this.Cnd.setInput(Long.ZERO);
+		this.valE.setInput(Long.ZERO);
+		this.valA.setInput(Long.ZERO);
+		this.dstE.setInput(Long.fromNumber(Constants.RNONE));
+		this.dstM.setInput(Long.fromNumber(Constants.RNONE));
+
+		this.stat.normal();
+		this.icode.normal();
+		this.Cnd.normal();
+		this.valE.normal();
+		this.valA.normal();
+		this.dstE.normal();
+		this.dstM.normal();
+	}
 }
 
 export class W {
@@ -184,12 +245,12 @@ export class W {
 	dstM: PipeRegField;
 
 	constructor() {
-		this.stat = new PipeRegField(Constants.SAOK);
-		this.icode = new PipeRegField(Constants.NOP);
-		this.valE = new PipeRegField(0);
-		this.valM = new PipeRegField(0);
-		this.dstE = new PipeRegField(Constants.RNONE);
-		this.dstM = new PipeRegField(Constants.RNONE);
+		this.stat = new PipeRegField(Long.fromNumber(Constants.SAOK));
+		this.icode = new PipeRegField(Long.fromNumber(Constants.NOP))
+		this.valE = new PipeRegField(Long.ZERO);
+		this.valM = new PipeRegField(Long.ZERO);
+		this.dstE = new PipeRegField(Long.fromNumber(Constants.RNONE));
+		this.dstM = new PipeRegField(Long.fromNumber(Constants.RNONE));
 	}
 
 	getstat(): PipeRegField {
@@ -214,5 +275,21 @@ export class W {
 
 	getdstM(): PipeRegField {
 		return this.dstM;
+	}
+
+	reset(): void {
+		this.stat.setInput(Long.fromNumber(Constants.SAOK));
+		this.icode.setInput(Long.fromNumber(Constants.NOP));
+		this.valE.setInput(Long.ZERO);
+		this.valM.setInput(Long.ZERO);
+		this.dstE.setInput(Long.fromNumber(Constants.RNONE));
+		this.dstM.setInput(Long.fromNumber(Constants.RNONE));
+
+		this.stat.normal();
+		this.icode.normal();
+		this.valE.normal();
+		this.valM.normal();
+		this.dstE.normal();
+		this.dstM.normal();
 	}
 }

@@ -6,7 +6,7 @@ import { Component, OnInit, Input } from '@angular/core';
   styleUrls: ['./clock-cycle.component.css']
 })
 export class ClockCycleComponent implements OnInit {
-	@Input() counter: number;
+	@Input() cycle: number;
 
   constructor() { }
 

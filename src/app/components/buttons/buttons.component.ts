@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { ParserService } from '../../services/parser/parser.service';
 import { CpuService } from '../../services/cpu/cpu.service';
+import { UtilsService } from '../../services/utils/utils.service';
+import { MemoryService } from '../../services/memory/memory.service';
 import { Line } from '../../models/Line';
-import { MemoryFunc } from "../../models/Memory";
-import { AddressLine } from "../../models/AddressLine"; 
+import { AddressLine } from "../../models/AddressLine";
 import { F, D, E, M, W } from "../../models/PipeReg";
+import Long from 'long';
 
 @Component({
   selector: 'app-buttons',
@@ -13,9 +15,11 @@ import { F, D, E, M, W } from "../../models/PipeReg";
 })
 export class ButtonsComponent implements OnInit {
   fileContent: Line[];
-  counter: number;
+  cycle: number;
+  instructionLength: number;
+  stop: boolean;
+  counterStop: boolean;
   loadComponent: boolean;
-  nextLine: boolean;
   isFirstAddressCurrent: boolean;
 
   freg: F;
@@ -24,14 +28,19 @@ export class ButtonsComponent implements OnInit {
   mreg: M;
   wreg: W;
 
-  constructor(private parserService: ParserService, private cpuService: CpuService) {
+  constructor(private parserService: ParserService,
+    private cpuService: CpuService,
+    private utilsService: UtilsService,
+    private memoryService: MemoryService) {
   }
 
   ngOnInit() {
-    this.counter = 0;
+    this.cycle = 0;
+    this.stop = false;
+    this.counterStop = false;
     this.loadComponent = false;
-    this.nextLine = true;
     this.isFirstAddressCurrent = false;
+    this.instructionLength = 0;
 
     this.freg = new F();
     this.dreg = new D();
@@ -40,7 +49,13 @@ export class ButtonsComponent implements OnInit {
     this.wreg = new W();
   }
 
+  /*
+  * onFileSelect
+  * check for file extension
+  * load lines into an array -> this.fileContent
+  */
   onFileSelect(input: HTMLInputElement): void {
+    this.isFirstAddressCurrent = false;
     this.fileContent = [];
     const file = input.files[0];
     if (!file) return;
@@ -51,10 +66,13 @@ export class ButtonsComponent implements OnInit {
       return;
     }
     this.readFileAsText(file);
+    this.onClickReset();
   }
 
   onClickContinue(): void {
-
+    while (!this.stop) {
+      this.onClickStep();
+    }
   }
 
   onClickStep(): void {
@@ -62,17 +80,17 @@ export class ButtonsComponent implements OnInit {
     var current = this.parserService.getCurrentLine();
     var nextId = current.id + 1;
     if (current.id < this.fileContent.length && nextId < this.fileContent.length) {
-      if (current.parsedLine.instruction != "") {
-        this.cpuService.doSimulation(current, this.freg, this.dreg, this.ereg, this.mreg, this.wreg);
+      if (current.parsedLine.instruction != "" && !this.stop) {
+        this.stop = this.cpuService.doSimulation(this.fileContent, current, this.freg, this.dreg, this.ereg, this.mreg, this.wreg);
       }
-      this.nextCurrentLine(current);
+      this.nextCurrentLine();
     }
   }
 
   onClickReset(): void {
     this.setFirstAddressCurrent();
-    this.counter = 0;
-    this.cpuService.resetValues(this.freg, this.dreg, this.ereg, this.mreg, this.wreg);
+    this.cycle = 0;
+    this.cpuService.reset(this.freg, this.dreg, this.ereg, this.mreg, this.wreg);
   }
 
   setFirstAddressCurrent(): void {
@@ -98,36 +116,57 @@ export class ButtonsComponent implements OnInit {
   }
 
   /*
-  * nextCurrentLine --
-  * return true if there is a next "current" line to highlight
-  * return false if there isn't another line to read (i.e. EOF)
+  * nextCurrentLine
+  * sets the next valid instruction to be the new current line
   */
-  nextCurrentLine(current: Line): void {
-    for (let i = current.id + 1; i < this.fileContent.length; i++) {
+  nextCurrentLine(): void {
+    let current = this.parserService.getCurrentLine();
+    
+    let nextIndex = this.findNextIndex();
+
+    if (nextIndex == 0) {
+      nextIndex++;
+    }
+    for (let i = nextIndex; i < this.fileContent.length; i++) {
       let next = this.fileContent[i];
-      let curr = this.fileContent[i-1];
       if (next.parsedLine != null) {
-        next.isCurrent = true;
-        this.parserService.setCurrent(next);
-        if (next.parsedLine.address != 0 && curr.parsedLine != null && curr.parsedLine.address != next.parsedLine.address) {
-          //increment the clock-cycle
-          this.counter++;
+        let eof = next.id >= this.instructionLength;
+        if (!this.cpuService.holdHighlight(this.dreg, eof)) {
+          this.parserService.setCurrent(next);
         }
-        break;
-      } 
+      }
+      if (current.parsedLine != null && current.parsedLine.address != 0 && !this.counterStop) {
+        //increment the clock-cycle
+        if (this.stop) this.counterStop = true;
+        this.cycle++;
+      }
+      break;
     }
   }
 
+  findNextIndex(): number {
+    let index = 0;
+    for (let i = 0; i < this.fileContent.length; i++) {
+      if (this.fileContent[i].parsedLine !== null && this.fileContent[i].parsedLine.instruction !== "") {
+        if (this.fileContent[i].parsedLine.address == this.freg.getPredPC().getOutput().toNumber()) {
+          index = i;
+          break;
+        }
+        index = this.parserService.getCurrentLine().id;
+      }
+    }
+    return index;
+  }
+
   loadline(line: AddressLine): void {
-    let memory = MemoryFunc.getInstance();
     let bytes = line.instruction.length / 2;
     let position = 0;
     let address = line.address;
-    while(bytes > 0) {
-      let value = parseInt(line.instruction.substring(position, position + 2) , 16);
+    while (bytes > 0) {
+      let value = parseInt(line.instruction.substring(position, position + 2), 16);
       position += 2;
       bytes--;
-      memory.putByte(value, address);
+      this.memoryService.putByte(Long.fromNumber(value), address);
       address++;
     }
   }
@@ -146,6 +185,13 @@ export class ButtonsComponent implements OnInit {
             isCurrent: false,
             parsedLine: this.parserService.parse(line),
           });
+
+          if (this.fileContent[index].parsedLine.instruction != "" && // has an instruction
+            (this.fileContent[index].parsedLine.instruction[0] != "0" || // not halt or constants
+              (this.fileContent[index].parsedLine.instruction[0] == "0" && this.fileContent[index].parsedLine.instruction[1] == "0"))) //is halt 
+          {
+            this.instructionLength++;
+          }
           index++;
         } else {
           this.fileContent.push({
