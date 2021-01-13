@@ -420,12 +420,18 @@ export class CpuService {
 
     let Cnd = (this.e_Cnd.equals(Long.ONE)) ? true : false;
 
-    return (e_icode.equals(Long.fromNumber(Constants.JXX)) && !Cnd) ||
-    !(e_icode.equals(Long.fromNumber(Constants.MRMOVQ)) || 
+    console.log((!(e_icode.equals(Long.fromNumber(Constants.MRMOVQ)) || 
         e_icode.equals(Long.fromNumber(Constants.POPQ)) && 
        (e_dstM.equals(this.d_srcA) || e_dstM.equals(this.d_srcB))) &&
        (e_icode.equals(Long.fromNumber(Constants.RET)) || d_icode.equals(Long.fromNumber(Constants.RET)) ||
-          m_icode.equals(Long.fromNumber(Constants.RET)));
+          m_icode.equals(Long.fromNumber(Constants.RET)))))
+
+    return (e_icode.equals(Long.fromNumber(Constants.JXX)) && !Cnd) ||
+    (!(e_icode.equals(Long.fromNumber(Constants.MRMOVQ)) || 
+        e_icode.equals(Long.fromNumber(Constants.POPQ)) && 
+       (e_dstM.equals(this.d_srcA) || e_dstM.equals(this.d_srcB))) &&
+       (e_icode.equals(Long.fromNumber(Constants.RET)) || d_icode.equals(Long.fromNumber(Constants.RET)) ||
+          m_icode.equals(Long.fromNumber(Constants.RET))));
 
   }
 
@@ -1242,16 +1248,16 @@ export class CpuService {
     if (e_icode.equals(Long.fromNumber(Constants.JXX)) && !Cnd) {
       str = "(E_icode in JXX && !e_Cnd)";
     }
-    if (e_icode.equals(Long.fromNumber(Constants.MRMOVQ))) {
+    if (!e_icode.equals(Long.fromNumber(Constants.MRMOVQ))) {
       icodes_list.push("MRMOVQ");
     }
-    if (e_icode.equals(Long.fromNumber(Constants.POPQ))) {
+    if (!e_icode.equals(Long.fromNumber(Constants.POPQ))) {
       icodes_list.push("POPQ");
     }
-    if (e_dstM.equals(this.d_srcA)) {
+    if (!e_dstM.equals(this.d_srcA)) {
       dstm_list.push("d_srcA")
     }
-    if (e_dstM.equals(this.d_srcB)) {
+    if (!e_dstM.equals(this.d_srcB)) {
       dstm_list.push("d_srcB")
     }
     if (e_icode.equals(Long.fromNumber(Constants.RET))) {
@@ -1264,14 +1270,14 @@ export class CpuService {
       ret_list.push("M_icode")
     }
 
-    if (icodes_list.length > 0) {
+    if (icodes_list.length > 0 && ret_list.length > 0) {
       str += "!(E_icode in {" + icodes_list + "}";
       if (dstm_list.length > 0) {
         str += " && E_dstM in {" + dstm_list + "})";
       }
     }
 
-    if (ret_list.length > 0 && dstm_list.length > 0) {
+    if (ret_list.length > 0) {
       str += " && IRET in {" + ret_list + "}";
     }
 
