@@ -33,7 +33,7 @@ export class RegisterService {
   setValueByRegister(name: string, value: Long): void {
     this.register[this.register2index(name)].value = value.toSigned();
     var binaryNum = value.toString(16);
-    this.register[this.register2index(name)].hex = this.utilsService.paddingHex(binaryNum, 16);
+    this.register[this.register2index(name)].hex = this.utilsService.paddingHex(binaryNum, 16, true);
   }
 
   register2index(name: string): number {

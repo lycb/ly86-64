@@ -63,7 +63,7 @@ export class UtilsService {
   * for example:
   * paddingHex(12, 8) returns 0x0000000c
   */
-  paddingHex(num, width): string {
+  paddingHex(num, width, header: boolean): string {
     let result;
     if (num < 0) {
       result = (num >>> 0).toString(16);
@@ -76,7 +76,8 @@ export class UtilsService {
         result = '0' + result;
       }
     }
-    return "0x" + result;
+    if (header) return "0x" + result;
+    return result;
   }
 
 
