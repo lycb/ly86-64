@@ -77,7 +77,7 @@ export class UtilsService {
       }
     }
     if (header) return "0x" + result;
-    return result;
+    else return result;
   }
 
 
