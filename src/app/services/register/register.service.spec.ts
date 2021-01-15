@@ -20,7 +20,7 @@ describe('RegisterService', () => {
     expect(reg.length).toBe(Constants.REGISTERS.length);
     for (let i = 0; i < Constants.REGISTERS.length; i++) {
       expect(reg[i].name).toEqual(Constants.REGISTERS[i]);
-      expect(reg[i].value).toEqual(Long.ZERO);
+      expect(reg[i].decimal).toEqual(Long.ZERO);
       expect(reg[i].hex).toEqual('0x0000000000000000')
     }
   });

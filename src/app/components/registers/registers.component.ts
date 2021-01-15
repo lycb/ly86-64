@@ -10,7 +10,7 @@ import Long from 'long';
   styleUrls: ['./registers.component.css']
 })
 export class RegistersComponent implements OnInit {
-	headers = ["name", "hex", "value"];
+	headers = ["name", "hex", "decimal"];
 	register: Register[];
   constructor(private parserService: ParserService, private registerService: RegisterService) { }
 
