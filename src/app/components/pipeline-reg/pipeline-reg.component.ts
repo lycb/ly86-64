@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { F, D, E, M, W } from "../../models/PipeReg";
 import { CpuService } from '../../services/cpu/cpu.service';
+import { RegisterService } from '../../services/register/register.service';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -64,40 +65,41 @@ export class PipelineRegComponent implements OnInit {
   w_dstE: string;
   w_dstM: string;
 
-  constructor(private cpuService: CpuService) {
-    this.d_stat = "1";
-    this.d_icode = "1";
+  constructor(private cpuService: CpuService,
+    private registerService: RegisterService) {
+    this.d_stat = "1 (SAOK)";
+    this.d_icode = "1 (NOP)";
     this.d_ifun = "0";
-    this.d_rA = "f";
-    this.d_rB = "f";
+    this.d_rA = "f (RNONE)";
+    this.d_rB = "f (RNONE)";
     this.d_valC = "0";
     this.d_valP = "0";
 
-    this.e_stat = "1";
-    this.e_icode = "1";
+    this.e_stat = "1 (SAOK)";
+    this.e_icode = "1 (NOP)";
     this.e_ifun = "0";
     this.e_valC = "0";
     this.e_valA = "0";
     this.e_valB = "0";
-    this.e_dstE = "f";
-    this.e_dstM = "f";
-    this.e_srcA = "f";
-    this.e_srcB = "f";
+    this.e_dstE = "f (RNONE)";
+    this.e_dstM = "f (RNONE)";
+    this.e_srcA = "f (RNONE)";
+    this.e_srcB = "f (RNONE)";
 
-    this.m_stat = "1";
-    this.m_icode = "1";
+    this.m_stat = "1 (SAOK)";
+    this.m_icode = "1 (NOP)";
     this.m_cnd = "0";
     this.m_valE = "0";
     this.m_valA = "0";
-    this.m_dstE = "f";
-    this.m_dstM = "f";
+    this.m_dstE = "f (RNONE)";
+    this.m_dstM = "f (RNONE)";
 
-    this.w_stat = "1";
-    this.w_icode = "1";
+    this.w_stat = "1 (SAOK)";
+    this.w_icode = "1 (NOP)";
     this.w_valE = "0";
     this.w_valM = "0";
-    this.w_dstE = "f";
-    this.w_dstM = "f";
+    this.w_dstE = "f (RNONE)";
+    this.w_dstM = "f (RNONE)";
 
     this.f_state = "NORMAL";
     this.d_state = "NORMAL";
@@ -135,17 +137,17 @@ export class PipelineRegComponent implements OnInit {
         this.d_stat = dreg.stat.state.toString(16);
         this.d_icode = dreg.icode.state.toString(16);
         this.d_ifun = dreg.ifun.state.toString(16);
-        this.d_rA = dreg.rA.state.toString(16);
-        this.d_rB = dreg.rB.state.toString(16);
+        this.d_rA = dreg.rA.state.toString(16) + " (" + this.registerService.index2register(dreg.rA.state.toNumber()) + ")";
+        this.d_rB = dreg.rB.state.toString(16) + " (" + this.registerService.index2register(dreg.rB.state.toNumber()) + ")";
         this.d_valC = dreg.valC.state.toUnsigned().toString(16);
         this.d_valP = dreg.valP.state.toUnsigned().toString(16);
         // this.setColor();
       } else {
-        this.d_stat = "1";
-        this.d_icode = "1";
+        this.d_stat = "1 (SAOK)";
+        this.d_icode = "1 (NOP)";
         this.d_ifun = "0";
-        this.d_rA = "f";
-        this.d_rB = "f";
+        this.d_rA = "f (RNONE)";
+        this.d_rB = "f (RNONE)";
         this.d_valC = "0";
         this.d_valP = "0";
       }
@@ -162,22 +164,22 @@ export class PipelineRegComponent implements OnInit {
         this.e_valC = ereg.valC.state.toUnsigned().toString(16);
         this.e_valA = ereg.valA.state.toUnsigned().toString(16);
         this.e_valB = ereg.valB.state.toUnsigned().toString(16);
-        this.e_dstE = ereg.dstE.state.toString(16);
-        this.e_dstM = ereg.dstM.state.toString(16);
-        this.e_srcA = ereg.srcA.state.toString(16);
-        this.e_srcB = ereg.srcB.state.toString(16);
+        this.e_dstE = ereg.dstE.state.toString(16) + " (" + this.registerService.index2register(ereg.dstE.state.toNumber()) + ")";
+        this.e_dstM = ereg.dstM.state.toString(16) + " (" + this.registerService.index2register(ereg.dstM.state.toNumber()) + ")";
+        this.e_srcA = ereg.srcA.state.toString(16) + " (" + this.registerService.index2register(ereg.srcA.state.toNumber()) + ")";
+        this.e_srcB = ereg.srcB.state.toString(16) + " (" + this.registerService.index2register(ereg.srcB.state.toNumber()) + ")";
         this.setColor();
       } else {
-        this.e_stat = "1";
-        this.e_icode = "1";
+        this.e_stat = "1 (SAOK)";
+        this.e_icode = "1 (NOP)";
         this.e_ifun = "0";
         this.e_valC = "0";
         this.e_valA = "0";
         this.e_valB = "0";
-        this.e_dstE = "f";
-        this.e_dstM = "f";
-        this.e_srcA = "f";
-        this.e_srcB = "f";
+        this.e_dstE = "f (RNONE)";
+        this.e_dstM = "f (RNONE)";
+        this.e_srcA = "f (RNONE)";
+        this.e_srcB = "f (RNONE)";
       }
     });
   }
@@ -191,17 +193,17 @@ export class PipelineRegComponent implements OnInit {
         this.m_cnd = mreg.Cnd.state.toString(16);
         this.m_valE = mreg.valE.state.toUnsigned().toString(16);
         this.m_valA = mreg.valA.state.toUnsigned().toString(16);
-        this.m_dstE = mreg.dstE.state.toString(16);
-        this.m_dstM = mreg.dstM.state.toString(16);
+        this.m_dstE = mreg.dstE.state.toString(16) + " (" + this.registerService.index2register(mreg.dstE.state.toNumber()) + ")";
+        this.m_dstM = mreg.dstM.state.toString(16) + " (" + this.registerService.index2register(mreg.dstM.state.toNumber()) + ")";
         this.setColor();
       } else {
-        this.m_stat = "1";
-        this.m_icode = "1";
+        this.m_stat = "1 (SAOK)";
+        this.m_icode = "1 (NOP)";
         this.m_cnd = "0";
         this.m_valE = "0";
         this.m_valA = "0";
-        this.m_dstE = "f";
-        this.m_dstM = "f";
+        this.m_dstE = "f (RNONE)";
+        this.m_dstM = "f (RNONE)";
       }
     });
   }
@@ -214,16 +216,16 @@ export class PipelineRegComponent implements OnInit {
         this.w_icode = wreg.icode.state.toString(16);
         this.w_valE = wreg.valE.state.toUnsigned().toString(16);
         this.w_valM = wreg.valM.state.toUnsigned().toString(16);
-        this.w_dstE = wreg.dstE.state.toString(16);
-        this.w_dstM = wreg.dstM.state.toString(16);
+        this.w_dstE = wreg.dstE.state.toString(16) + " (" + this.registerService.index2register(wreg.dstE.state.toNumber()) + ")";
+        this.w_dstM = wreg.dstM.state.toString(16) + " (" + this.registerService.index2register(wreg.dstM.state.toNumber()) + ")";
         this.setColor();
       } else {
-        this.w_stat = "1";
-        this.w_icode = "1";
+        this.w_stat = "1 (SAOK)";
+        this.w_icode = "1 (NOP)";
         this.w_valE = "0";
         this.w_valM = "0";
-        this.w_dstE = "f";
-        this.w_dstM = "f";
+        this.w_dstE = "f (RNONE)";
+        this.w_dstM = "f (RNONE)";
       }
     });
   }
