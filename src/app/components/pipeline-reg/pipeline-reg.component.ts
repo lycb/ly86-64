@@ -134,8 +134,8 @@ export class PipelineRegComponent implements OnInit {
     this.dregSubscription = this.cpuService.getDreg().subscribe(dreg => {
       if (dreg) {
         this.dreg = dreg;
-        this.d_stat = dreg.stat.state.toString(16);
-        this.d_icode = dreg.icode.state.toString(16);
+        this.d_stat = dreg.stat.state.toString(16)  + " (" + this.utilsService.num2stat(dreg.stat.state.toNumber()) + ")";
+        this.d_icode = dreg.icode.state.toString(16) + " (" + this.utilsService.icode2instr(dreg.icode.state.toNumber()) + ")";
         this.d_ifun = dreg.ifun.state.toString(16);
         this.d_rA = dreg.rA.state.toString(16) + " (" + this.utilsService.index2register(dreg.rA.state.toNumber()) + ")";
         this.d_rB = dreg.rB.state.toString(16) + " (" + this.utilsService.index2register(dreg.rB.state.toNumber()) + ")";
@@ -158,8 +158,8 @@ export class PipelineRegComponent implements OnInit {
     this.eregSubscription = this.cpuService.getEreg().subscribe(ereg => {
       if (ereg) {
         this.ereg = ereg;
-        this.e_stat = ereg.stat.state.toString(16);
-        this.e_icode = ereg.icode.state.toString(16);
+        this.e_stat = ereg.stat.state.toString(16)  + " (" + this.utilsService.num2stat(ereg.stat.state.toNumber()) + ")";
+        this.e_icode = ereg.icode.state.toString(16) + " (" + this.utilsService.icode2instr(ereg.icode.state.toNumber()) + ")";
         this.e_ifun = ereg.ifun.state.toString(16);
         this.e_valC = ereg.valC.state.toUnsigned().toString(16);
         this.e_valA = ereg.valA.state.toUnsigned().toString(16);
@@ -188,8 +188,8 @@ export class PipelineRegComponent implements OnInit {
     this.mregSubscription = this.cpuService.getMreg().subscribe(mreg => {
       if (mreg) {
         this.mreg = mreg;
-        this.m_stat = mreg.stat.state.toString(16);
-        this.m_icode = mreg.icode.state.toString(16);
+        this.m_stat = mreg.stat.state.toString(16)  + " (" + this.utilsService.num2stat(mreg.stat.state.toNumber()) + ")";
+        this.m_icode = mreg.icode.state.toString(16) + " (" + this.utilsService.icode2instr(mreg.icode.state.toNumber()) + ")";
         this.m_cnd = mreg.Cnd.state.toString(16);
         this.m_valE = mreg.valE.state.toUnsigned().toString(16);
         this.m_valA = mreg.valA.state.toUnsigned().toString(16);
@@ -212,8 +212,8 @@ export class PipelineRegComponent implements OnInit {
     this.wregSubscription = this.cpuService.getWreg().subscribe(wreg => {
       if (wreg) {
         this.wreg = wreg;
-        this.w_stat = wreg.stat.state.toString(16);
-        this.w_icode = wreg.icode.state.toString(16);
+        this.w_stat = wreg.stat.state.toString(16)  + " (" + this.utilsService.num2stat(wreg.stat.state.toNumber()) + ")";
+        this.w_icode = wreg.icode.state.toString(16) + " (" + this.utilsService.icode2instr(wreg.icode.state.toNumber()) + ")";
         this.w_valE = wreg.valE.state.toUnsigned().toString(16);
         this.w_valM = wreg.valM.state.toUnsigned().toString(16);
         this.w_dstE = wreg.dstE.state.toString(16) + " (" + this.utilsService.index2register(wreg.dstE.state.toNumber()) + ")";
