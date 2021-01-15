@@ -576,7 +576,7 @@ export class CpuService {
       return wreg.getvalE().getOutput();
     }
 
-    let register = this.registerService.index2register(this.d_srcA.toNumber())
+    let register = this.utilsService.index2register(this.d_srcA.toNumber())
     return this.registerService.getValueByRegister(register);
   }
 
@@ -600,7 +600,7 @@ export class CpuService {
       return wreg.getvalE().getOutput();
     }
 
-    let register = this.registerService.index2register(this.d_srcB.toNumber());
+    let register = this.utilsService.index2register(this.d_srcB.toNumber());
     return this.registerService.getValueByRegister(register);
   }
 
@@ -1018,8 +1018,8 @@ export class CpuService {
       dstE = wreg.getdstE().getOutput(),
       valM = wreg.getvalM().getOutput(),
       dstM = wreg.getdstM().getOutput(),
-      r_dstE = this.registerService.index2register(dstE.toNumber()),
-      r_dstM = this.registerService.index2register(dstM.toNumber());
+      r_dstE = this.utilsService.index2register(dstE.toNumber()),
+      r_dstM = this.utilsService.index2register(dstM.toNumber());
 
     this.registerService.setValueByRegister(r_dstE, valE);
     this.registerService.setValueByRegister(r_dstM, valM);

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { F, D, E, M, W } from "../../models/PipeReg";
 import { CpuService } from '../../services/cpu/cpu.service';
-import { RegisterService } from '../../services/register/register.service';
+import { UtilsService } from '../../services/utils/utils.service';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -66,7 +66,7 @@ export class PipelineRegComponent implements OnInit {
   w_dstM: string;
 
   constructor(private cpuService: CpuService,
-    private registerService: RegisterService) {
+    private utilsService: UtilsService) {
     this.d_stat = "1 (SAOK)";
     this.d_icode = "1 (NOP)";
     this.d_ifun = "0";
@@ -137,8 +137,8 @@ export class PipelineRegComponent implements OnInit {
         this.d_stat = dreg.stat.state.toString(16);
         this.d_icode = dreg.icode.state.toString(16);
         this.d_ifun = dreg.ifun.state.toString(16);
-        this.d_rA = dreg.rA.state.toString(16) + " (" + this.registerService.index2register(dreg.rA.state.toNumber()) + ")";
-        this.d_rB = dreg.rB.state.toString(16) + " (" + this.registerService.index2register(dreg.rB.state.toNumber()) + ")";
+        this.d_rA = dreg.rA.state.toString(16) + " (" + this.utilsService.index2register(dreg.rA.state.toNumber()) + ")";
+        this.d_rB = dreg.rB.state.toString(16) + " (" + this.utilsService.index2register(dreg.rB.state.toNumber()) + ")";
         this.d_valC = dreg.valC.state.toUnsigned().toString(16);
         this.d_valP = dreg.valP.state.toUnsigned().toString(16);
         // this.setColor();
@@ -164,10 +164,10 @@ export class PipelineRegComponent implements OnInit {
         this.e_valC = ereg.valC.state.toUnsigned().toString(16);
         this.e_valA = ereg.valA.state.toUnsigned().toString(16);
         this.e_valB = ereg.valB.state.toUnsigned().toString(16);
-        this.e_dstE = ereg.dstE.state.toString(16) + " (" + this.registerService.index2register(ereg.dstE.state.toNumber()) + ")";
-        this.e_dstM = ereg.dstM.state.toString(16) + " (" + this.registerService.index2register(ereg.dstM.state.toNumber()) + ")";
-        this.e_srcA = ereg.srcA.state.toString(16) + " (" + this.registerService.index2register(ereg.srcA.state.toNumber()) + ")";
-        this.e_srcB = ereg.srcB.state.toString(16) + " (" + this.registerService.index2register(ereg.srcB.state.toNumber()) + ")";
+        this.e_dstE = ereg.dstE.state.toString(16) + " (" + this.utilsService.index2register(ereg.dstE.state.toNumber()) + ")";
+        this.e_dstM = ereg.dstM.state.toString(16) + " (" + this.utilsService.index2register(ereg.dstM.state.toNumber()) + ")";
+        this.e_srcA = ereg.srcA.state.toString(16) + " (" + this.utilsService.index2register(ereg.srcA.state.toNumber()) + ")";
+        this.e_srcB = ereg.srcB.state.toString(16) + " (" + this.utilsService.index2register(ereg.srcB.state.toNumber()) + ")";
         this.setColor();
       } else {
         this.e_stat = "1 (SAOK)";
@@ -193,8 +193,8 @@ export class PipelineRegComponent implements OnInit {
         this.m_cnd = mreg.Cnd.state.toString(16);
         this.m_valE = mreg.valE.state.toUnsigned().toString(16);
         this.m_valA = mreg.valA.state.toUnsigned().toString(16);
-        this.m_dstE = mreg.dstE.state.toString(16) + " (" + this.registerService.index2register(mreg.dstE.state.toNumber()) + ")";
-        this.m_dstM = mreg.dstM.state.toString(16) + " (" + this.registerService.index2register(mreg.dstM.state.toNumber()) + ")";
+        this.m_dstE = mreg.dstE.state.toString(16) + " (" + this.utilsService.index2register(mreg.dstE.state.toNumber()) + ")";
+        this.m_dstM = mreg.dstM.state.toString(16) + " (" + this.utilsService.index2register(mreg.dstM.state.toNumber()) + ")";
         this.setColor();
       } else {
         this.m_stat = "1 (SAOK)";
@@ -216,8 +216,8 @@ export class PipelineRegComponent implements OnInit {
         this.w_icode = wreg.icode.state.toString(16);
         this.w_valE = wreg.valE.state.toUnsigned().toString(16);
         this.w_valM = wreg.valM.state.toUnsigned().toString(16);
-        this.w_dstE = wreg.dstE.state.toString(16) + " (" + this.registerService.index2register(wreg.dstE.state.toNumber()) + ")";
-        this.w_dstM = wreg.dstM.state.toString(16) + " (" + this.registerService.index2register(wreg.dstM.state.toNumber()) + ")";
+        this.w_dstE = wreg.dstE.state.toString(16) + " (" + this.utilsService.index2register(wreg.dstE.state.toNumber()) + ")";
+        this.w_dstM = wreg.dstM.state.toString(16) + " (" + this.utilsService.index2register(wreg.dstM.state.toNumber()) + ")";
         this.setColor();
       } else {
         this.w_stat = "1 (SAOK)";
