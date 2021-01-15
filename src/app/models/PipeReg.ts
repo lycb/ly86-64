@@ -101,8 +101,8 @@ export class E {
 		this.valB = new PipeRegField(Long.ZERO);
 		this.dstE = new PipeRegField(Long.fromNumber(Constants.RNONE));
 		this.dstM = new PipeRegField(Long.fromNumber(Constants.RNONE));
-		this.srcA = new PipeRegField(Long.ZERO);
-		this.srcB = new PipeRegField(Long.ZERO);
+		this.srcA = new PipeRegField(Long.fromNumber(Constants.RNONE));
+		this.srcB = new PipeRegField(Long.fromNumber(Constants.RNONE));
 	}
 
 	getstat(): PipeRegField {
@@ -154,8 +154,8 @@ export class E {
 		this.valB.setInput(Long.ZERO);
 		this.dstE.setInput(Long.fromNumber(Constants.RNONE));
 		this.dstM.setInput(Long.fromNumber(Constants.RNONE));
-		this.srcA.setInput(Long.ZERO);
-		this.srcB.setInput(Long.ZERO);
+		this.srcA.setInput(Long.fromNumber(Constants.RNONE));
+		this.srcB.setInput(Long.fromNumber(Constants.RNONE));
 
 		this.stat.normal();
 		this.icode.normal();

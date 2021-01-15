@@ -1148,10 +1148,10 @@ export class CpuService {
       icodes_list.push("POPQ");
     }
     if (e_dstM.equals(this.d_srcA)) {
-      dstm_list.push("d_srcA")
+      dstm_list.push("d_srcA" + " (" + this.utilsService.index2register(this.d_srcA.toNumber()) + ")");
     }
     if (e_dstM.equals(this.d_srcB)) {
-      dstm_list.push("d_srcB")
+      dstm_list.push("d_srcB" + " (" + this.utilsService.index2register(this.d_srcB.toNumber()) + ")");
     }
     if (e_icode.equals(Long.fromNumber(Constants.RET))) {
       ret_list.push("E_icode")
@@ -1164,14 +1164,14 @@ export class CpuService {
     }
 
     if (icodes_list.length > 0) {
-      str += "E_icode in {" + icodes_list + "}";
+      str += "E_icode in [" + icodes_list + "]";
       if (dstm_list.length > 0) {
-        str += " E_dstM in {" + dstm_list + "}";
+        str += " && E_dstM in [" + dstm_list + "]";
       }
     }
 
     if (ret_list.length > 0) {
-      str += "IRET in {" + ret_list + "}";
+      str += " RET in [" + ret_list + "]";
     }
     return str;
   }
@@ -1200,16 +1200,16 @@ export class CpuService {
       icodes_list.push("POPQ");
     }
     if (e_dstM.equals(this.d_srcA)) {
-      dstm_list.push("d_srcA")
+      dstm_list.push("d_srcA" + " (" + this.utilsService.index2register(this.d_srcA.toNumber()) + ")");
     }
     if (e_dstM.equals(this.d_srcB)) {
-      dstm_list.push("d_srcB")
+      dstm_list.push("d_srcB" + " (" + this.utilsService.index2register(this.d_srcB.toNumber()) + ")");
     }
 
     if (icodes_list.length > 0) {
-      str += "E_icode in {" + icodes_list + "}";
+      str += "E_icode in [" + icodes_list + "]";
       if (dstm_list.length > 0) {
-        str += " E_dstM in {" + dstm_list + "}";
+        str += " && E_dstM in [" + dstm_list + "]";
       }
     }
     return str;
@@ -1249,10 +1249,10 @@ export class CpuService {
       icodes_list.push("POPQ");
     }
     if (!e_dstM.equals(this.d_srcA)) {
-      dstm_list.push("d_srcA")
+      dstm_list.push("d_srcA" + " (" + this.utilsService.index2register(this.d_srcA.toNumber()) + ")");
     }
     if (!e_dstM.equals(this.d_srcB)) {
-      dstm_list.push("d_srcB")
+      dstm_list.push("d_srcB" + " (" + this.utilsService.index2register(this.d_srcB.toNumber()) + ")");
     }
     if (e_icode.equals(Long.fromNumber(Constants.RET))) {
       ret_list.push("E_icode")
@@ -1265,14 +1265,14 @@ export class CpuService {
     }
 
     if (icodes_list.length > 0 && ret_list.length > 0) {
-      str += "!(E_icode in {" + icodes_list + "}";
+      str += "!(E_icode in [" + icodes_list + "]";
       if (dstm_list.length > 0) {
-        str += " && E_dstM in {" + dstm_list + "})";
+        str += " && E_dstM in [" + dstm_list + "])";
       }
     }
 
     if (ret_list.length > 0) {
-      str += " && IRET in {" + ret_list + "}";
+      str += " && IRET in [" + ret_list + "]";
     }
 
     return str;
@@ -1308,22 +1308,22 @@ export class CpuService {
       icodes_list.push("POPQ");
     }
     if (e_dstM.equals(this.d_srcA)) {
-      dstm_list.push("d_srcA")
+      dstm_list.push("d_srcA" + " (" + this.utilsService.index2register(this.d_srcA.toNumber()) + ")");
     }
     if (e_dstM.equals(this.d_srcB)) {
-      dstm_list.push("d_srcB")
+      dstm_list.push("d_srcB" + " (" + this.utilsService.index2register(this.d_srcB.toNumber()) + ")");
     }
 
 
     if (icodes_list.length > 0) {
-      str += "E_icode in {" + icodes_list + "}";
+      str += "E_icode in [" + icodes_list + "]";
       if (dstm_list.length > 0) {
-        str += " E_dstM in {" + dstm_list + "}";
+        str += " && E_dstM in [" + dstm_list + "]";
       }
     }
 
     if (ret_list.length > 0) {
-      str += "IRET in {" + ret_list + "}";
+      str += "RET in [" + ret_list + "]";
     }
 
     return str;
@@ -1364,11 +1364,11 @@ export class CpuService {
     }
 
     if (m_stat_list.length > 0) {
-      str += "m_stat in {" + m_stat_list + "}";
+      str += "m_stat in [" + m_stat_list + "]";
     }
 
     if (w_stat_list.length > 0) {
-      str += " W_stat in {" + w_stat_list + "}";
+      str += " W_stat in [" + w_stat_list + "]";
     }
 
     return str;
