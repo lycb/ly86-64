@@ -15,6 +15,7 @@ import { Observable, Subject } from 'rxjs';
 })
 export class CpuService {
   error: boolean;
+  hold: boolean;
 
   // Observables for passing values to the pipeline register component
   f_pred = new Subject<any>();
@@ -71,6 +72,7 @@ export class CpuService {
     this.ebubble = false;
     this.mbubble = false;
     this.error = false;
+    this.hold = false;
   }
 
   /*
@@ -147,7 +149,24 @@ export class CpuService {
   }
 
   holdHighlight(dreg: D, eof: boolean): boolean {
-    return this.fstall || dreg.geticode().getOutput().equals(Long.ZERO) && eof;
+    this.hold = dreg.geticode().getOutput().equals(Long.ZERO) && eof;
+    return this.fstall || this.hold;
+  }
+
+  getFstall() {
+    return this.fstall;
+  }
+
+  getDbubble() {
+    return this.dbubble;
+  }
+
+  getDstall() {
+    return this.dstall;
+  }
+
+  getHold() {
+    return this.hold;
   }
 
   /*
@@ -421,11 +440,11 @@ export class CpuService {
     let Cnd = (this.e_Cnd.equals(Long.ONE)) ? true : false;
 
     return (e_icode.equals(Long.fromNumber(Constants.JXX)) && !Cnd) ||
-    !(e_icode.equals(Long.fromNumber(Constants.MRMOVQ)) || 
+    (!(e_icode.equals(Long.fromNumber(Constants.MRMOVQ)) || 
         e_icode.equals(Long.fromNumber(Constants.POPQ)) && 
        (e_dstM.equals(this.d_srcA) || e_dstM.equals(this.d_srcB))) &&
        (e_icode.equals(Long.fromNumber(Constants.RET)) || d_icode.equals(Long.fromNumber(Constants.RET)) ||
-          m_icode.equals(Long.fromNumber(Constants.RET)));
+          m_icode.equals(Long.fromNumber(Constants.RET))));
 
   }
 
@@ -576,7 +595,7 @@ export class CpuService {
       return wreg.getvalE().getOutput();
     }
 
-    let register = this.registerService.index2register(this.d_srcA.toNumber())
+    let register = this.utilsService.index2register(this.d_srcA.toNumber())
     return this.registerService.getValueByRegister(register);
   }
 
@@ -600,7 +619,7 @@ export class CpuService {
       return wreg.getvalE().getOutput();
     }
 
-    let register = this.registerService.index2register(this.d_srcB.toNumber());
+    let register = this.utilsService.index2register(this.d_srcB.toNumber());
     return this.registerService.getValueByRegister(register);
   }
 
@@ -1018,8 +1037,8 @@ export class CpuService {
       dstE = wreg.getdstE().getOutput(),
       valM = wreg.getvalM().getOutput(),
       dstM = wreg.getdstM().getOutput(),
-      r_dstE = this.registerService.index2register(dstE.toNumber()),
-      r_dstM = this.registerService.index2register(dstM.toNumber());
+      r_dstE = this.utilsService.index2register(dstE.toNumber()),
+      r_dstM = this.utilsService.index2register(dstM.toNumber());
 
     this.registerService.setValueByRegister(r_dstE, valE);
     this.registerService.setValueByRegister(r_dstM, valM);
@@ -1148,10 +1167,10 @@ export class CpuService {
       icodes_list.push("POPQ");
     }
     if (e_dstM.equals(this.d_srcA)) {
-      dstm_list.push("d_srcA")
+      dstm_list.push("d_srcA" + " (" + this.utilsService.index2register(this.d_srcA.toNumber()) + ")");
     }
     if (e_dstM.equals(this.d_srcB)) {
-      dstm_list.push("d_srcB")
+      dstm_list.push("d_srcB" + " (" + this.utilsService.index2register(this.d_srcB.toNumber()) + ")");
     }
     if (e_icode.equals(Long.fromNumber(Constants.RET))) {
       ret_list.push("E_icode")
@@ -1164,14 +1183,14 @@ export class CpuService {
     }
 
     if (icodes_list.length > 0) {
-      str += "E_icode in {" + icodes_list + "}";
+      str += "E_icode in [" + icodes_list + "]";
       if (dstm_list.length > 0) {
-        str += " E_dstM in {" + dstm_list + "}";
+        str += " && E_dstM in [" + dstm_list + "]";
       }
     }
 
     if (ret_list.length > 0) {
-      str += "IRET in {" + ret_list + "}";
+      str += " RET in [" + ret_list + "]";
     }
     return str;
   }
@@ -1200,16 +1219,16 @@ export class CpuService {
       icodes_list.push("POPQ");
     }
     if (e_dstM.equals(this.d_srcA)) {
-      dstm_list.push("d_srcA")
+      dstm_list.push("d_srcA" + " (" + this.utilsService.index2register(this.d_srcA.toNumber()) + ")");
     }
     if (e_dstM.equals(this.d_srcB)) {
-      dstm_list.push("d_srcB")
+      dstm_list.push("d_srcB" + " (" + this.utilsService.index2register(this.d_srcB.toNumber()) + ")");
     }
 
     if (icodes_list.length > 0) {
-      str += "E_icode in {" + icodes_list + "}";
+      str += "E_icode in [" + icodes_list + "]";
       if (dstm_list.length > 0) {
-        str += " E_dstM in {" + dstm_list + "}";
+        str += " && E_dstM in [" + dstm_list + "]";
       }
     }
     return str;
@@ -1242,17 +1261,17 @@ export class CpuService {
     if (e_icode.equals(Long.fromNumber(Constants.JXX)) && !Cnd) {
       str = "(E_icode in JXX && !e_Cnd)";
     }
-    if (e_icode.equals(Long.fromNumber(Constants.MRMOVQ))) {
+    if (!e_icode.equals(Long.fromNumber(Constants.MRMOVQ))) {
       icodes_list.push("MRMOVQ");
     }
-    if (e_icode.equals(Long.fromNumber(Constants.POPQ))) {
+    if (!e_icode.equals(Long.fromNumber(Constants.POPQ))) {
       icodes_list.push("POPQ");
     }
-    if (e_dstM.equals(this.d_srcA)) {
-      dstm_list.push("d_srcA")
+    if (!e_dstM.equals(this.d_srcA)) {
+      dstm_list.push("d_srcA" + " (" + this.utilsService.index2register(this.d_srcA.toNumber()) + ")");
     }
-    if (e_dstM.equals(this.d_srcB)) {
-      dstm_list.push("d_srcB")
+    if (!e_dstM.equals(this.d_srcB)) {
+      dstm_list.push("d_srcB" + " (" + this.utilsService.index2register(this.d_srcB.toNumber()) + ")");
     }
     if (e_icode.equals(Long.fromNumber(Constants.RET))) {
       ret_list.push("E_icode")
@@ -1264,15 +1283,15 @@ export class CpuService {
       ret_list.push("M_icode")
     }
 
-    if (icodes_list.length > 0) {
-      str += "!(E_icode in {" + icodes_list + "}";
+    if (icodes_list.length > 0 && ret_list.length > 0) {
+      str += "!(E_icode in [" + icodes_list + "]";
       if (dstm_list.length > 0) {
-        str += " && E_dstM in {" + dstm_list + "})";
+        str += " && E_dstM in [" + dstm_list + "])";
       }
     }
 
-    if (ret_list.length > 0 && dstm_list.length > 0) {
-      str += " && IRET in {" + ret_list + "}";
+    if (ret_list.length > 0) {
+      str += " && IRET in [" + ret_list + "]";
     }
 
     return str;
@@ -1308,22 +1327,22 @@ export class CpuService {
       icodes_list.push("POPQ");
     }
     if (e_dstM.equals(this.d_srcA)) {
-      dstm_list.push("d_srcA")
+      dstm_list.push("d_srcA" + " (" + this.utilsService.index2register(this.d_srcA.toNumber()) + ")");
     }
     if (e_dstM.equals(this.d_srcB)) {
-      dstm_list.push("d_srcB")
+      dstm_list.push("d_srcB" + " (" + this.utilsService.index2register(this.d_srcB.toNumber()) + ")");
     }
 
 
     if (icodes_list.length > 0) {
-      str += "E_icode in {" + icodes_list + "}";
+      str += "E_icode in [" + icodes_list + "]";
       if (dstm_list.length > 0) {
-        str += " E_dstM in {" + dstm_list + "}";
+        str += " && E_dstM in [" + dstm_list + "]";
       }
     }
 
     if (ret_list.length > 0) {
-      str += "IRET in {" + ret_list + "}";
+      str += "RET in [" + ret_list + "]";
     }
 
     return str;
@@ -1364,11 +1383,11 @@ export class CpuService {
     }
 
     if (m_stat_list.length > 0) {
-      str += "m_stat in {" + m_stat_list + "}";
+      str += "m_stat in [" + m_stat_list + "]";
     }
 
     if (w_stat_list.length > 0) {
-      str += " W_stat in {" + w_stat_list + "}";
+      str += " W_stat in [" + w_stat_list + "]";
     }
 
     return str;

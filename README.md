@@ -1,7 +1,10 @@
 # LY86-64
 
+Master branch progress: https://master.d3ml97s3rx9p27.amplifyapp.com/
 
-To see progress so far:
+Develop branch progress: https://develop.d3ml97s3rx9p27.amplifyapp.com/
+
+To see progress so far: 
 - clone
 - install angular cli
 - run `npm install` in local repo

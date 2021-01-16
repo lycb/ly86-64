@@ -2,9 +2,34 @@
   display: none;
 }
 
-.logic {
+.f-logic {
 	margin: 1%;
 	word-wrap: normal;
+	color: #f7b613;
+}
+
+.d-stall-logic {
+	margin: 1%;
+	word-wrap: normal;
+	color: #f7b613;
+}
+
+.d-bubble-logic {
+	margin: 1%;
+	word-wrap: normal;
+	color: #f77d36;
+}
+
+.e-logic {
+	margin: 1%;
+	word-wrap: normal;
+	color: #f77d36;
+}
+
+.m-logic {
+	margin: 1%;
+	word-wrap: normal;
+	color: #f77d36;
 }
 
 @media screen and (max-width: 928px) {

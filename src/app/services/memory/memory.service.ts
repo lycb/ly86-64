@@ -28,7 +28,6 @@ export class MemoryService {
       return;
     }
     this.error = true;
-    console.log("putLong")
   }
 
   getLong(address: number): Long {
@@ -41,24 +40,24 @@ export class MemoryService {
       return this.utilsService.buildLong(longArr);
     }
     this.error = true;
-    console.log("getLong")
   }
 
   putByte(value: Long, address: number): void {
     if (address >= 0 && address < Constants.MEMSIZE) {
+      this.error = false;
       this.memory[address] = value;
       return;
     } else {
-      alert('error in putByte for address: ' + address);
+      this.error = true;
     }
   }
 
   getByte(address: number): Long {
     if (address >= 0 && address < Constants.MEMSIZE) {
+      this.error = false;
       return this.memory[address];
     }
-    alert('error in getByte for address: ' + address);
-    return null;
+    this.error = true;
   }
 
   getError(): boolean {
@@ -73,5 +72,6 @@ export class MemoryService {
     for (let i = 0; i < this.memory.length; i++) {
       this.memory[i] = Long.ZERO;
     }
+    this.error = false;
   }
 }

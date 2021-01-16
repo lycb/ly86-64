@@ -35,6 +35,9 @@ export class ParserService {
   }
 
   setCurrent(line: Line): void {
+    if (!line.isAnAddress) {
+      throw new Error('cannot set current on non-address lines');
+    }
     if (this.currentLine != undefined) {
       this.currentLine.isCurrent = false;
       this.currentLine = line;

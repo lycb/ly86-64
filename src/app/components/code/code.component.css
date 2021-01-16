@@ -17,8 +17,14 @@
 	white-space: pre;
 }
 
-.current {
-	background-color: black;
+.current-normal {
+	background-color: #46ce7c;
+	color: white;
+	margin: 0;
+}
+
+.current-stalled {
+	background-color: #f7c336;
 	color: white;
 	margin: 0;
 }
