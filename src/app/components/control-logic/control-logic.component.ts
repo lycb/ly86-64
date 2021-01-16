@@ -12,6 +12,8 @@ export class ControlLogicComponent implements OnInit {
   Dlogic: string;
   Elogic: string;
   Mlogic: string;
+  dbubble: boolean;
+  dstall: boolean;
   logicSubscription: Subscription;
 
   constructor(private cpuService: CpuService) {
@@ -19,6 +21,9 @@ export class ControlLogicComponent implements OnInit {
     this.Dlogic = "";
     this.Elogic = "";
     this.Mlogic = "";
+
+    this.dbubble = this.cpuService.getDbubble();
+    this.dstall = this.cpuService.getDstall();
 
     this.getLogic();
   }

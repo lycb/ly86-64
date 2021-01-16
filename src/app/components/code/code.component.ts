@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ParserService } from '../../services/parser/parser.service';
+import { CpuService } from '../../services/cpu/cpu.service';
 import { Line } from '../../models/Line';
 
 @Component({
@@ -11,8 +12,10 @@ import { Line } from '../../models/Line';
 export class CodeComponent implements OnInit {
   // display the main code chunk
   @Input() fileContent: Line[];	
+  @Input() hold: boolean;
+  @Input() fstall: boolean;
   
-  constructor(private parserService: ParserService) { }
+  constructor(private cpuService: CpuService) { }
 
   ngOnInit() {
   }

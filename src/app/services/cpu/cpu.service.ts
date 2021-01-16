@@ -15,6 +15,7 @@ import { Observable, Subject } from 'rxjs';
 })
 export class CpuService {
   error: boolean;
+  hold: boolean;
 
   // Observables for passing values to the pipeline register component
   f_pred = new Subject<any>();
@@ -71,6 +72,7 @@ export class CpuService {
     this.ebubble = false;
     this.mbubble = false;
     this.error = false;
+    this.hold = false;
   }
 
   /*
@@ -147,7 +149,24 @@ export class CpuService {
   }
 
   holdHighlight(dreg: D, eof: boolean): boolean {
-    return this.fstall || dreg.geticode().getOutput().equals(Long.ZERO) && eof;
+    this.hold = dreg.geticode().getOutput().equals(Long.ZERO) && eof;
+    return this.fstall || this.hold;
+  }
+
+  getFstall() {
+    return this.fstall;
+  }
+
+  getDbubble() {
+    return this.dbubble;
+  }
+
+  getDstall() {
+    return this.dstall;
+  }
+
+  getHold() {
+    return this.hold;
   }
 
   /*

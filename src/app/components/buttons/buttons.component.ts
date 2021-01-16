@@ -22,6 +22,9 @@ export class ButtonsComponent implements OnInit {
   loadComponent: boolean;
   isFirstAddressCurrent: boolean;
 
+  fstall: boolean;
+  hold: boolean;
+
   freg: F;
   dreg: D;
   ereg: E;
@@ -83,6 +86,8 @@ export class ButtonsComponent implements OnInit {
     if (current.id < this.fileContent.length && nextId < this.fileContent.length) {
       if (current.parsedLine.instruction != "" && !this.stop) {
         this.stop = this.cpuService.doSimulation(this.fileContent, current, this.freg, this.dreg, this.ereg, this.mreg, this.wreg);
+        this.hold = this.cpuService.getHold();
+        this.fstall = this.cpuService.getFstall();
       }
       this.nextCurrentLine();
     }
@@ -187,8 +192,6 @@ export class ButtonsComponent implements OnInit {
       address++;
     }
   }
-
-
 
   readFileAsText(file: File): void {
     let fileReader = new FileReader();

@@ -1,6 +1,8 @@
 <div class="wrapper">
-	<p class="logic"> {{Flogic}} </p>
-	<p class="logic"> {{Dlogic}} </p>
-	<p class="logic"> {{Elogic}} </p>
-	<p class="logic"> {{Mlogic}} </p>
+	<p class="f-logic"> {{Flogic}} </p>
+  <pre *ngIf="dstall" class="d-stall-logic">{{ Dlogic }}</pre>
+  <pre *ngIf="dbubble" class="d-bubble-logic">{{ Dlogic }}</pre>
+	<p class="e-logic"> {{Elogic}} </p>
+	<p class="m-logic"> {{Mlogic}} </p>
+
 </div>
