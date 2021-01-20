@@ -28,7 +28,7 @@
 	background-color: white;
 	height: 100%;
 	width: 10%;
-	border: 2px dotted black;
+	border: 2px solid black;
 	border-radius: 5px;
 	margin-right: 0.5%;
 }
@@ -37,7 +37,7 @@
 	background-color: #f77d36;
 	height: 100%;
 	width: 10%;
-	border: 2px dotted black;
+	border: 2px solid #f77d36;
 	border-radius: 5px;
 	margin-right: 0.5%;
 	color: white;
@@ -47,7 +47,7 @@
 	background-color: #f7c336;
 	height: 100%;
 	width: 10%;
-	border: 2px dotted black;
+	border: 2px solid #f7c336;
 	border-radius: 5px;
 	margin-right: 0.5%;
 	color: white;
@@ -57,7 +57,7 @@
 	background-color: #46ce7c;
 	height: 100%;
 	width: 10%;
-	border: 2px dotted black;
+	border: 2px solid #46ce7c;
 	border-radius: 5px;
 	margin-right: 0.5%;
 	color: white;
@@ -67,7 +67,7 @@
 	background-color: white;
 	height: 100%;
 	width: 20%;
-	border: 2px dotted black;
+	border: 2px solid black;
 	border-radius: 5px;
 	margin-right: 0.5%;
 }
@@ -76,7 +76,7 @@
 	background-color: #f77d36;
 	height: 100%;
 	width: 20%;
-	border: 2px dotted black;
+	border: 2px solid #f77d36;
 	border-radius: 5px;
 	margin-right: 0.5%;
 	color: white;
@@ -86,7 +86,7 @@
 	background-color: #f7c336;
 	height: 100%;
 	width: 20%;
-	border: 2px dotted black;
+	border: 2px solid #f7c336;
 	border-radius: 5px;
 	margin-right: 0.5%;
 	color: white;
@@ -96,7 +96,7 @@
 	background-color: #46ce7c;
 	height: 100%;
 	width: 20%;
-	border: 2px dotted black;
+	border: 2px solid #46ce7c;
 	border-radius: 5px;
 	margin-right: 0.5%;
 	color: white;
@@ -114,7 +114,7 @@
 	background-color: white;
 	height: 100%;
 	width: 30%;
-	border: 2px dotted black;
+	border: 2px solid black;
 	border-radius: 5px;
 	margin-right: 0.5%;
 }
@@ -123,7 +123,7 @@
 	background-color: #f77d36;
 	height: 100%;
 	width: 30%;
-	border: 2px dotted black;
+	border: 2px solid #f77d36;
 	border-radius: 5px;
 	margin-right: 0.5%;
 	color: white;
@@ -133,7 +133,7 @@
 	background-color: #f7c336;
 	height: 100%;
 	width: 30%;
-	border: 2px dotted black;
+	border: 2px solid #f7c336;
 	border-radius: 5px;
 	margin-right: 0.5%;
 	color: white;
@@ -143,7 +143,7 @@
 	background-color: #46ce7c;
 	height: 100%;
 	width: 30%;
-	border: 2px dotted black;
+	border: 2px solid #46ce7c;
 	border-radius: 5px;
 	margin-right: 0.5%;
 	color: white;
@@ -153,7 +153,7 @@
 	background-color: white;
 	height: 100%;
 	width: 20%;
-	border: 2px dotted black;
+	border: 2px solid black;
 	border-radius: 5px;
 	margin-right: 0.5%;
 }
@@ -162,7 +162,7 @@
 	background-color: #f77d36;
 	height: 100%;
 	width: 20%;
-	border: 2px dotted black;
+	border: 2px solid #f77d36;
 	border-radius: 5px;
 	margin-right: 0.5%;
 	color: white;
@@ -172,7 +172,7 @@
 	background-color: #f7c336;
 	height: 100%;
 	width: 20%;
-	border: 2px dotted black;
+	border: 2px solid #f7c336;
 	border-radius: 5px;
 	margin-right: 0.5%;
 	color: white;
@@ -182,7 +182,7 @@
 	background-color: #46ce7c;
 	height: 100%;
 	width: 20%;
-	border: 2px dotted black;
+	border: 2px solid #46ce7c;
 	border-radius: 5px;
 	margin-right: 0.5%;
 	color: white;
@@ -192,7 +192,7 @@
 	background-color: white;
 	height: 100%;
 	width: 15%;
-	border: 2px dotted black;
+	border: 2px solid black;
 	border-radius: 5px;
 	margin-right: 0.5%;
 }
@@ -201,7 +201,7 @@
 	background-color: #f77d36;
 	height: 100%;
 	width: 15%;
-	border: 2px dotted black;
+	border: 2px solid #f77d36;
 	border-radius: 5px;
 	margin-right: 0.5%;
 	color: white;
@@ -211,7 +211,7 @@
 	background-color: #f7c336;
 	height: 100%;
 	width: 15%;
-	border: 2px dotted black;
+	border: 2px solid #f7c336;
 	border-radius: 5px;
 	margin-right: 0.5%;
 	color: white;
@@ -221,7 +221,7 @@
 	background-color: #46ce7c;
 	height: 100%;
 	width: 15%;
-	border: 2px dotted black;
+	border: 2px solid #46ce7c;
 	border-radius: 5px;
 	margin-right: 0.5%;
 	color: white;
