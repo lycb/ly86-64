@@ -1,4 +1,4 @@
-.wrapper {
+.main-wrapper {
   top: 50%;
   left: 50%;
   position: absolute;
@@ -35,4 +35,15 @@ h1 {
   text-decoration: none;
   text-transform: uppercase;
   font-family: 'Roboto',sans-serif;
+}
+
+.bot-wrapper {
+  position: relative;
+  min-height: 150px;
+}
+
+.contact {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
 }
