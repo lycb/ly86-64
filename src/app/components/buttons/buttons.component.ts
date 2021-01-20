@@ -22,6 +22,7 @@ export class ButtonsComponent implements OnInit {
   loadComponent: boolean;
   isFirstAddressCurrent: boolean;
   showSelectFile: boolean;
+  uploadButtonText: string;
 
   fstall: boolean;
   hold: boolean;
@@ -46,6 +47,7 @@ export class ButtonsComponent implements OnInit {
     this.isFirstAddressCurrent = false;
     this.instructionLength = 0;
     this.showSelectFile = false;
+    this.uploadButtonText = "Upload a file";
 
     this.freg = new F();
     this.dreg = new D();
@@ -60,6 +62,7 @@ export class ButtonsComponent implements OnInit {
   * load lines into an array -> this.fileContent
   */
   onFileSelect(): void {
+    this.uploadButtonText = "Upload a file";
     this.isFirstAddressCurrent = false;
     this.fileContent = [];
     const input = <HTMLInputElement>document.getElementById("file-input")
@@ -72,6 +75,8 @@ export class ButtonsComponent implements OnInit {
       this.parserService.setFileContent(this.fileContent);
       return;
     }
+
+    this.uploadButtonText = file.name;
     this.readFileAsText(file);
     this.onClickReset();
   }
