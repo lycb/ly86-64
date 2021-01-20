@@ -1,0 +1,38 @@
+.wrapper {
+  top: 50%;
+  left: 50%;
+  position: absolute;
+  text-align: center;
+  transform: translate(-50%, -50%);
+}
+
+.button-elements {
+  padding-top: 20px;
+}
+
+.buttons {
+  border: 0.16em solid #2b2bdb;
+  padding: 0.35em 1.2em;
+  margin: 0 0.3em 0.3em 0;
+  box-sizing: border-box;
+  text-decoration: none;
+  text-transform: uppercase;
+  font-family: 'Roboto',sans-serif;
+  font-weight: 400;
+  color: #2b2bdb;
+  text-align: center;
+  transition: all 0.15s;
+  background-color: white;
+} 
+
+.buttons:hover {
+  color: #9942e5;
+  border-color: #9942e5;
+} 
+
+h1 {
+  font-size: 20px;
+  text-decoration: none;
+  text-transform: uppercase;
+  font-family: 'Roboto',sans-serif;
+}
