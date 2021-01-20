@@ -3,9 +3,10 @@
 		<button class="file-upload-button">
 			<input  class="file-upload-input" type="file" id="file-input" (change)="onFileSelect()" />
 		</button>
-		<button class="continue-button" (click)="onClickContinue()" [disabled]="!loadComponent">Continue</button>
-		<button class="step-button" (click)="onClickStep()" [disabled]="!loadComponent">Step</button>
-		<button class="reset-button" (click)="onClickReset()" [disabled]="!loadComponent">Reset</button>
+		<button class="buttons" (click)="onClickContinue()" [disabled]="!loadComponent">Continue</button>
+		<button class="buttons" (click)="onClickStep()" [disabled]="!loadComponent">Step</button>
+		<button class="buttons" (click)="onClickReset()" [disabled]="!loadComponent">Reset</button>
+    <button [routerLink]="'/home'" class="buttons">Home</button>
 	</div>
 	<app-clock-cycle [cycle]="cycle"></app-clock-cycle>
 </div>

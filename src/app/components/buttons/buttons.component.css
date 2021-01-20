@@ -1,11 +1,40 @@
-.file-upload-input {
-	background-color: transparent;
+.file-upload-button {
+  border: none;
+  font-family: monospace;
 }
 
-.file-upload-button {
-	border: none;
+.file-upload-input {
+  font-family: monospace;
 }
 
 .top-button-wrapper {
 	display: flex;
+}
+
+
+
+.buttons {
+  margin:0 0.2em 0 0.2em;
+  border:0.16em solid #3a3a3a;
+  background-color: #3a3a3a;
+  border-radius:2em;
+  box-sizing: border-box;
+  text-decoration:none;
+  font-family: monospace;
+  font-weight:300;
+  color:#FFFFFF;
+  text-shadow: 0 0.04em 0.04em rgba(0,0,0,0.35);
+  text-align:center;
+  transition: all 0.2s;
+  outline: none;
+}
+
+.buttons:hover {
+  background-color: #abbfc6;
+  border-color: #abbfc6;
+}
+
+.buttons:disabled  {
+  background-color: #abbfc6;
+  border-color: #abbfc6;
 }
