@@ -31,6 +31,14 @@
 } 
 
 h1 {
+  font-size: 10vh;
+  text-decoration: none;
+  text-transform: uppercase;
+  font-family: 'Roboto',sans-serif;
+  margin-bottom: 0;
+}
+
+h3 {
   font-size: 20px;
   text-decoration: none;
   text-transform: uppercase;
