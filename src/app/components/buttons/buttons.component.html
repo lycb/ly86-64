@@ -1,8 +1,21 @@
 <div class=top-button-wrapper>
 	<div class="button-wrapper">
-		<button class="file-upload-button">
-			<input  class="file-upload-input" type="file" id="file-input" (change)="onFileSelect()" />
+		<select id="dropdown" class="custom-select" (change)="onLoadSamples()">
+				<option value="choose" selected="selected">Choose</option>
+				<option value="upload">custom files</option>
+		    <option value="je.yo">je</option>
+		    <option value="jl.yo" >jl</option>
+		    <option value="jge.yo" >jge</option>
+		    <option value="jecall.yo" >jecall</option>
+		    <option value="jne.yo" >jne</option>
+		    <option value="loaduse1.yo" >loaduse</option>
+		</select>
+		<div  class="upload-btn-wrapper" *ngIf="showSelectFile">
+		<button class="upload-btn">
+			{{uploadButtonText}}
 		</button>
+		<input  class="file-upload-input" type="file" id="file-input" (change)="onFileSelect()" />
+	</div>
 		<button class="buttons" (click)="onClickContinue()" [disabled]="!loadComponent">Continue</button>
 		<button class="buttons" (click)="onClickStep()" [disabled]="!loadComponent">Step</button>
 		<button class="buttons" (click)="onClickReset()" [disabled]="!loadComponent">Reset</button>

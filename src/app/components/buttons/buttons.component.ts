@@ -21,6 +21,8 @@ export class ButtonsComponent implements OnInit {
   counterStop: boolean;
   loadComponent: boolean;
   isFirstAddressCurrent: boolean;
+  showSelectFile: boolean;
+  uploadButtonText: string;
 
   fstall: boolean;
   hold: boolean;
@@ -44,6 +46,8 @@ export class ButtonsComponent implements OnInit {
     this.loadComponent = false;
     this.isFirstAddressCurrent = false;
     this.instructionLength = 0;
+    this.showSelectFile = false;
+    this.uploadButtonText = "Upload a file";
 
     this.freg = new F();
     this.dreg = new D();
@@ -58,10 +62,12 @@ export class ButtonsComponent implements OnInit {
   * load lines into an array -> this.fileContent
   */
   onFileSelect(): void {
+    this.uploadButtonText = "Upload a file";
     this.isFirstAddressCurrent = false;
     this.fileContent = [];
     const input = <HTMLInputElement>document.getElementById("file-input")
     const file = input.files[0];
+
     if (!file) return;
 
     if (!this.isFileExtensionYo(file)) {
@@ -69,6 +75,8 @@ export class ButtonsComponent implements OnInit {
       this.parserService.setFileContent(this.fileContent);
       return;
     }
+
+    this.uploadButtonText = file.name;
     this.readFileAsText(file);
     this.onClickReset();
   }
@@ -107,6 +115,35 @@ export class ButtonsComponent implements OnInit {
     this.loadlines();
   }
 
+  onLoadSamples(): void {
+    this.showSelectFile = false;
+    let filename = (<HTMLInputElement>document.getElementById("dropdown")).value;
+    if (filename !== "upload" && filename !== "choose") {
+      let txt;
+      let path = "assets/sample/yo_files/" + filename;
+      var rawFile = new XMLHttpRequest();
+      rawFile.open("GET", path, false);
+      rawFile.onreadystatechange = function() {
+        if (rawFile.status == 200 && rawFile.readyState == 4) {
+          txt = rawFile.responseText;
+        }
+      };
+      rawFile.open("GET", path, false);
+      rawFile.send();
+      this.isFirstAddressCurrent = false;
+      this.fileContent = [];
+
+      var blob = new Blob([txt], { type: 'text/plain' });
+      var file = new File([blob], "foo.txt", {type: "text/plain"});
+      
+      this.readFileAsText(file);
+      this.onClickReset();
+    } 
+    if (filename == "upload") {
+      this.showSelectFile = true;
+    }
+  }
+
   setFirstAddressCurrent(): void {
     if (!this.isFirstAddressCurrent) {
       for (let i = 0; i < this.fileContent.length; i++) {
@@ -135,7 +172,7 @@ export class ButtonsComponent implements OnInit {
   */
   nextCurrentLine(): void {
     let current = this.parserService.getCurrentLine();
-    
+
     let nextIndex = this.findNextIndex();
 
     if (nextIndex == 0) {

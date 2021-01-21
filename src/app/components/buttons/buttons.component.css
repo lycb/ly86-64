@@ -1,6 +1,10 @@
 .file-upload-button {
   border: none;
-  font-family: monospace;
+  background-color: #568cea;
+  color: white;
+  border-radius:2em;
+  outline: none;
+  margin:0 0.2em 0 0.2em;
 }
 
 .file-upload-input {
@@ -35,4 +39,38 @@
 .buttons:disabled  {
   background-color: #abbfc6;
   border-color: #abbfc6;
+}
+
+.custom-select {
+  font-family: monospace;
+  background-color: #568cea;
+  color: white;
+  border-radius:2em;
+  outline: none;
+  margin:0 0.2em 0 0.2em;
+  border:0.16em solid #568cea;
+}
+
+.upload-btn-wrapper {
+  position: relative;
+  overflow: hidden;
+  display: inline;
+}
+
+.upload-btn {
+  font-family: monospace;
+  background-color: #f4ce64;
+  color: white;
+  border-radius:2em;
+  outline: none;
+  border:0.16em solid #f4ce64;
+}
+
+.upload-btn-wrapper input[type=file] {
+  font-size: 10px;
+  width: 110px;
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
 }
