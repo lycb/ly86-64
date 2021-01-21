@@ -23,6 +23,7 @@ export class ButtonsComponent implements OnInit {
   isFirstAddressCurrent: boolean;
   showSelectFile: boolean;
   uploadButtonText: string;
+  reset: boolean;
 
   fstall: boolean;
   hold: boolean;
@@ -47,6 +48,7 @@ export class ButtonsComponent implements OnInit {
     this.isFirstAddressCurrent = false;
     this.instructionLength = 0;
     this.showSelectFile = false;
+    this.reset = false;
     this.uploadButtonText = "Upload a file";
 
     this.freg = new F();
@@ -88,6 +90,7 @@ export class ButtonsComponent implements OnInit {
   }
 
   onClickStep(): void {
+    this.reset = false;
     this.isFirstAddressCurrent = false;
     var current = this.parserService.getCurrentLine();
     var nextId = current.id + 1;
@@ -102,6 +105,7 @@ export class ButtonsComponent implements OnInit {
   }
 
   onClickReset(): void {
+    this.reset = true;
     this.setFirstAddressCurrent();
     this.cycle = 0;
     this.cpuService.reset(this.freg, this.dreg, this.ereg, this.mreg, this.wreg);
