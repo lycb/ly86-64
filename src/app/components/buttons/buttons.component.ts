@@ -139,6 +139,9 @@ export class ButtonsComponent implements OnInit {
       this.readFileAsText(file);
       this.onClickReset();
     } 
+    if (filename == "choose") {
+      this.fileContent = [];
+    }
     if (filename == "upload") {
       this.showSelectFile = true;
     }
