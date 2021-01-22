@@ -124,7 +124,7 @@ export class ButtonsComponent implements OnInit {
     let filename = (<HTMLInputElement>document.getElementById("dropdown")).value;
     if (filename !== "upload" && filename !== "choose") {
       let txt;
-      let path = "assets/sample/yo_files/" + filename;
+      let path = "/assets/sample/yo_files/" + filename;
       var rawFile = new XMLHttpRequest();
       rawFile.open("GET", path, false);
       rawFile.onreadystatechange = function() {
