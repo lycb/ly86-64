@@ -23,8 +23,6 @@
             "assets": [
               "src/favicon.ico",
               "src/assets",
-              "src/assets/sample/yo/*",
-              "src/assets/sample/outputs/*"
             ],
             "styles": [
               "src/styles.css"
