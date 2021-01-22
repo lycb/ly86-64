@@ -124,25 +124,27 @@ export class ButtonsComponent implements OnInit {
     let filename = (<HTMLInputElement>document.getElementById("dropdown")).value;
     if (filename !== "upload" && filename !== "choose") {
       let txt;
-      let path = "/assets/sample/yo_files/" + filename;
-      var rawFile = new XMLHttpRequest();
-      rawFile.open("GET", path, false);
-      rawFile.onreadystatechange = function() {
-        if (rawFile.status == 200 && rawFile.readyState == 4) {
-          txt = rawFile.responseText;
+      let path = "./assets/sample/yo_files/" + filename;
+
+      var xhr = new XMLHttpRequest();
+      xhr.open("GET", path, false);
+      xhr.onload = function(e) {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+          txt = xhr.responseText;
         }
       };
-      rawFile.open("GET", path, false);
-      rawFile.send();
+      
+      xhr.send(null);
+
       this.isFirstAddressCurrent = false;
       this.fileContent = [];
 
       var blob = new Blob([txt], { type: 'text/plain' });
-      var file = new File([blob], "foo.txt", {type: "text/plain"});
-      
+      var file = new File([blob], "foo.txt", { type: "text/plain" });
+
       this.readFileAsText(file);
       this.onClickReset();
-    } 
+    }
     if (filename == "choose") {
       this.fileContent = [];
     }
