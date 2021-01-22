@@ -120,6 +120,8 @@ export class ButtonsComponent implements OnInit {
   }
 
   onLoadSamples(): void {
+    this.uploadButtonText = "Upload a file";
+    this.fileContent = [];
     this.showSelectFile = false;
     let filename = (<HTMLInputElement>document.getElementById("dropdown")).value;
     if (filename !== "upload" && filename !== "choose") {
@@ -150,6 +152,10 @@ export class ButtonsComponent implements OnInit {
     }
     if (filename == "upload") {
       this.showSelectFile = true;
+    }
+
+    if (this.fileContent.length == 0) {
+      this.loadComponent = false;
     }
   }
 
