@@ -24,7 +24,7 @@
               "src/favicon.ico",
               "src/assets",
               "src/assets/sample/yo/*",
-              "sec/assets/sample/outputs/*"
+              "src/assets/sample/outputs/*"
             ],
             "styles": [
               "src/styles.css"
