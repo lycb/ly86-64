@@ -72,6 +72,7 @@
   text-align:center;
   transition: all 0.2s;
   width: 110px;
+  overflow: hidden;
 }
 
 .upload-btn-wrapper input[type=file] {
