@@ -15,7 +15,7 @@ export class RegistersComponent implements OnInit {
   constructor(private parserService: ParserService, private registerService: RegisterService) { }
 
   ngOnInit() {
-  	// remove RNONE with splice
-  	this.register = this.registerService.getRegisters().splice(0, 15);
+  	// remove RNONE with slice
+  	this.register = this.registerService.getRegisters().slice(0, 15);
   }
 }

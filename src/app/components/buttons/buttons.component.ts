@@ -210,6 +210,10 @@ export class ButtonsComponent implements OnInit {
     }
   }
 
+  /*
+  * findNextIndex
+  * find the line that contains the predPC to highlight
+  */
   findNextIndex(): number {
     let index = 0;
     for (let i = 0; i < this.fileContent.length; i++) {
