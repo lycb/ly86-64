@@ -124,7 +124,7 @@ export class ButtonsComponent implements OnInit {
     let filename = (<HTMLInputElement>document.getElementById("dropdown")).value;
     if (filename !== "upload" && filename !== "choose") {
       let txt;
-      let path = "./assets/sample/yo_files/" + filename;
+      let path = "assets/sample/yo/" + filename;
 
       var xhr = new XMLHttpRequest();
       xhr.open("GET", path, false);
@@ -133,7 +133,7 @@ export class ButtonsComponent implements OnInit {
           txt = xhr.responseText;
         }
       };
-      
+
       xhr.send(null);
 
       this.isFirstAddressCurrent = false;
