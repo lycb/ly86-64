@@ -124,7 +124,7 @@ export class ButtonsComponent implements OnInit {
     let filename = (<HTMLInputElement>document.getElementById("dropdown")).value;
     if (filename !== "upload" && filename !== "choose") {
       let txt;
-      let path = "assets/sample/yo/" + filename;
+      let path = "assets/" + filename;
 
       var xhr = new XMLHttpRequest();
       xhr.open("GET", path, false);
