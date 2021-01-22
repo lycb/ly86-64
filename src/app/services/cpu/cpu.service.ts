@@ -59,6 +59,10 @@ export class CpuService {
   m_valM: Long;
   m_stat: Long;
 
+  // Variables to pass between componenets
+  f_pc: Long;
+  secondHighlight: boolean;
+
   constructor(
     private parserService: ParserService,
     private registerService: RegisterService,
@@ -73,6 +77,7 @@ export class CpuService {
     this.mbubble = false;
     this.error = false;
     this.hold = false;
+    this.secondHighlight = false;
   }
 
   /*
@@ -153,6 +158,10 @@ export class CpuService {
     return this.fstall || this.hold;
   }
 
+  needSecondHighlight(): boolean {
+    return this.secondHighlight;
+  }
+
   getFstall() {
     return this.fstall;
   }
@@ -169,6 +178,10 @@ export class CpuService {
     return this.hold;
   }
 
+  getSelectedPC() {
+    return this.f_pc.toNumber();
+  }
+
   /*
   * ==============================================================
   *                    F E T C H     S T A G E
@@ -176,14 +189,16 @@ export class CpuService {
   */
 
   doFetchClockLow(fileContent: Line[], lineObject: Line, freg: F, dreg: D, ereg: E, mreg: M, wreg: W): void {
-    let f_pc = this.selectPC(freg, mreg, wreg);
+    this.secondHighlight = false;
+    this.f_pc = this.selectPC(freg, mreg, wreg);
 
     let line = lineObject.parsedLine.instruction;
 
-    if (f_pc.toNumber() != lineObject.parsedLine.address) {
+    if (this.f_pc.toNumber() != lineObject.parsedLine.address) {
+      this.secondHighlight = true;
       for (let i = 0; i < fileContent.length; i++) {
         if (fileContent[i].parsedLine !== null && fileContent[i].parsedLine.instruction !== "") {
-          if (fileContent[i].parsedLine.address == f_pc.toNumber()) {
+          if (fileContent[i].parsedLine.address == this.f_pc.toNumber()) {
             line = fileContent[i].parsedLine.instruction;
             this.parserService.setCurrent(fileContent[i])
             break;
@@ -213,8 +228,8 @@ export class CpuService {
     stat = this.f_status(icode, this.error);
     icode = this.f_icode(icode, this.error);
     ifun = this.f_ifun(ifun, this.error);
-    valC = this.getValC(icode, f_pc, line);
-    valP = Long.fromNumber(this.PCincrement(f_pc, icode));
+    valC = this.getValC(icode, this.f_pc, line);
+    valP = Long.fromNumber(this.PCincrement(this.f_pc, icode));
     f_predPC = this.predictPC(icode, valC, valP);
 
     this.f_calculateControlSignals(dreg, ereg, mreg);

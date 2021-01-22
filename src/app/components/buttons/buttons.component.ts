@@ -25,8 +25,10 @@ export class ButtonsComponent implements OnInit {
   uploadButtonText: string;
   reset: boolean;
 
+  secondHighlight: boolean;
   fstall: boolean;
   hold: boolean;
+  f_pc: number;
 
   freg: F;
   dreg: D;
@@ -99,6 +101,8 @@ export class ButtonsComponent implements OnInit {
         this.stop = this.cpuService.doSimulation(this.fileContent, current, this.freg, this.dreg, this.ereg, this.mreg, this.wreg);
         this.hold = this.cpuService.getHold();
         this.fstall = this.cpuService.getFstall();
+        this.secondHighlight = this.cpuService.needSecondHighlight();
+        this.f_pc = this.cpuService.getSelectedPC();
       }
       this.nextCurrentLine();
     }

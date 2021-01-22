@@ -1,7 +1,10 @@
 <div class="file-content-wrapper">
 	<div class="file-content" *ngFor="let line of fileContent">
-		<pre *ngIf="!line.isCurrent" class="not-current">{{ line.textLine }}</pre>
-		<pre *ngIf="line.isCurrent && (hold || !fstall || reset)" class="current-normal">{{ line.textLine }}</pre>
-    <pre *ngIf="line.isCurrent && fstall && !reset" class="current-stalled">{{ line.textLine }}</pre>
+		<pre *ngIf="(!line.isCurrent && !secondHighlight && line.isAddress && f_pc !== line.parsedLine.address) || !line.isAddress" class="not-current">1 {{ line.textLine }}</pre>
+		<pre *ngIf="line.isCurrent && (hold || !fstall || reset)" class="current-normal">2 {{ line.textLine }}</pre>
+    <pre *ngIf="line.isCurrent && fstall && !reset" class="current-stalled">3 {{ line.textLine }}</pre>
+	</div>
+	<div class="file-content" *ngFor="let line of fileContent">
+		<pre *ngIf="!line.isCurrent && secondHighlight && line.isAddress && f_pc == line.parsedLine.address" class="second-highlight">4 {{ line.textLine }}</pre>
 	</div>
 </div>

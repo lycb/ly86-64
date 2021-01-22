@@ -15,6 +15,8 @@ export class CodeComponent implements OnInit {
   @Input() hold: boolean;
   @Input() fstall: boolean;
   @Input() reset: boolean;
+  @Input() secondHighlight: boolean;
+  @Input() f_pc: number;
 
   constructor(private cpuService: CpuService) { }
 
