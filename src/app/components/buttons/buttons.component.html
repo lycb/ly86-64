@@ -3,11 +3,8 @@
 		<select id="dropdown" class="custom-select" (change)="onLoadSamples()">
 				<option value="choose" selected="selected">Choose</option>
 				<option value="upload">Custom files</option>
-		    <option value="je.txt">je</option>
 		    <option value="jl.txt" >jl</option>
-		    <option value="jge.txt" >jge</option>
 		    <option value="jecall.txt" >jecall</option>
-		    <option value="jne.txt" >jne</option>
 		    <option value="loaduse1.txt" >loaduse</option>
 		</select>
 		<div  class="upload-btn-wrapper" *ngIf="showSelectFile">
@@ -19,7 +16,7 @@
 		<button class="control-buttons" (click)="onClickContinue()" [disabled]="!loadComponent">Continue</button>
 		<button class="control-buttons" (click)="onClickStep()" [disabled]="!loadComponent">Step</button>
 		<button class="control-buttons" (click)="onClickReset()" [disabled]="!loadComponent">Reset</button>
-    <button [routerLink]="'/home'" class="control-buttons">Home</button>
+    <!-- <button [routerLink]="'/home'" class="control-buttons">Home</button> -->
 	</div>
 	<app-clock-cycle [cycle]="cycle"></app-clock-cycle>
 </div>
