@@ -129,6 +129,7 @@ export class ButtonsComponent implements OnInit {
       var xhr = new XMLHttpRequest();
       xhr.open("GET", path, false);
       xhr.onload = function(e) {
+        console.log(xhr.status + " status for: " + path)
         if (xhr.readyState === 4 && xhr.status === 200) {
           txt = xhr.responseText;
         }
