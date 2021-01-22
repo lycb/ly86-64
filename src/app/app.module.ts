@@ -10,6 +10,8 @@ import { CodeComponent } from './components/code/code.component';
 import { PipelineRegComponent } from './components/pipeline-reg/pipeline-reg.component';
 import { ConditionFlagsComponent } from './components/condition-flags/condition-flags.component';
 import { ControlLogicComponent } from './components/control-logic/control-logic.component';
+import { HomeComponent } from './components/home/home.component';
+import { SimulatorComponent } from './components/simulator/simulator.component';
 
 @NgModule({
   declarations: [
@@ -21,6 +23,8 @@ import { ControlLogicComponent } from './components/control-logic/control-logic.
     PipelineRegComponent,
     ConditionFlagsComponent,
     ControlLogicComponent,
+    HomeComponent,
+    SimulatorComponent,
   ],
   imports: [
     BrowserModule,

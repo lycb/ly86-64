@@ -14,7 +14,8 @@ export class CodeComponent implements OnInit {
   @Input() fileContent: Line[];	
   @Input() hold: boolean;
   @Input() fstall: boolean;
-  
+  @Input() reset: boolean;
+
   constructor(private cpuService: CpuService) { }
 
   ngOnInit() {

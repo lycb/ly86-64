@@ -21,6 +21,9 @@ export class ButtonsComponent implements OnInit {
   counterStop: boolean;
   loadComponent: boolean;
   isFirstAddressCurrent: boolean;
+  showSelectFile: boolean;
+  uploadButtonText: string;
+  reset: boolean;
 
   fstall: boolean;
   hold: boolean;
@@ -44,6 +47,9 @@ export class ButtonsComponent implements OnInit {
     this.loadComponent = false;
     this.isFirstAddressCurrent = false;
     this.instructionLength = 0;
+    this.showSelectFile = false;
+    this.reset = false;
+    this.uploadButtonText = "Upload a file";
 
     this.freg = new F();
     this.dreg = new D();
@@ -58,10 +64,12 @@ export class ButtonsComponent implements OnInit {
   * load lines into an array -> this.fileContent
   */
   onFileSelect(): void {
+    this.uploadButtonText = "Upload a file";
     this.isFirstAddressCurrent = false;
     this.fileContent = [];
     const input = <HTMLInputElement>document.getElementById("file-input")
     const file = input.files[0];
+
     if (!file) return;
 
     if (!this.isFileExtensionYo(file)) {
@@ -69,6 +77,8 @@ export class ButtonsComponent implements OnInit {
       this.parserService.setFileContent(this.fileContent);
       return;
     }
+
+    this.uploadButtonText = file.name;
     this.readFileAsText(file);
     this.onClickReset();
   }
@@ -80,6 +90,7 @@ export class ButtonsComponent implements OnInit {
   }
 
   onClickStep(): void {
+    this.reset = false;
     this.isFirstAddressCurrent = false;
     var current = this.parserService.getCurrentLine();
     var nextId = current.id + 1;
@@ -94,6 +105,7 @@ export class ButtonsComponent implements OnInit {
   }
 
   onClickReset(): void {
+    this.reset = true;
     this.setFirstAddressCurrent();
     this.cycle = 0;
     this.cpuService.reset(this.freg, this.dreg, this.ereg, this.mreg, this.wreg);
@@ -105,6 +117,46 @@ export class ButtonsComponent implements OnInit {
     this.instructionLength = 0;
 
     this.loadlines();
+  }
+
+  onLoadSamples(): void {
+    this.uploadButtonText = "Upload a file";
+    this.fileContent = [];
+    this.showSelectFile = false;
+    let filename = (<HTMLInputElement>document.getElementById("dropdown")).value;
+    if (filename !== "upload" && filename !== "choose") {
+      let txt;
+      let path = "assets/" + filename;
+
+      var xhr = new XMLHttpRequest();
+      xhr.open("GET", path, false);
+      xhr.onload = function(e) {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+          txt = xhr.responseText;
+        }
+      };
+
+      xhr.send(null);
+
+      this.isFirstAddressCurrent = false;
+      this.fileContent = [];
+
+      var blob = new Blob([txt], { type: 'text/plain' });
+      var file = new File([blob], "foo.txt", { type: "text/plain" });
+
+      this.readFileAsText(file);
+      this.onClickReset();
+    }
+    if (filename == "choose") {
+      this.fileContent = [];
+    }
+    if (filename == "upload") {
+      this.showSelectFile = true;
+    }
+
+    if (this.fileContent.length == 0) {
+      this.loadComponent = false;
+    }
   }
 
   setFirstAddressCurrent(): void {
@@ -135,7 +187,7 @@ export class ButtonsComponent implements OnInit {
   */
   nextCurrentLine(): void {
     let current = this.parserService.getCurrentLine();
-    
+
     let nextIndex = this.findNextIndex();
 
     if (nextIndex == 0) {

@@ -1,14 +1,25 @@
 <div class=top-button-wrapper>
 	<div class="button-wrapper">
-		<button class="file-upload-button">
-			<input  class="file-upload-input" type="file" id="file-input" (change)="onFileSelect()" />
+		<select id="dropdown" class="custom-select" (change)="onLoadSamples()">
+				<option value="choose" selected="selected">Choose</option>
+				<option value="upload">Custom files</option>
+		    <option value="jl.txt" >jl</option>
+		    <option value="jecall.txt" >jecall</option>
+		    <option value="loaduse1.txt" >loaduse</option>
+		</select>
+		<div  class="upload-btn-wrapper" *ngIf="showSelectFile">
+		<button class="upload-btn">
+			{{uploadButtonText}}
 		</button>
-		<button class="continue-button" (click)="onClickContinue()" [disabled]="!loadComponent">Continue</button>
-		<button class="step-button" (click)="onClickStep()" [disabled]="!loadComponent">Step</button>
-		<button class="reset-button" (click)="onClickReset()" [disabled]="!loadComponent">Reset</button>
+		<input  class="file-upload-input" type="file" id="file-input" (change)="onFileSelect()" />
+	</div>
+		<button class="control-buttons" (click)="onClickContinue()" [disabled]="!loadComponent">Continue</button>
+		<button class="control-buttons" (click)="onClickStep()" [disabled]="!loadComponent">Step</button>
+		<button class="control-buttons" (click)="onClickReset()" [disabled]="!loadComponent">Reset</button>
+    <button [routerLink]="'/home'" class="control-buttons">Home</button>
 	</div>
 	<app-clock-cycle [cycle]="cycle"></app-clock-cycle>
 </div>
 
-<app-code [fileContent]="fileContent" [hold]="hold" [fstall]="fstall"></app-code>
+<app-code [fileContent]="fileContent" [hold]="hold" [fstall]="fstall" [reset]="reset"></app-code>
 
