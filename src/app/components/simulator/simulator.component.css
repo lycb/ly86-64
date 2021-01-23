@@ -1,3 +1,7 @@
+body.simulator {
+  background-color: #18133f;
+}
+
 .container {
   max-height: 100vh;
   margin: 2vh;

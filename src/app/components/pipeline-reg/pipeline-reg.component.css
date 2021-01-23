@@ -54,10 +54,10 @@
 }
 
 .fetch-stage-normal {
-	background-color: #46ce7c;
+	background-color: #66cbff;
 	height: 100%;
 	width: 10%;
-	border: 2px solid #46ce7c;
+	border: 2px solid #66cbff;
 	border-radius: 5px;
 	margin-right: 0.5%;
 	color: white;
@@ -93,10 +93,10 @@
 }
 
 .decode-stage-normal {
-	background-color: #46ce7c;
+	background-color: #66cbff;
 	height: 100%;
 	width: 20%;
-	border: 2px solid #46ce7c;
+	border: 2px solid #66cbff;
 	border-radius: 5px;
 	margin-right: 0.5%;
 	color: white;
@@ -140,10 +140,10 @@
 }
 
 .execute-stage-normal {
-	background-color: #46ce7c;
+	background-color: #66cbff;
 	height: 100%;
 	width: 30%;
-	border: 2px solid #46ce7c;
+	border: 2px solid #66cbff;
 	border-radius: 5px;
 	margin-right: 0.5%;
 	color: white;
@@ -179,10 +179,10 @@
 }
 
 .memory-stage-normal {
-	background-color: #46ce7c;
+	background-color: #66cbff;
 	height: 100%;
 	width: 20%;
-	border: 2px solid #46ce7c;
+	border: 2px solid #66cbff;
 	border-radius: 5px;
 	margin-right: 0.5%;
 	color: white;
@@ -218,10 +218,10 @@
 }
 
 .writeback-stage-normal {
-	background-color: #46ce7c;
+	background-color: #66cbff;
 	height: 100%;
 	width: 15%;
-	border: 2px solid #46ce7c;
+	border: 2px solid #66cbff;
 	border-radius: 5px;
 	margin-right: 0.5%;
 	color: white;

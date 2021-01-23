@@ -72,7 +72,7 @@ export class PipelineRegComponent implements OnInit {
 
   constructor(private cpuService: CpuService,
     private utilsService: UtilsService) {
-    this.f_predPC = "0x000";
+    this.f_predPC = "0";
     this.f_addr = "0x000";
 
     this.d_stat = "1 (SAOK)";
@@ -132,11 +132,11 @@ export class PipelineRegComponent implements OnInit {
   getFpredPC() {
     this.fregSubscription = this.cpuService.getFreg().subscribe(freg => {
       if (freg) {
-        this.f_predPC = this.utilsService.paddingHex(freg.predPC.state.toNumber(), 3, true);
+        this.f_predPC = freg.predPC.state.toString(16);
         this.f_addr = this.utilsService.paddingHex(freg.address, 3, true);
         this.setColor();
       } else {
-        this.f_predPC = "0x000";
+        this.f_predPC = "0";
         this.f_addr = "0x000"
       }
     });

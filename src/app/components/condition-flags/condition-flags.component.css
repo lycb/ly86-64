@@ -3,4 +3,13 @@
 	margin-bottom: 1%;
 	margin-top: 1%;
 	margin-left: 2%;
+  font-size: 1.6vh;
+}
+
+.title {
+  color: white;
+}
+
+.value {
+  color: #7867c6;
 }

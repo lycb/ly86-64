@@ -4,5 +4,9 @@
 }
 
 .counter-title {
-	color: gray;
+	color: white;
+}
+
+.counter-row {
+  color: #7867c6;
 }

@@ -5,10 +5,11 @@
 	margin-bottom: 2%;
 	margin-right: 0;
 	width: 60%;
+	font-size: 15px;
 }
 
 .registers-title {
-	color: gray;
+	color: white;
 	padding-right: 10px;
 	text-align: left;
 }
@@ -16,5 +17,5 @@
 .registers-value {
 	padding-right: 10px;
 	text-align: left;
-
+	color: #7867c6;
 }

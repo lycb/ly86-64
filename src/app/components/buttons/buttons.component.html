@@ -16,7 +16,7 @@
 		<button class="control-buttons" (click)="onClickContinue()" [disabled]="!loadComponent">Continue</button>
 		<button class="control-buttons" (click)="onClickStep()" [disabled]="!loadComponent">Step</button>
 		<button class="control-buttons" (click)="onClickReset()" [disabled]="!loadComponent">Reset</button>
-    <button [routerLink]="'/home'" class="control-buttons">Home</button>
+    <button [routerLink]="'/home'" class="regular-buttons">Home</button>
 	</div>
 	<app-clock-cycle [cycle]="cycle"></app-clock-cycle>
 </div>

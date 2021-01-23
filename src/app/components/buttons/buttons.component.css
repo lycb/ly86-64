@@ -1,12 +1,3 @@
-.file-upload-button {
-  border: none;
-  background-color: #568cea;
-  color: white;
-  border-radius:2em;
-  outline: none;
-  margin:0 0.2em 0 0.2em;
-}
-
 .file-upload-input {
   font-family: 'Roboto',sans-serif;;
 }
@@ -17,8 +8,8 @@
 
 .control-buttons {
   margin:0 0.2em 0 0.2em;
-  border:0.16em solid #568cea;
-  background-color: #568cea;
+  border:0.16em solid #683aff;
+  background-color: #683aff;
   border-radius:2em;
   box-sizing: border-box;
   text-decoration:none;
@@ -33,23 +24,40 @@
 }
 
 .control-buttons:hover {
+  background-color: #9575ff;
+  border-color: #9575ff;
+}
+
+.control-buttons:disabled  {
   background-color: #96b1e0;
   border-color: #96b1e0;
 }
 
-.control-buttons:disabled  {
-  background-color: #abbfc6;
-  border-color: #abbfc6;
+.regular-buttons {
+  margin:0 0.2em 0 0.2em;
+  border:0.16em solid #fa00ff;
+  background-color: #fa00ff;
+  border-radius:2em;
+  box-sizing: border-box;
+  text-decoration:none;
+  text-transform: none;
+  font-family: 'Roboto',sans-serif;;
+  font-weight:300;
+  color:#FFFFFF;
+  text-shadow: 0 0.04em 0.04em rgba(0,0,0,0.35);
+  text-align:center;
+  transition: all 0.2s;
+  outline: none;
 }
 
 .custom-select {
   font-family: 'Roboto',sans-serif;;
-  background-color: #568cea;
+  background-color: #683aff;
   color: white;
   border-radius:2em;
   outline: none;
   margin:0 0.2em 0 0.2em;
-  border:0.16em solid #568cea;
+  border:0.16em solid #683aff;
   text-shadow: 0 0.04em 0.04em rgba(0,0,0,0.35);
   text-align:center;
   transition: all 0.2s;
@@ -63,11 +71,11 @@
 
 .upload-btn {
   font-family: 'Roboto',sans-serif;;
-  background-color: #f4ce64;
+  background-color: #ffa93a;
   color: white;
   border-radius:2em;
   outline: none;
-  border:0.16em solid #f4ce64;
+  border:0.16em solid #ffa93a;
   text-shadow: 0 0.04em 0.04em rgba(0,0,0,0.35);
   text-align:center;
   transition: all 0.2s;

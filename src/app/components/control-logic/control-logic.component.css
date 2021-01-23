@@ -2,6 +2,10 @@
   display: none;
 }
 
+.wrapper {
+	font-size: 1.6vh;
+}
+
 .f-logic {
 	margin: 1%;
 	word-wrap: normal;
@@ -38,7 +42,7 @@
 		margin-top: 1%;
 		margin-left: 2%;
 		width: 90%;
-		border: 2px solid #5b5b5b;
+		border: 2px solid #3c2e82;
 		border-radius: 5px;
 		font-family: monospace;
 		overflow: scroll;
@@ -51,7 +55,7 @@
 		margin-top: 1%;
 		margin-left: 2%;
 		width: 90%;
-		border: 2px solid #5b5b5b;
+		border: 2px solid #3c2e82;
 		border-radius: 5px;
 		font-family: monospace;
 		overflow: scroll;
@@ -64,7 +68,7 @@
 		margin-top: 1%;
 		margin-left: 2%;
 		width: 90%;
-		border: 2px solid #5b5b5b;
+		border: 2px solid #3c2e82;
 		border-radius: 5px;
 		font-family: monospace;
 		overflow: scroll;
