@@ -39,6 +39,9 @@ export class ControlLogicComponent implements OnInit {
         this.Dlogic = value[1];
         this.Elogic = value[2];
         this.Mlogic = value[3];
+        this.dbubble = this.cpuService.getDbubble();
+        this.dstall = this.cpuService.getDstall();
+
       } else {
         this.Flogic = "";
         this.Dlogic = "";
