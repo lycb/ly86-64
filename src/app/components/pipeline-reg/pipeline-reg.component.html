@@ -5,7 +5,7 @@
 		'fetch-stage-normal': f_state === 'NORMAL',
 		'fetch-stage': f_state === 'NA'
 	}">
-		<p class="register-title">F</p>
+		<p class="register-title">F ({{f_state}})</p>
 		<div class="values-wrapper">
 			<p class="register-value">predPC: {{f_predPC}} </p>
 		</div>
@@ -16,8 +16,9 @@
 		'decode-stage-normal': d_state === 'NORMAL',
 		'decode-stage': d_state === 'NA'
 	}">
-		<p class="register-title">D</p>
+		<p class="register-title">D ({{d_state}})</p>
 		<div class="values-wrapper">
+			<p class="register-value">PC: {{d_addr}}</p>
 			<p class="register-value">stat: {{d_stat}} </p>
 			<p class="register-value">icode: {{d_icode}} </p>
 			<p class="register-value">ifun: {{d_ifun}} </p>
@@ -33,9 +34,10 @@
 		'execute-stage-normal': e_state === 'NORMAL',
 		'execute-stage': e_state === 'NA'
 	}">
-		<p class="register-title">E</p>
+		<p class="register-title">E ({{e_state}})</p>
 		<div class="execute-stage-value-wrapper">
 			<div class="execute-values-wrapper">
+			<p class="register-value">PC: {{e_addr}}</p>
 				<p class="register-value">stat: {{e_stat}} </p>
 				<p class="register-value">icode: {{e_icode}} </p>
 				<p class="register-value">ifun: {{e_ifun}} </p>
@@ -57,8 +59,9 @@
 		'memory-stage-normal': m_state === 'NORMAL',
 		'memory-stage': m_state === 'NA'
 	}">
-		<p class="register-title">M</p>
+		<p class="register-title">M ({{m_state}})</p>
 		<div class="values-wrapper">
+			<p class="register-value">PC: {{m_addr}}</p>
 			<p class="register-value">stat: {{m_stat}} </p>
 			<p class="register-value">icode: {{m_icode}} </p>
 			<p class="register-value">Cnd: {{m_cnd}} </p>
@@ -74,8 +77,9 @@
 		'writeback-stage-normal': w_state === 'NORMAL',
 		'writeback-stage': w_state === 'NA'
 	}">
-		<p class="register-title">W</p>
+		<p class="register-title">W ({{w_state}})</p>
 		<div class="values-wrapper">
+			<p class="register-value">PC: {{w_addr}}</p>
 			<p class="register-value">stat: {{w_stat}} </p>
 			<p class="register-value">icode: {{w_icode}} </p>
 			<p class="register-value">valE: {{w_valE}} </p>

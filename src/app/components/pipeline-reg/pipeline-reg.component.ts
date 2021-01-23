@@ -16,7 +16,7 @@ export class PipelineRegComponent implements OnInit {
   m_state: string;
   w_state: string;
 
-  fpredPCsubsription: Subscription;
+  fregSubscription: Subscription;
   dregSubscription: Subscription;
   eregSubscription: Subscription;
   mregSubscription: Subscription;
@@ -29,6 +29,7 @@ export class PipelineRegComponent implements OnInit {
   wreg: W;
 
   f_predPC: string;
+  f_addr: string;
 
   d_stat: string;
   d_icode: string;
@@ -37,6 +38,7 @@ export class PipelineRegComponent implements OnInit {
   d_rB: string;
   d_valC: string;
   d_valP: string;
+  d_addr: string;
 
   e_stat: string;
   e_icode: string;
@@ -48,6 +50,7 @@ export class PipelineRegComponent implements OnInit {
   e_dstM: string;
   e_srcA: string;
   e_srcB: string;
+  e_addr: string;
 
   m_stat: string;
   m_icode: string;
@@ -56,6 +59,7 @@ export class PipelineRegComponent implements OnInit {
   m_valA: string;
   m_dstE: string;
   m_dstM: string;
+  m_addr: string;
 
   w_stat: string;
   w_icode: string;
@@ -64,9 +68,13 @@ export class PipelineRegComponent implements OnInit {
   w_valM: string;
   w_dstE: string;
   w_dstM: string;
+  w_addr: string;
 
   constructor(private cpuService: CpuService,
     private utilsService: UtilsService) {
+    this.f_predPC = "0x000";
+    this.f_addr = "0x000";
+
     this.d_stat = "1 (SAOK)";
     this.d_icode = "1 (NOP)";
     this.d_ifun = "0";
@@ -74,6 +82,7 @@ export class PipelineRegComponent implements OnInit {
     this.d_rB = "f (RNONE)";
     this.d_valC = "0";
     this.d_valP = "0";
+    this.d_addr = "0x000";
 
     this.e_stat = "1 (SAOK)";
     this.e_icode = "1 (NOP)";
@@ -85,6 +94,7 @@ export class PipelineRegComponent implements OnInit {
     this.e_dstM = "f (RNONE)";
     this.e_srcA = "f (RNONE)";
     this.e_srcB = "f (RNONE)";
+    this.e_addr = "0x000";
 
     this.m_stat = "1 (SAOK)";
     this.m_icode = "1 (NOP)";
@@ -93,6 +103,7 @@ export class PipelineRegComponent implements OnInit {
     this.m_valA = "0";
     this.m_dstE = "f (RNONE)";
     this.m_dstM = "f (RNONE)";
+    this.m_addr = "0x000";
 
     this.w_stat = "1 (SAOK)";
     this.w_icode = "1 (NOP)";
@@ -100,14 +111,13 @@ export class PipelineRegComponent implements OnInit {
     this.w_valM = "0";
     this.w_dstE = "f (RNONE)";
     this.w_dstM = "f (RNONE)";
+    this.w_addr = "0x000";
 
     this.f_state = "NORMAL";
     this.d_state = "NORMAL";
     this.e_state = "NORMAL";
     this.m_state = "NORMAL";
     this.w_state = "NORMAL";
-
-    this.f_predPC = "0";
 
     this.getWreg();
     this.getMreg();
@@ -120,12 +130,14 @@ export class PipelineRegComponent implements OnInit {
   }
 
   getFpredPC() {
-    this.fpredPCsubsription = this.cpuService.getPredPC().subscribe(pc => {
-      if (pc) {
-        this.f_predPC = pc;
+    this.fregSubscription = this.cpuService.getFreg().subscribe(freg => {
+      if (freg) {
+        this.f_predPC = this.utilsService.paddingHex(freg.predPC.state.toNumber(), 3, true);
+        this.f_addr = this.utilsService.paddingHex(freg.address, 3, true);
         this.setColor();
       } else {
-        this.f_predPC = "error";
+        this.f_predPC = "0x000";
+        this.f_addr = "0x000"
       }
     });
   }
@@ -134,6 +146,7 @@ export class PipelineRegComponent implements OnInit {
     this.dregSubscription = this.cpuService.getDreg().subscribe(dreg => {
       if (dreg) {
         this.dreg = dreg;
+        this.d_addr = this.utilsService.paddingHex(dreg.address, 3, true);
         this.d_stat = dreg.stat.state.toString(16)  + " (" + this.utilsService.num2stat(dreg.stat.state.toNumber()) + ")";
         this.d_icode = dreg.icode.state.toString(16) + " (" + this.utilsService.icode2instr(dreg.icode.state.toNumber()) + ")";
         this.d_ifun = dreg.ifun.state.toString(16);
@@ -141,7 +154,7 @@ export class PipelineRegComponent implements OnInit {
         this.d_rB = dreg.rB.state.toString(16) + " (" + this.utilsService.index2register(dreg.rB.state.toNumber()) + ")";
         this.d_valC = dreg.valC.state.toUnsigned().toString(16);
         this.d_valP = dreg.valP.state.toUnsigned().toString(16);
-        // this.setColor();
+        this.setColor();
       } else {
         this.d_stat = "1 (SAOK)";
         this.d_icode = "1 (NOP)";
@@ -150,6 +163,7 @@ export class PipelineRegComponent implements OnInit {
         this.d_rB = "f (RNONE)";
         this.d_valC = "0";
         this.d_valP = "0";
+        this.d_addr = "0x000";
       }
     });
   }
@@ -158,6 +172,7 @@ export class PipelineRegComponent implements OnInit {
     this.eregSubscription = this.cpuService.getEreg().subscribe(ereg => {
       if (ereg) {
         this.ereg = ereg;
+        this.e_addr = this.utilsService.paddingHex(ereg.address, 3, true);
         this.e_stat = ereg.stat.state.toString(16)  + " (" + this.utilsService.num2stat(ereg.stat.state.toNumber()) + ")";
         this.e_icode = ereg.icode.state.toString(16) + " (" + this.utilsService.icode2instr(ereg.icode.state.toNumber()) + ")";
         this.e_ifun = ereg.ifun.state.toString(16);
@@ -180,6 +195,7 @@ export class PipelineRegComponent implements OnInit {
         this.e_dstM = "f (RNONE)";
         this.e_srcA = "f (RNONE)";
         this.e_srcB = "f (RNONE)";
+        this.e_addr = "0x000";
       }
     });
   }
@@ -188,6 +204,7 @@ export class PipelineRegComponent implements OnInit {
     this.mregSubscription = this.cpuService.getMreg().subscribe(mreg => {
       if (mreg) {
         this.mreg = mreg;
+        this.m_addr = this.utilsService.paddingHex(mreg.address, 3, true);
         this.m_stat = mreg.stat.state.toString(16)  + " (" + this.utilsService.num2stat(mreg.stat.state.toNumber()) + ")";
         this.m_icode = mreg.icode.state.toString(16) + " (" + this.utilsService.icode2instr(mreg.icode.state.toNumber()) + ")";
         this.m_cnd = mreg.Cnd.state.toString(16);
@@ -204,6 +221,7 @@ export class PipelineRegComponent implements OnInit {
         this.m_valA = "0";
         this.m_dstE = "f (RNONE)";
         this.m_dstM = "f (RNONE)";
+        this.m_addr = "0x000";
       }
     });
   }
@@ -212,6 +230,7 @@ export class PipelineRegComponent implements OnInit {
     this.wregSubscription = this.cpuService.getWreg().subscribe(wreg => {
       if (wreg) {
         this.wreg = wreg;
+        this.w_addr = this.utilsService.paddingHex(wreg.address, 3, true);
         this.w_stat = wreg.stat.state.toString(16)  + " (" + this.utilsService.num2stat(wreg.stat.state.toNumber()) + ")";
         this.w_icode = wreg.icode.state.toString(16) + " (" + this.utilsService.icode2instr(wreg.icode.state.toNumber()) + ")";
         this.w_valE = wreg.valE.state.toUnsigned().toString(16);
@@ -226,6 +245,7 @@ export class PipelineRegComponent implements OnInit {
         this.w_valM = "0";
         this.w_dstE = "f (RNONE)";
         this.w_dstM = "f (RNONE)";
+        this.w_addr = "0x000";
       }
     });
   }
@@ -248,7 +268,7 @@ export class PipelineRegComponent implements OnInit {
   * happens when the pipeline reg component is destroyed
   */
   ngOnDestroy() {
-    this.fpredPCsubsription.unsubscribe();
+    this.fregSubscription.unsubscribe();
     this.dregSubscription.unsubscribe();
     this.eregSubscription.unsubscribe();
     this.mregSubscription.unsubscribe();

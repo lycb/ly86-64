@@ -4,13 +4,30 @@ import Long from 'long';
 
 export class F {
 	predPC: PipeRegField;
+	address: number;
 
 	constructor() {
 		this.predPC = new PipeRegField(Long.ZERO);
+		this.address = 0;
 	}
 
 	getPredPC(): PipeRegField {
 		return this.predPC;
+	}
+
+	setAddress(addr: number): void {
+		this.address = addr;
+	}
+
+	getAddress(): number {
+		return this.address;
+	}
+
+	reset(): void {
+		this.predPC = new PipeRegField(Long.ZERO);
+		this.address = 0;
+
+		this.predPC.normal();
 	}
 }
 
@@ -22,6 +39,8 @@ export class D {
 	rB: PipeRegField;
 	valC: PipeRegField;
 	valP: PipeRegField;
+	address: number;
+
 
 	constructor() {
 		this.stat = new PipeRegField(Long.fromNumber(Constants.SAOK));
@@ -31,6 +50,7 @@ export class D {
 		this.rB = new PipeRegField(Long.fromNumber(Constants.RNONE));
 		this.valC = new PipeRegField(Long.ZERO);
 		this.valP = new PipeRegField(Long.ZERO);
+		this.address = 0;
 	}
 
 	getstat(): PipeRegField {
@@ -61,6 +81,14 @@ export class D {
 		return this.valP;
 	}
 
+	setAddress(addr: number): void {
+		this.address = addr;
+	}
+
+	getAddress(): number {
+		return this.address;
+	}
+
 	reset(): void {
 		this.stat.setInput(Long.fromNumber(Constants.SAOK));
 		this.icode.setInput(Long.fromNumber(Constants.NOP));
@@ -69,6 +97,7 @@ export class D {
 		this.rB.setInput(Long.fromNumber(Constants.RNONE));
 		this.valC.setInput(Long.ZERO);
 		this.valP.setInput(Long.ZERO);
+		this.address = 0;
 
 		this.stat.normal();
 		this.icode.normal();
@@ -91,6 +120,7 @@ export class E {
 	dstM: PipeRegField;
 	srcA: PipeRegField;
 	srcB: PipeRegField;
+	address: number;
 
 	constructor() {
 		this.stat = new PipeRegField(Long.fromNumber(Constants.SAOK));
@@ -103,6 +133,7 @@ export class E {
 		this.dstM = new PipeRegField(Long.fromNumber(Constants.RNONE));
 		this.srcA = new PipeRegField(Long.fromNumber(Constants.RNONE));
 		this.srcB = new PipeRegField(Long.fromNumber(Constants.RNONE));
+		this.address = 0;
 	}
 
 	getstat(): PipeRegField {
@@ -145,6 +176,14 @@ export class E {
 		return this.srcB;
 	}
 
+	setAddress(addr: number): void {
+		this.address = addr;
+	}
+
+	getAddress(): number {
+		return this.address;
+	}
+
 	reset(): void {
 		this.stat.setInput(Long.fromNumber(Constants.SAOK));
 		this.icode.setInput(Long.fromNumber(Constants.NOP));
@@ -156,6 +195,7 @@ export class E {
 		this.dstM.setInput(Long.fromNumber(Constants.RNONE));
 		this.srcA.setInput(Long.fromNumber(Constants.RNONE));
 		this.srcB.setInput(Long.fromNumber(Constants.RNONE));
+		this.address = 0;
 
 		this.stat.normal();
 		this.icode.normal();
@@ -178,6 +218,7 @@ export class M {
 	valA: PipeRegField;
 	dstE: PipeRegField;
 	dstM: PipeRegField;
+	address: number;
 
 	constructor() {
 		this.stat = new PipeRegField(Long.fromNumber(Constants.SAOK));
@@ -187,6 +228,7 @@ export class M {
 		this.valA = new PipeRegField(Long.ZERO);
 		this.dstE = new PipeRegField(Long.fromNumber(Constants.RNONE));
 		this.dstM = new PipeRegField(Long.fromNumber(Constants.RNONE));
+		this.address = 0;
 	}
 
 	getstat(): PipeRegField {
@@ -217,6 +259,14 @@ export class M {
 		return this.dstM;
 	}
 
+	setAddress(addr: number): void {
+		this.address = addr;
+	}
+
+	getAddress(): number {
+		return this.address;
+	}
+
 	reset(): void {
 		this.stat.setInput(Long.fromNumber(Constants.SAOK));
 		this.icode.setInput(Long.fromNumber(Constants.NOP));
@@ -225,6 +275,7 @@ export class M {
 		this.valA.setInput(Long.ZERO);
 		this.dstE.setInput(Long.fromNumber(Constants.RNONE));
 		this.dstM.setInput(Long.fromNumber(Constants.RNONE));
+		this.address = 0;
 
 		this.stat.normal();
 		this.icode.normal();
@@ -243,6 +294,7 @@ export class W {
 	valM: PipeRegField;
 	dstE: PipeRegField;
 	dstM: PipeRegField;
+	address: number;
 
 	constructor() {
 		this.stat = new PipeRegField(Long.fromNumber(Constants.SAOK));
@@ -251,6 +303,7 @@ export class W {
 		this.valM = new PipeRegField(Long.ZERO);
 		this.dstE = new PipeRegField(Long.fromNumber(Constants.RNONE));
 		this.dstM = new PipeRegField(Long.fromNumber(Constants.RNONE));
+		this.address = 0;
 	}
 
 	getstat(): PipeRegField {
@@ -277,6 +330,14 @@ export class W {
 		return this.dstM;
 	}
 
+	setAddress(addr: number): void {
+		this.address = addr;
+	}
+
+	getAddress(): number {
+		return this.address;
+	}
+
 	reset(): void {
 		this.stat.setInput(Long.fromNumber(Constants.SAOK));
 		this.icode.setInput(Long.fromNumber(Constants.NOP));
@@ -284,6 +345,7 @@ export class W {
 		this.valM.setInput(Long.ZERO);
 		this.dstE.setInput(Long.fromNumber(Constants.RNONE));
 		this.dstM.setInput(Long.fromNumber(Constants.RNONE));
+		this.address = 0;
 
 		this.stat.normal();
 		this.icode.normal();

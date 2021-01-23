@@ -18,7 +18,7 @@ export class CpuService {
   hold: boolean;
 
   // Observables for passing values to the pipeline register component
-  f_pred = new Subject<any>();
+  f_reg = new Subject<F>();
   d_reg = new Subject<D>();
   e_reg = new Subject<E>();
   m_reg = new Subject<M>();
@@ -59,10 +59,6 @@ export class CpuService {
   m_valM: Long;
   m_stat: Long;
 
-  // Variables to pass between componenets
-  f_pc: Long;
-  secondHighlight: boolean;
-
   constructor(
     private parserService: ParserService,
     private registerService: RegisterService,
@@ -77,7 +73,6 @@ export class CpuService {
     this.mbubble = false;
     this.error = false;
     this.hold = false;
-    this.secondHighlight = false;
   }
 
   /*
@@ -135,7 +130,9 @@ export class CpuService {
 
     freg.getPredPC().setInput(Long.ZERO);
     freg.getPredPC().normal();
-    this.f_pred.next(freg.getPredPC().getOutput());
+
+    freg.reset();
+    this.f_reg.next(freg);
 
     dreg.reset();
     this.d_reg.next(dreg);
@@ -158,10 +155,6 @@ export class CpuService {
     return this.fstall || this.hold;
   }
 
-  needSecondHighlight(): boolean {
-    return this.secondHighlight;
-  }
-
   getFstall() {
     return this.fstall;
   }
@@ -178,10 +171,6 @@ export class CpuService {
     return this.hold;
   }
 
-  getSelectedPC() {
-    return this.f_pc.toNumber();
-  }
-
   /*
   * ==============================================================
   *                    F E T C H     S T A G E
@@ -189,22 +178,23 @@ export class CpuService {
   */
 
   doFetchClockLow(fileContent: Line[], lineObject: Line, freg: F, dreg: D, ereg: E, mreg: M, wreg: W): void {
-    this.secondHighlight = false;
-    this.f_pc = this.selectPC(freg, mreg, wreg);
+    let f_pc = this.selectPC(freg, mreg, wreg);
 
     let line = lineObject.parsedLine.instruction;
 
-    if (this.f_pc.toNumber() != lineObject.parsedLine.address) {
-      this.secondHighlight = true;
+    if (f_pc.toNumber() != lineObject.parsedLine.address) {
       for (let i = 0; i < fileContent.length; i++) {
         if (fileContent[i].parsedLine !== null && fileContent[i].parsedLine.instruction !== "") {
-          if (fileContent[i].parsedLine.address == this.f_pc.toNumber()) {
+          if (fileContent[i].parsedLine.address == f_pc.toNumber()) {
             line = fileContent[i].parsedLine.instruction;
+            freg.setAddress(fileContent[i].parsedLine.address)
             this.parserService.setCurrent(fileContent[i])
             break;
           }
         }
       }
+    } else {
+      freg.setAddress(lineObject.parsedLine.address)
     }
 
     let icode = Long.ZERO,
@@ -228,14 +218,15 @@ export class CpuService {
     stat = this.f_status(icode, this.error);
     icode = this.f_icode(icode, this.error);
     ifun = this.f_ifun(ifun, this.error);
-    valC = this.getValC(icode, this.f_pc, line);
-    valP = Long.fromNumber(this.PCincrement(this.f_pc, icode));
+    valC = this.getValC(icode, f_pc, line);
+    valP = Long.fromNumber(this.PCincrement(f_pc, icode));
     f_predPC = this.predictPC(icode, valC, valP);
 
     this.f_calculateControlSignals(dreg, ereg, mreg);
 
     freg.getPredPC().setInput(f_predPC);
-    this.setDInput(dreg, stat, icode, ifun, rA, rB, valC, valP);
+
+    this.setDInput(dreg, stat, icode, ifun, rA, rB, valC, valP, freg.getAddress());
   }
 
   doFetchClockHigh(freg: F, dreg: D): void {
@@ -260,11 +251,11 @@ export class CpuService {
       dreg.getvalC().normal();
       dreg.getvalP().normal();
     }
-    this.f_pred.next(freg.getPredPC().getOutput().toString(16));
+    this.f_reg.next(freg);
     this.d_reg.next(dreg);
   }
 
-  setDInput(dreg: D, stat: Long, icode: Long, ifun: Long, rA: Long, rB: Long, valC: Long, valP: Long): void {
+  setDInput(dreg: D, stat: Long, icode: Long, ifun: Long, rA: Long, rB: Long, valC: Long, valP: Long, address: number): void {
     dreg.getstat().setInput(stat);
     dreg.geticode().setInput(icode);
     dreg.getifun().setInput(ifun);
@@ -272,6 +263,7 @@ export class CpuService {
     dreg.getrB().setInput(rB);
     dreg.getvalC().setInput(valC);
     dreg.getvalP().setInput(valP);
+    dreg.setAddress(address);
   }
 
   needRegister(icode: Long): boolean {
@@ -505,7 +497,7 @@ export class CpuService {
 
     this.d_calculateControlSignals(ereg);
 
-    this.setEInput(ereg, stat, icode, ifun, valC, valA, valB, dstE, dstM, this.d_srcA, this.d_srcB);
+    this.setEInput(ereg, stat, icode, ifun, valC, valA, valB, dstE, dstM, this.d_srcA, this.d_srcB, dreg.getAddress());
   }
 
   doDecodeClockHigh(ereg: E): void {
@@ -536,7 +528,7 @@ export class CpuService {
   }
 
   setEInput(ereg: E, stat: Long, icode: Long, ifun: Long, valC: Long, valA: Long,
-    valB: Long, dstE: Long, dstM: Long, srcA: Long, srcB: Long): void {
+    valB: Long, dstE: Long, dstM: Long, srcA: Long, srcB: Long, address: number): void {
     ereg.getstat().setInput(stat);
     ereg.geticode().setInput(icode);
     ereg.getifun().setInput(ifun);
@@ -547,6 +539,7 @@ export class CpuService {
     ereg.getdstM().setInput(dstM);
     ereg.getsrcA().setInput(srcA);
     ereg.getsrcB().setInput(srcB);
+    ereg.setAddress(address);
   }
 
   set_d_srcA(dreg: D): Long {
@@ -704,7 +697,7 @@ export class CpuService {
 
     this.e_calculateControlSignals(wreg);
 
-    this.setMInput(mreg, icode, this.e_Cnd, stat, this.e_valE, valA, this.e_dstE, dstM);
+    this.setMInput(mreg, icode, this.e_Cnd, stat, this.e_valE, valA, this.e_dstE, dstM, ereg.getAddress());
   }
 
   /*
@@ -733,7 +726,7 @@ export class CpuService {
   }
 
   setMInput(mreg: M, icode: Long, Cnd: Long, stat: Long, valE: Long, valA: Long,
-    dstE: Long, dstM: Long) {
+    dstE: Long, dstM: Long, address: number) {
     mreg.getstat().setInput(stat);
     mreg.geticode().setInput(icode);
     mreg.getCnd().setInput(Cnd);
@@ -741,6 +734,7 @@ export class CpuService {
     mreg.getvalE().setInput(valE);
     mreg.getdstE().setInput(dstE);
     mreg.getdstM().setInput(dstM);
+    mreg.setAddress(address);
   }
 
   alu_A(ereg: E): Long {
@@ -961,7 +955,7 @@ export class CpuService {
     this.error = this.memoryService.getError();
     this.m_stat = this.mstat(mreg);
 
-    this.setWInput(wreg, this.m_stat, icode, valE, this.m_valM, dstE, dstM);
+    this.setWInput(wreg, this.m_stat, icode, valE, this.m_valM, dstE, dstM, mreg.getAddress());
   }
 
   doMemoryClockHigh(wreg: W): void {
@@ -975,14 +969,14 @@ export class CpuService {
   }
 
   setWInput(wreg: W, stat: Long, icode: Long, valE: Long,
-    valM: Long, dstE: Long, dstM: Long): void {
+    valM: Long, dstE: Long, dstM: Long, address: number): void {
     wreg.getstat().setInput(stat);
     wreg.geticode().setInput(icode);
     wreg.getvalE().setInput(valE);
     wreg.getvalM().setInput(valM);
     wreg.getdstE().setInput(dstE);
     wreg.getdstM().setInput(dstM);
-
+    wreg.setAddress(address);
   }
 
   /*
@@ -1110,8 +1104,8 @@ export class CpuService {
   * @returns an Observable of type <any> for the predPC 
   * to pass to the F pipeline register
   */
-  getPredPC(): Observable<any> {
-    return this.f_pred.asObservable();
+  getFreg(): Observable<F> {
+    return this.f_reg.asObservable();
   }
 
   /*
