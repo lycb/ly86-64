@@ -35,8 +35,8 @@
 
 .regular-buttons {
   margin:0 0.2em 0 0.2em;
-  border:0.16em solid #fa00ff;
-  background-color: #fa00ff;
+  border:0.16em solid #db4cc8;
+  background-color: #db4cc8;
   border-radius:2em;
   box-sizing: border-box;
   text-decoration:none;
@@ -48,6 +48,11 @@
   text-align:center;
   transition: all 0.2s;
   outline: none;
+}
+
+.regular-buttons:hover {
+  background-color: #f78eff;
+  border-color: #f78eff;
 }
 
 .custom-select {
@@ -63,6 +68,11 @@
   transition: all 0.2s;
 }
 
+.custom-select:hover {
+  background-color: #9575ff; 
+  border-color: #9575ff;
+}
+
 .upload-btn-wrapper {
   position: relative;
   overflow: hidden;
@@ -71,11 +81,11 @@
 
 .upload-btn {
   font-family: 'Roboto',sans-serif;;
-  background-color: #ffa93a;
+  background-color: #d6692a;
   color: white;
   border-radius:2em;
   outline: none;
-  border:0.16em solid #ffa93a;
+  border:0.16em solid #d6692a;
   text-shadow: 0 0.04em 0.04em rgba(0,0,0,0.35);
   text-align:center;
   transition: all 0.2s;

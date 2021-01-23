@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu+Mono&display=swap');
+
 .file-content-wrapper {
 	margin-top: 0.5vh;
 	width: 100%;
@@ -6,6 +8,7 @@
 	border-radius: 5px;
 	color: #7867c6;
 	font-size: 15px;
+	font-family: monospace;
 }
 
 .file-content-wrapper::-webkit-scrollbar {
@@ -13,7 +16,6 @@
 }
 
 .file-content .not-current {
-	font-family: monospace;
 	margin: 0;
 	white-space: pre;
 }
@@ -25,7 +27,7 @@
 }
 
 .current-stalled {
-	background-color: #ffbf00;
+	background-color: #FFBF00;
 	color: #18133f;
 	margin: 0;
 }

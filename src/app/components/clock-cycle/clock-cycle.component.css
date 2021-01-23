@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu+Mono&display=swap');
+
 .counter-wrapper {
 	margin-left: 20px;
 	font-family: monospace;
@@ -5,6 +7,7 @@
 
 .counter-title {
 	color: white;
+  font-family: 'Ubuntu Mono', monospace;
 }
 
 .counter-row {

@@ -1,5 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu+Mono&display=swap');
+
 .register-table-wrapper {
-	font-family: monospace;
 	margin-top: 5%;
 	margin-left: 2%;
 	margin-bottom: 2%;
@@ -9,12 +10,15 @@
 }
 
 .registers-title {
+	font-family: 'Ubuntu Mono', monospace;
 	color: white;
 	padding-right: 10px;
 	text-align: left;
+	font-size: 20px;
 }
 
 .registers-value {
+	font-family: monospace;
 	padding-right: 10px;
 	text-align: left;
 	color: #7867c6;

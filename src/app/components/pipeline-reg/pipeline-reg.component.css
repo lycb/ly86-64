@@ -1,18 +1,19 @@
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu+Mono&display=swap');
+
 .pipeline-wrapper {
 	margin-top: 1.2vh;
 	display: flex;
 	flex-wrap: wrap;
 	width: 100%;
 	height: 100%;
-	color: gray;
-	font-family: monospace;
-	/*background-color: pink;*/
+	font-family: 'Ubuntu Mono', monospace;
 }
 
 .register-title {
 	text-align: center;
 	margin-top: 5px;
 	margin-bottom: 5px;
+	color: white;
 }
 
 .values-wrapper {
@@ -33,16 +34,6 @@
 	margin-right: 0.5%;
 }
 
-.fetch-stage-bubble {
-	background-color: #f77d36;
-	height: 100%;
-	width: 10%;
-	border: 2px solid #f77d36;
-	border-radius: 5px;
-	margin-right: 0.5%;
-	color: white;
-}
-
 .fetch-stage-stall {
 	background-color: #f7c336;
 	height: 100%;
@@ -50,17 +41,15 @@
 	border: 2px solid #f7c336;
 	border-radius: 5px;
 	margin-right: 0.5%;
-	color: white;
 }
 
 .fetch-stage-normal {
-	background-color: #66cbff;
+	background-color: #02d199;
 	height: 100%;
 	width: 10%;
-	border: 2px solid #66cbff;
+	border: 2px solid #02d199;
 	border-radius: 5px;
 	margin-right: 0.5%;
-	color: white;
 }
 
 .decode-stage {
@@ -79,7 +68,6 @@
 	border: 2px solid #f77d36;
 	border-radius: 5px;
 	margin-right: 0.5%;
-	color: white;
 }
 
 .decode-stage-stall {
@@ -89,17 +77,15 @@
 	border: 2px solid #f7c336;
 	border-radius: 5px;
 	margin-right: 0.5%;
-	color: white;
 }
 
 .decode-stage-normal {
-	background-color: #66cbff;
+	background-color: #02d199;
 	height: 100%;
 	width: 20%;
-	border: 2px solid #66cbff;
+	border: 2px solid #02d199;
 	border-radius: 5px;
 	margin-right: 0.5%;
-	color: white;
 }
 
 .execute-stage-value-wrapper {
@@ -126,7 +112,6 @@
 	border: 2px solid #f77d36;
 	border-radius: 5px;
 	margin-right: 0.5%;
-	color: white;
 }
 
 .execute-stage-stall {
@@ -136,17 +121,15 @@
 	border: 2px solid #f7c336;
 	border-radius: 5px;
 	margin-right: 0.5%;
-	color: white;
 }
 
 .execute-stage-normal {
-	background-color: #66cbff;
+	background-color: #02d199;
 	height: 100%;
 	width: 30%;
-	border: 2px solid #66cbff;
+	border: 2px solid #02d199;
 	border-radius: 5px;
 	margin-right: 0.5%;
-	color: white;
 }
 
 .memory-stage {
@@ -165,7 +148,6 @@
 	border: 2px solid #f77d36;
 	border-radius: 5px;
 	margin-right: 0.5%;
-	color: white;
 }
 
 .memory-stage-stall {
@@ -175,17 +157,15 @@
 	border: 2px solid #f7c336;
 	border-radius: 5px;
 	margin-right: 0.5%;
-	color: white;
 }
 
 .memory-stage-normal {
-	background-color: #66cbff;
+	background-color: #02d199;
 	height: 100%;
 	width: 20%;
-	border: 2px solid #66cbff;
+	border: 2px solid #02d199;
 	border-radius: 5px;
 	margin-right: 0.5%;
-	color: white;
 }
 
 .writeback-stage {
@@ -204,7 +184,6 @@
 	border: 2px solid #f77d36;
 	border-radius: 5px;
 	margin-right: 0.5%;
-	color: white;
 }
 
 .writeback-stage-stall {
@@ -214,27 +193,13 @@
 	border: 2px solid #f7c336;
 	border-radius: 5px;
 	margin-right: 0.5%;
-	color: white;
 }
 
 .writeback-stage-normal {
-	background-color: #66cbff;
+	background-color: #02d199;
 	height: 100%;
 	width: 15%;
-	border: 2px solid #66cbff;
+	border: 2px solid #02d199;
 	border-radius: 5px;
 	margin-right: 0.5%;
-	color: white;
-}
-
-.bubble {
-	background-color: #ff8e66 !important;
-}
-
-.normal {
-	background-color: #baffba !important;
-}
-
-.stall {
-	background-color: #ffcc75 !important;
 }
