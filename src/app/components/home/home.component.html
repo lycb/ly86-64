@@ -1,18 +1,58 @@
 <div class="main-wrapper">
   <div class="buttons-wrapper">
     <div class="button-elements">
-      <h1>LY86-64</h1>
+      <h1 class="homepage-title">LY86-64</h1>
       <div class="collabsible-wrapper">
-        <input id="collapsible" class="toggle" type="checkbox">
-        <label for="collapsible" class="label-element" tabindex="0">ABOUT</label>
+        <input id="collapsible1" class="toggle" type="checkbox">
+        <label for="collapsible1" class="label-element" tabindex="0">ABOUT</label>
+        <div class="collapsible-content" style="overflow-y: hidden;">
+          <p class="paragraph-txt">The LY86-64 ("lee 86-64") is a browser-based simulator developed to help students visualize the Y86-64 machine.
+          </p>
+
+          <p class="paragraph-txt">Although inspired by other Y86-64 simulators, the LY86-64 will be more focused on the visualization aspect of the control logic and signals, specifically stalling and bubbling.
+          </p>
+
+          <p class="paragraph-txt">This is a senior thesis project built by <a href="https://github.com/lycb" target="_blank">Jenny Ly</a> from <a href="https://www.appstate.edu/" target="_blank">Appalachian State University</a></p>
+        </div>
+        <input id="collapsible2" class="toggle" type="checkbox">
+        <label for="collapsible2" class="label-element" tabindex="1">HOW TO USE</label>
         <div class="collapsible-content">
-          <p class="about-txt">The LY86-64 ("lee 86-64") is a browser-based simulator developed to help students visualize the Y86-64 machine.
+          <p class="paragraph-txt">
+            Let's first go over some elements:
           </p>
 
-          <p class="about-txt">Although inspired by other Y86-64 simulators, the LY86-64 will be more focused on the visualization aspect of the control logic and signals, specifically stalling and bubbling.
-          </p>
+          <div class="inner-p-div">
+            <p class="p-title">DROPDOWN</p>
+            <div class="inner-p-div-child">
+              <img src="assets/instructions/dropdown.jpg" class="instruction-img-left">
+              <p class="inner-div-paragraph-txt">
+                The dropdown presents several options:
+                <li>"Custom files": Upload your own .yo file to run the simulator with</li>
+                <li>"jl", "jecall", and "loaduse": Sample files that is already loaded into the simulator.</li>
+              </p>
+            </div>
+          </div>
 
-          <p class="about-txt">This is a senior thesis project built by <a href="https://github.com/lycb" target="_blank">Jenny Ly</a> from <a href="https://www.appstate.edu/" target="_blank">Appalachian State University</a></p>
+          <div class="inner-p-div">
+            <p class="p-title">CONTROL BUTTONS</p>
+            <div class="inner-p-div-child">
+              <img src="assets/instructions/control_buttons.jpg" class="instruction-img-center-small">
+              <p class="inner-div-paragraph-txt">
+                These three buttons are the main controls of the simulator. "Continue" will run through the instructions until the end of the file, "Step" will run instruction by instruction, and "Reset" will reset the simulator back to the first instruction.
+              </p>
+            </div>
+          </div>
+
+          <div class="inner-p-div">
+            <p class="p-title">CONTROL LOGIC</p>
+            <div class="inner-p-div-child">
+              <img src="assets/instructions/control_logic.jpg" class="instruction-img-center-big">
+              <p class="inner-div-paragraph-txt">
+                Shows the reason why certain pipeline registers bubbled or stalled
+              </p>
+            </div>
+          </div>
+
         </div>
       </div>
 

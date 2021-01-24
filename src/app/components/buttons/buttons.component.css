@@ -14,7 +14,7 @@
   box-sizing: border-box;
   text-decoration:none;
   text-transform: none;
-  font-family: 'Roboto',sans-serif;;
+  font-family: 'Roboto',sans-serif;
   font-weight:300;
   color:#FFFFFF;
   text-shadow: 0 0.04em 0.04em rgba(0,0,0,0.35);
@@ -41,7 +41,7 @@
   box-sizing: border-box;
   text-decoration:none;
   text-transform: none;
-  font-family: 'Roboto',sans-serif;;
+  font-family: 'Roboto',sans-serif;
   font-weight:300;
   color:#FFFFFF;
   text-shadow: 0 0.04em 0.04em rgba(0,0,0,0.35);
@@ -56,7 +56,7 @@
 }
 
 .custom-select {
-  font-family: 'Roboto',sans-serif;;
+  font-family: 'Roboto',sans-serif;
   background-color: #683aff;
   color: white;
   border-radius:2em;
@@ -80,7 +80,7 @@
 }
 
 .upload-btn {
-  font-family: 'Roboto',sans-serif;;
+  font-family: 'Roboto',sans-serif;
   background-color: #d6692a;
   color: white;
   border-radius:2em;
