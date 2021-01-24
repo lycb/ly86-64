@@ -2,7 +2,20 @@
   <div class="buttons-wrapper">
     <div class="button-elements">
       <h1>LY86-64</h1>
-      <h3>a y86-64 browser-based simulator</h3>
+      <div class="collabsible-wrapper">
+        <input id="collapsible" class="toggle" type="checkbox">
+        <label for="collapsible" class="label-element" tabindex="0">ABOUT</label>
+        <div class="collapsible-content">
+          <p class="about-txt">The LY86-64 ("lee 86-64") is a browser-based simulator developed to help students visualize the Y86-64 machine.
+          </p>
+
+          <p class="about-txt">Although inspired by other Y86-64 simulators, the LY86-64 will be more focused on the visualization aspect of the control logic and signals, specifically stalling and bubbling.
+          </p>
+
+          <p class="about-txt">This is a senior thesis project built by <a href="https://github.com/lycb" target="_blank">Jenny Ly</a> from <a href="https://www.appstate.edu/" target="_blank">Appalachian State University</a></p>
+        </div>
+      </div>
+
       <button [routerLink]="'/simulator'" class="buttons">Access the Simulator</button>
     </div>
   </div>

@@ -14,14 +14,14 @@ export class ConditionFlagsComponent implements OnInit {
   ccSubscription: Subscription;
 
   constructor(private cpuService: CpuService) { 
-  	this.SF = 0;
-  	this.OF = 0;
-  	this.ZF = 0;
-
-    this.getCC();
   }
 
   ngOnInit() {
+    this.SF = 0;
+    this.OF = 0;
+    this.ZF = 0;
+
+    this.getCC();
   }
 
   getCC() {

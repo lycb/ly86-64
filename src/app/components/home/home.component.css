@@ -19,7 +19,7 @@ body.home {
 .buttons {
   border: 0.16em solid #7344ff;
   padding: 0.35em 1.2em;
-  margin: 0 0.3em 0.3em 0;
+  margin: 15px 0.3em 0.3em 0;
   box-sizing: border-box;
   text-decoration: none;
   text-transform: uppercase;
@@ -29,12 +29,67 @@ body.home {
   text-align: center;
   transition: all 0.15s;
   background-color: transparent;
-} 
+  cursor: pointer;
+}
 
 .buttons:hover {
   color: #f67cff;
   border-color: #f67cff;
 } 
+
+input[type='checkbox'] {
+  display: none;
+}
+
+.label-element {
+  display: block;
+  font-weight: bold;
+  font-family: monospace;
+  font-size: 1.2rem;
+  text-transform: uppercase;
+  text-align: center;
+  color: #7344ff;
+  cursor: pointer;
+  border-radius: 7px;
+  transition: all 0.25s ease-out;
+  outline: none;
+}
+
+.label-element:hover {
+  color: #f67cff;
+}
+
+.label-element::before {
+  content: ' ';
+  display: inline-block;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  border-left: 5px solid currentColor;
+  vertical-align: middle;
+  margin-right: .7rem;
+  transform: translateY(-2px);
+
+  transition: transform .2s ease-out;
+}
+
+.collapsible-content {
+  max-height: 0px;
+  overflow: hidden;
+  transition: max-height .25s ease-in-out;
+}
+
+.toggle:checked + .label-element + .collapsible-content {
+  max-height: 500px;
+}
+
+.toggle:checked + .label-element::before {
+  transform: rotate(90deg) translateX(-3px);
+}
+
+.toggle:checked + .label-element {
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
 
 h1 {
   font-size: 15vh;
@@ -45,10 +100,17 @@ h1 {
   color: white;
 }
 
-h3 {
-  font-size: 15px;
-  text-decoration: none;
-  text-transform: uppercase;
-  font-family: 'Roboto',sans-serif;
+.about-txt {
   color: white;
+  font-family: monospace;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+a {
+  color: #00ffe1;
+}
+
+a:hover {
+  color: #56b3ff;
 }
