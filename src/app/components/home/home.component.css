@@ -23,7 +23,8 @@ body.home {
   box-sizing: border-box;
   text-decoration: none;
   text-transform: uppercase;
-  font-family: 'Roboto',sans-serif;
+  font-family: 'VT323', monospace;
+  font-size: 20px;
   font-weight: 400;
   color: #7344ff;
   text-align: center;
@@ -44,11 +45,11 @@ input[type='checkbox'] {
 .label-element {
   display: block;
   font-weight: bold;
-  font-family: monospace;
+  font-family: 'VT323', monospace;
   font-size: 1.2rem;
   text-transform: uppercase;
   text-align: center;
-  color: #7344ff;
+  color: #48ff00;
   cursor: pointer;
   border-radius: 7px;
   transition: all 0.25s ease-out;
@@ -56,7 +57,7 @@ input[type='checkbox'] {
 }
 
 .label-element:hover {
-  color: #f67cff;
+  color: #00aa16;
 }
 
 .label-element::before {
