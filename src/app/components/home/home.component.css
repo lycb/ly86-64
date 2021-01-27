@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Quicksand&family=VT323&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&family=VT323&display=swap');
 
 body.home {
   background-color: black;
@@ -72,7 +72,6 @@ input[type='checkbox'] {
   vertical-align: middle;
   margin-right: .7rem;
   transform: translateY(-2px);
-
   transition: transform .2s ease-out;
 }
 
@@ -81,7 +80,7 @@ input[type='checkbox'] {
   overflow-y: scroll;
   overflow-x: hidden;
   transition: max-height 0.2s ease-in;
-  max-width: 80%;
+  max-width: 100%;
 }
 
 .collapsible-content::-webkit-scrollbar {
@@ -172,7 +171,7 @@ a:hover {
 
 .instruction-img-center-big {
   border-radius: 10px;
-  max-width: 80%;
+  max-width: 100%;
   text-align: center
 }
 
@@ -180,20 +179,23 @@ a:hover {
   background-color: #ceb5ff;
   border-radius: 10px;
   margin: 10px;
-  padding: 10px;
-  text-align: center;
+  padding: 1%;
+  text-align: left;
 }
 
 .inner-div-paragraph-txt {
   color: #2c20b2;
   font-family: 'Quicksand',sans-serif;
-  text-align: left;
   font-size: 15px;
   margin-bottom: 20px;
   margin-left: 10px;
-  wdith: 100%;
+  width: 100%;
 }
 
 .inner-p-div-child {
   display: inline-block;
+}
+
+b {
+  font-weight: 700;
 }

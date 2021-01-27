@@ -12,13 +12,13 @@
           <p class="paragraph-txt">Although inspired by other Y86-64 simulators, the LY86-64 will be more focused on the visualization aspect of the control logic and signals, specifically stalling and bubbling.
           </p>
 
-          <p class="paragraph-txt">This is a senior thesis project built by <a href="https://github.com/lycb" target="_blank">Jenny Ly</a> from <a href="https://www.appstate.edu/" target="_blank">Appalachian State University</a></p>
+          <p class="paragraph-txt">This is a senior thesis project built by <a href="https://www.chaulyjenny.com" target="_blank">Jenny Ly</a> from <a href="https://www.appstate.edu/" target="_blank">Appalachian State University</a></p>
         </div>
         <input id="collapsible2" class="toggle" type="checkbox">
-        <label for="collapsible2" class="label-element" tabindex="1">HOW TO USE</label>
+        <label for="collapsible2" class="label-element" tabindex="1">INSTRUCTIONS</label>
         <div class="collapsible-content">
           <p class="paragraph-txt">
-            Let's first go over some elements:
+            The LY86-64 focuses on the visualization aspect of the control logic and signals. To do this, we have incorporated the elements and colors we think are the most important. Please read through the documentations below before using the simulator. 
           </p>
 
           <div class="inner-p-div">
@@ -27,8 +27,8 @@
               <img src="assets/instructions/dropdown.jpg" class="instruction-img-left">
               <p class="inner-div-paragraph-txt">
                 The dropdown presents several options:
-                <li>"Custom files": Upload your own .yo file to run the simulator with</li>
-                <li>"jl", "jecall", and "loaduse": Sample files that is already loaded into the simulator.</li>
+                <li><b>Custom files</b>: Upload your own .yo file. Currently our simulator does not check for errors within your custom files, so please be sure to upload a valid .yo file.</li>
+                <li><b>"jl", "jecall", and "loaduse"</b>: Sample files that is already loaded into the simulator. Selecting these options will not require you to upload anything to use our simulator.</li>
               </p>
             </div>
           </div>
@@ -37,8 +37,23 @@
             <p class="p-title">CONTROL BUTTONS</p>
             <div class="inner-p-div-child">
               <img src="assets/instructions/control_buttons.jpg" class="instruction-img-center-small">
+              <p class="inner-div-paragraph-txt">     
+                The control buttons allow you to control the simulator.            
+                <li><b>Continue</b>: Run through the instructions until the end of the file.</li>
+                <li><b>Step</b>: Run instruction by instruction.</li>
+                <li><b>Reset</b>: Reset the simulator back to the first instruction.</li>
+              </p>
+            </div>
+          </div>
+
+          <div class="inner-p-div">
+            <p class="p-title">CODE BLOCK</p>
+            <div class="inner-p-div-child">
+              <img src="assets/instructions/code.png" class="instruction-img-center-big">
               <p class="inner-div-paragraph-txt">
-                These three buttons are the main controls of the simulator. "Continue" will run through the instructions until the end of the file, "Step" will run instruction by instruction, and "Reset" will reset the simulator back to the first instruction.
+                As you step through the instructions, the line getting highlighted is the line that is going to get fetched <i>next</i>.
+                <li>This <span style="background-color: #c156ff; color: white;">colored highlight</span> is showing that the simulator is fetching normally.</li>
+                <li>This <span style="background-color: #FFBF00; color: #18133f;">colored highlight</span> is showing that the simulator is fetching the same instruction <b>again</b> (i.e. the F register stalled).</li>
               </p>
             </div>
           </div>
@@ -48,7 +63,31 @@
             <div class="inner-p-div-child">
               <img src="assets/instructions/control_logic.jpg" class="instruction-img-center-big">
               <p class="inner-div-paragraph-txt">
-                Shows the reason why certain pipeline registers bubbled or stalled
+                The control logic component is designed to help the user understand why a certain register stalled or bubbled. 
+              </p>
+            </div>
+          </div>
+
+          <div class="inner-p-div">
+            <p class="p-title">PIPELINE REGISTERS</p>
+            <div class="inner-p-div-child">
+              <img src="assets/instructions/pipeline.png" class="instruction-img-center-big">
+              <p class="inner-div-paragraph-txt">
+                Alongside the indicated text next to registers like <b>F (STALL)</b> or <b>E (BUBBLE)</b>, the pipeline registers have several colors to show the state of the registers as well:
+                <li><span style="background-color: #02d199; color: #18133f;">Green</span> for when the pipeline is <span style="background-color: #02d199; color: #18133f;">normal.</span></li>
+                <li><span style="background-color: #f7c336; color: #18133f;">Yellow</span>for when the pipeline is <span style="background-color: #f7c336; color: #18133f;">stalled.</span></li>
+                <li><span style="background-color: #f77d36; color: #18133f;">Orange</span>for when the pipeline is <span style="background-color: #f77d36; color: #18133f;">bubbled.</span></li>
+              </p>
+            </div>
+          </div>
+
+          <div class="inner-p-div">
+            <p class="p-title">OTHER ELEMENTS</p>
+            <div class="inner-p-div-child">
+              <img src="assets/instructions/misc.png" class="instruction-img-center-small">
+              <p class="inner-div-paragraph-txt">
+                <li><b>Registers:</b> Shows the state of the registers during the simulation. Registers are displayed from register 0 (%rax) to register 15 (%r14).</li>
+                <li><b>Control flags:</b> OF is the overflow flag, SF is the sign flag, ZF is the zero flag. If the flag is 0, it's <i>false</i>. If it's 1, then it's <i>true</i>.</li>
               </p>
             </div>
           </div>
