@@ -1,3 +1,15 @@
+                            |         DESCRIPTION:
+                            |         jecall.yo demonstrates a jump and call.
+                            |         
+                            |         In this particular example,
+                            |         the jump at address 0x020 was never taken,
+                            |         the simulator will act as if it was taken but then
+                            |         will bubble and trace back its steps.
+                            |         
+                            |         Particularly, cycle 3-7 will show the
+                            |         simulator taking the jump, call, bubble, and return
+                            |         back to halt on address 0x029 
+                            |         
 0x000:                      |           .pos 0
 0x000: 30f40002000000000000 |           irmovq stack, %rsp
 0x00a: 30f70300000000000000 |           irmovq $3, %rdi   # %rdi = 3

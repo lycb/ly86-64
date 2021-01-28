@@ -1,3 +1,11 @@
+                            |         DESCRIPTION:
+                            |         jl.yo demonstrates a "jump less" logic.
+                            |         
+                            |         In this particular example, the jump at 
+                            |         address 0x049 was never taken. The simulator will
+                            |         act as if the jump was taken but then will bubble
+                            |         and trace back its steps. 
+                            |         
 0x000:                      |         .pos 0
 0x000: 30f0ffffffffffffffff |         irmovq $0xffffffffffffffff, %rax
 0x00a: 6200                 |         andq %rax, %rax

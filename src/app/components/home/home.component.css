@@ -37,8 +37,8 @@ body.home {
 }
 
 .buttons:hover {
-  color: #f67cff;
-  border-color: #f67cff;
+  color: #9549ff;
+  border-color: #9549ff;
 } 
 
 input[type='checkbox'] {
@@ -171,7 +171,7 @@ a:hover {
 
 .instruction-img-center-big {
   border-radius: 10px;
-  max-width: 100%;
+  max-width: 80%;
   text-align: center
 }
 
