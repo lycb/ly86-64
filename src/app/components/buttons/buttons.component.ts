@@ -72,7 +72,7 @@ export class ButtonsComponent implements OnInit {
 
     if (!file) return;
 
-    if (!this.isFileExtensionYo(file)) {
+    if (!this.isFileYo(file)) {
       input.value = "";
       this.parserService.setFileContent(this.fileContent);
       return;
@@ -174,9 +174,12 @@ export class ButtonsComponent implements OnInit {
     }
   }
 
-  isFileExtensionYo(file: File): boolean {
-    if (file.name.split(".")[1] !== "yo") {
-      alert('File type is not supported! Please upload a .yo file');
+  isFileYo(file: File): boolean {
+
+    // .yo file types return "" when do file.type
+    // this is to prevent against file.yo.txt
+    if (file.name.split(".")[1] !== "yo" || file.type !== "") {
+      alert('File type is not supported! Please upload a YO file');
       this.loadComponent = false;
       return false;
     }
