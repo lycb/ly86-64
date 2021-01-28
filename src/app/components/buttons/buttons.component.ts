@@ -111,6 +111,8 @@ export class ButtonsComponent implements OnInit {
     this.cpuService.reset(this.freg, this.dreg, this.ereg, this.mreg, this.wreg);
 
     this.cycle = 0;
+    this.fstall = false;
+    this.hold = false;
     this.stop = false;
     this.counterStop = false;
     this.isFirstAddressCurrent = false;
