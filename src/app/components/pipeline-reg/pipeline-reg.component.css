@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Ubuntu+Mono&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu+Mono:wght@400;700&display=swap');
 
 .pipeline-wrapper {
 	margin-top: 1.2vh;
@@ -24,6 +24,11 @@
 .register-value {
 	padding-left: 2%;
 	color: black;
+}
+
+.register-value-addr {
+	padding-left: 2%;
+	font-weight: 700;
 }
 
 .fetch-stage {

@@ -6,6 +6,7 @@
 	}">
 		<p class="register-title">F ({{f_state}})</p>
 		<div class="values-wrapper">
+			<p class="register-value-addr">addr: {{f_addr}}</p>
 			<p class="register-value">predPC: {{f_predPC}} </p>
 		</div>
 	</div>
@@ -17,7 +18,7 @@
 	}">
 		<p class="register-title">D ({{d_state}})</p>
 		<div class="values-wrapper">
-			<p class="register-value">addr: {{d_addr}}</p>
+			<p class="register-value-addr">addr: {{d_addr}}</p>
 			<p class="register-value">stat: {{d_stat}} </p>
 			<p class="register-value">icode: {{d_icode}} </p>
 			<p class="register-value">ifun: {{d_ifun}} </p>
@@ -36,7 +37,7 @@
 		<p class="register-title">E ({{e_state}})</p>
 		<div class="execute-stage-value-wrapper">
 			<div class="execute-values-wrapper">
-			<p class="register-value">addr: {{e_addr}}</p>
+				<p class="register-value-addr">addr: {{e_addr}}</p>
 				<p class="register-value">stat: {{e_stat}} </p>
 				<p class="register-value">icode: {{e_icode}} </p>
 				<p class="register-value">ifun: {{e_ifun}} </p>
@@ -60,7 +61,7 @@
 	}">
 		<p class="register-title">M ({{m_state}})</p>
 		<div class="values-wrapper">
-			<p class="register-value">addr: {{m_addr}}</p>
+			<p class="register-value-addr">addr: {{m_addr}}</p>
 			<p class="register-value">stat: {{m_stat}} </p>
 			<p class="register-value">icode: {{m_icode}} </p>
 			<p class="register-value">Cnd: {{m_cnd}} </p>
@@ -78,7 +79,7 @@
 	}">
 		<p class="register-title">W ({{w_state}})</p>
 		<div class="values-wrapper">
-			<p class="register-value">addr: {{w_addr}}</p>
+			<p class="register-value-addr">addr: {{w_addr}}</p>
 			<p class="register-value">stat: {{w_stat}} </p>
 			<p class="register-value">icode: {{w_icode}} </p>
 			<p class="register-value">valE: {{w_valE}} </p>
