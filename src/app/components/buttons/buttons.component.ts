@@ -20,7 +20,6 @@ export class ButtonsComponent implements OnInit {
   stop: boolean;
   counterStop: boolean;
   loadComponent: boolean;
-  isFirstAddressCurrent: boolean;
   showSelectFile: boolean;
   uploadButtonText: string;
   reset: boolean;
@@ -45,7 +44,6 @@ export class ButtonsComponent implements OnInit {
     this.stop = false;
     this.counterStop = false;
     this.loadComponent = false;
-    this.isFirstAddressCurrent = false;
     this.instructionLength = 0;
     this.showSelectFile = false;
     this.reset = false;
@@ -65,7 +63,6 @@ export class ButtonsComponent implements OnInit {
   */
   onFileSelect(): void {
     this.uploadButtonText = "Upload a file";
-    this.isFirstAddressCurrent = false;
     this.fileContent = [];
     const input = <HTMLInputElement>document.getElementById("file-input")
     const file = input.files[0];
@@ -91,7 +88,6 @@ export class ButtonsComponent implements OnInit {
 
   onClickStep(): void {
     this.reset = false;
-    this.isFirstAddressCurrent = false;
     var current = this.parserService.getCurrentLine();
     if (current.parsedLine.instruction == "") {
       this.setFirstCurrent();
@@ -119,7 +115,6 @@ export class ButtonsComponent implements OnInit {
     this.hold = false;
     this.stop = false;
     this.counterStop = false;
-    this.isFirstAddressCurrent = false;
     this.instructionLength = 0;
 
     this.loadlines();
@@ -144,7 +139,6 @@ export class ButtonsComponent implements OnInit {
 
       xhr.send(null);
 
-      this.isFirstAddressCurrent = false;
       this.fileContent = [];
 
       var blob = new Blob([txt], { type: 'text/plain' });
@@ -166,30 +160,24 @@ export class ButtonsComponent implements OnInit {
   }
 
   setFirstAddressCurrent(): void {
-    if (!this.isFirstAddressCurrent) {
       for (let i = 0; i < this.fileContent.length; i++) {
         if (this.fileContent[i].isAnAddress) {
           this.fileContent[i].isCurrent = true;
           this.parserService.setCurrent(this.fileContent[i]);
-          this.isFirstAddressCurrent = true;
           break;
         }
       }
-    }
   }
 
   setFirstCurrent(): void {
-    if (!this.isFirstAddressCurrent) {
       for (let i = 0; i < this.fileContent.length; i++) {
         if (this.fileContent[i].isAnAddress &&
         this.fileContent[i].parsedLine.instruction !== "" && 
         this.fileContent[i].parsedLine.address == this.freg.getAddress()) {
           this.fileContent[i].isCurrent = true;
           this.parserService.setCurrent(this.fileContent[i]);
-          this.isFirstAddressCurrent = true;
           break;
         }
-      }
     }
   }
 
