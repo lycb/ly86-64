@@ -174,6 +174,19 @@ export class ButtonsComponent implements OnInit {
     }
   }
 
+  setFirstCurrent(): void {
+    if (!this.isFirstAddressCurrent) {
+      for (let i = 0; i < this.fileContent.length; i++) {
+        if (this.fileContent[i].isAnAddress && this.fileContent[i].parsedLine.address == this.freg.getAddress()) {
+          this.fileContent[i].isCurrent = true;
+          this.parserService.setCurrent(this.fileContent[i]);
+          this.isFirstAddressCurrent = true;
+          break;
+        }
+      }
+    }
+  }
+
   isFileYo(file: File): boolean {
 
     // .yo file types return "" when do file.type
@@ -223,7 +236,7 @@ export class ButtonsComponent implements OnInit {
     let index = 0;
     for (let i = 0; i < this.fileContent.length; i++) {
       if (this.fileContent[i].parsedLine !== null && this.fileContent[i].parsedLine.instruction !== "") {
-        if (this.fileContent[i].parsedLine.address == this.freg.getPredPC().getOutput().toNumber()) {
+        if (this.fileContent[i].parsedLine.address == this.freg.getAddress()) {
           index = i;
           break;
         }
@@ -287,10 +300,10 @@ export class ButtonsComponent implements OnInit {
           index++;
         }
       }
-      this.setFirstAddressCurrent();
       this.parserService.setFileContent(this.fileContent);
       this.loadComponent = true;
       this.loadlines();
+      this.setFirstCurrent();
     }
     fileReader.readAsText(file);
   }
