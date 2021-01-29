@@ -93,6 +93,10 @@ export class ButtonsComponent implements OnInit {
     this.reset = false;
     this.isFirstAddressCurrent = false;
     var current = this.parserService.getCurrentLine();
+    if (current.parsedLine.instruction == "") {
+      this.setFirstCurrent();
+      var current = this.parserService.getCurrentLine();
+    }
     var nextId = current.id + 1;
     if (current.id < this.fileContent.length && nextId < this.fileContent.length) {
       if (current.parsedLine.instruction != "" && !this.stop) {
@@ -177,7 +181,9 @@ export class ButtonsComponent implements OnInit {
   setFirstCurrent(): void {
     if (!this.isFirstAddressCurrent) {
       for (let i = 0; i < this.fileContent.length; i++) {
-        if (this.fileContent[i].isAnAddress && this.fileContent[i].parsedLine.address == this.freg.getAddress()) {
+        if (this.fileContent[i].isAnAddress &&
+        this.fileContent[i].parsedLine.instruction !== "" && 
+        this.fileContent[i].parsedLine.address == this.freg.getAddress()) {
           this.fileContent[i].isCurrent = true;
           this.parserService.setCurrent(this.fileContent[i]);
           this.isFirstAddressCurrent = true;
@@ -302,8 +308,8 @@ export class ButtonsComponent implements OnInit {
       }
       this.parserService.setFileContent(this.fileContent);
       this.loadComponent = true;
+      this.setFirstAddressCurrent();
       this.loadlines();
-      this.setFirstCurrent();
     }
     fileReader.readAsText(file);
   }
