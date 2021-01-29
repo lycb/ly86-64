@@ -187,14 +187,14 @@ export class CpuService {
         if (fileContent[i].parsedLine !== null && fileContent[i].parsedLine.instruction !== "") {
           if (fileContent[i].parsedLine.address == f_pc.toNumber()) {
             line = fileContent[i].parsedLine.instruction;
-            freg.setAddress(fileContent[i].parsedLine.address)
+            freg.getAddress().setInput(Long.fromNumber(fileContent[i].parsedLine.address));
             this.parserService.setCurrent(fileContent[i])
             break;
           }
         }
       }
     } else {
-      freg.setAddress(lineObject.parsedLine.address)
+      freg.getAddress().setInput(Long.fromNumber(lineObject.parsedLine.address));
     }
 
     let icode = Long.ZERO,
@@ -226,7 +226,9 @@ export class CpuService {
 
     freg.getPredPC().setInput(f_predPC);
 
-    this.setDInput(dreg, stat, icode, ifun, rA, rB, valC, valP, freg.getAddress());
+    freg.getAddress().normal();
+
+    this.setDInput(dreg, stat, icode, ifun, rA, rB, valC, valP, freg.getAddress().getOutput());
   }
 
   doFetchClockHigh(freg: F, dreg: D): void {
@@ -241,6 +243,7 @@ export class CpuService {
       dreg.getrB().bubble(Long.fromNumber(Constants.RNONE));
       dreg.getvalC().bubble(Long.ZERO);
       dreg.getvalP().bubble(Long.ZERO);
+      dreg.getAddress().bubble(Long.ZERO)
     }
     if (!this.dbubble && !this.dstall) {
       dreg.getstat().normal();
@@ -250,12 +253,14 @@ export class CpuService {
       dreg.getrB().normal();
       dreg.getvalC().normal();
       dreg.getvalP().normal();
+      dreg.getAddress().normal();
     }
     this.f_reg.next(freg);
     this.d_reg.next(dreg);
   }
 
-  setDInput(dreg: D, stat: Long, icode: Long, ifun: Long, rA: Long, rB: Long, valC: Long, valP: Long, address: number): void {
+  setDInput(dreg: D, stat: Long, icode: Long, ifun: Long, rA: Long, rB: Long, 
+    valC: Long, valP: Long, address: Long): void {
     dreg.getstat().setInput(stat);
     dreg.geticode().setInput(icode);
     dreg.getifun().setInput(ifun);
@@ -263,7 +268,7 @@ export class CpuService {
     dreg.getrB().setInput(rB);
     dreg.getvalC().setInput(valC);
     dreg.getvalP().setInput(valP);
-    dreg.setAddress(address);
+    dreg.getAddress().setInput(address);
   }
 
   needRegister(icode: Long): boolean {
@@ -497,7 +502,7 @@ export class CpuService {
 
     this.d_calculateControlSignals(ereg);
 
-    this.setEInput(ereg, stat, icode, ifun, valC, valA, valB, dstE, dstM, this.d_srcA, this.d_srcB, dreg.getAddress());
+    this.setEInput(ereg, stat, icode, ifun, valC, valA, valB, dstE, dstM, this.d_srcA, this.d_srcB, dreg.getAddress().getOutput());
   }
 
   doDecodeClockHigh(ereg: E): void {
@@ -512,6 +517,7 @@ export class CpuService {
       ereg.getdstM().bubble(Long.fromNumber(Constants.RNONE));
       ereg.getsrcA().bubble(Long.fromNumber(Constants.RNONE));
       ereg.getsrcB().bubble(Long.fromNumber(Constants.RNONE));
+      ereg.getAddress().bubble(Long.ZERO);
     } else {
       ereg.getstat().normal();
       ereg.geticode().normal();
@@ -523,12 +529,13 @@ export class CpuService {
       ereg.getdstM().normal();
       ereg.getsrcA().normal();
       ereg.getsrcB().normal();
+      ereg.getAddress().normal();
     }
     this.e_reg.next(ereg);
   }
 
   setEInput(ereg: E, stat: Long, icode: Long, ifun: Long, valC: Long, valA: Long,
-    valB: Long, dstE: Long, dstM: Long, srcA: Long, srcB: Long, address: number): void {
+    valB: Long, dstE: Long, dstM: Long, srcA: Long, srcB: Long, address: Long): void {
     ereg.getstat().setInput(stat);
     ereg.geticode().setInput(icode);
     ereg.getifun().setInput(ifun);
@@ -539,7 +546,7 @@ export class CpuService {
     ereg.getdstM().setInput(dstM);
     ereg.getsrcA().setInput(srcA);
     ereg.getsrcB().setInput(srcB);
-    ereg.setAddress(address);
+    ereg.getAddress().setInput(address);
   }
 
   set_d_srcA(dreg: D): Long {
@@ -697,7 +704,8 @@ export class CpuService {
 
     this.e_calculateControlSignals(wreg);
 
-    this.setMInput(mreg, icode, this.e_Cnd, stat, this.e_valE, valA, this.e_dstE, dstM, ereg.getAddress());
+    this.setMInput(mreg, icode, this.e_Cnd, stat, 
+      this.e_valE, valA, this.e_dstE, dstM, ereg.getAddress().getOutput());
   }
 
   /*
@@ -713,6 +721,7 @@ export class CpuService {
       mreg.getvalA().normal();
       mreg.getdstE().normal();
       mreg.getdstM().normal();
+      mreg.getAddress().normal();
     } else {
       mreg.getstat().bubble(Long.fromNumber(Constants.SAOK));
       mreg.geticode().bubble(Long.fromNumber(Constants.NOP));
@@ -721,12 +730,13 @@ export class CpuService {
       mreg.getvalA().bubble(Long.ZERO);
       mreg.getdstE().bubble(Long.fromNumber(Constants.RNONE));
       mreg.getdstM().bubble(Long.fromNumber(Constants.RNONE));
+      mreg.getAddress().bubble(Long.ZERO);
     }
     this.m_reg.next(mreg);
   }
 
   setMInput(mreg: M, icode: Long, Cnd: Long, stat: Long, valE: Long, valA: Long,
-    dstE: Long, dstM: Long, address: number) {
+    dstE: Long, dstM: Long, address: Long) {
     mreg.getstat().setInput(stat);
     mreg.geticode().setInput(icode);
     mreg.getCnd().setInput(Cnd);
@@ -734,7 +744,7 @@ export class CpuService {
     mreg.getvalE().setInput(valE);
     mreg.getdstE().setInput(dstE);
     mreg.getdstM().setInput(dstM);
-    mreg.setAddress(address);
+    mreg.getAddress().setInput(address);
   }
 
   alu_A(ereg: E): Long {
@@ -955,7 +965,8 @@ export class CpuService {
     this.error = this.memoryService.getError();
     this.m_stat = this.mstat(mreg);
 
-    this.setWInput(wreg, this.m_stat, icode, valE, this.m_valM, dstE, dstM, mreg.getAddress());
+    this.setWInput(wreg, this.m_stat, icode, valE, 
+      this.m_valM, dstE, dstM, mreg.getAddress().getOutput());
   }
 
   doMemoryClockHigh(wreg: W): void {
@@ -965,18 +976,19 @@ export class CpuService {
     wreg.getvalM().normal();
     wreg.getdstE().normal();
     wreg.getdstM().normal();
+    wreg.getAddress().normal();
     this.w_reg.next(wreg);
   }
 
   setWInput(wreg: W, stat: Long, icode: Long, valE: Long,
-    valM: Long, dstE: Long, dstM: Long, address: number): void {
+    valM: Long, dstE: Long, dstM: Long, address: Long): void {
     wreg.getstat().setInput(stat);
     wreg.geticode().setInput(icode);
     wreg.getvalE().setInput(valE);
     wreg.getvalM().setInput(valM);
     wreg.getdstE().setInput(dstE);
     wreg.getdstM().setInput(dstM);
-    wreg.setAddress(address);
+    wreg.getAddress().setInput(address);
   }
 
   /*

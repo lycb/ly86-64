@@ -133,7 +133,7 @@ export class PipelineRegComponent implements OnInit {
     this.fregSubscription = this.cpuService.getFreg().subscribe(freg => {
       if (freg) {
         this.f_predPC = freg.predPC.state.toString(16);
-        this.f_addr = this.utilsService.paddingHex(freg.address, 3, true);
+        this.f_addr = this.utilsService.paddingHex(freg.address.state.toNumber(), 3, true);
         this.setColor();
       } else {
         this.f_predPC = "0";
@@ -146,7 +146,7 @@ export class PipelineRegComponent implements OnInit {
     this.dregSubscription = this.cpuService.getDreg().subscribe(dreg => {
       if (dreg) {
         this.dreg = dreg;
-        this.d_addr = this.utilsService.paddingHex(dreg.address, 3, true);
+        this.d_addr = this.utilsService.paddingHex(dreg.address.state.toNumber(), 3, true);
         this.d_stat = dreg.stat.state.toString(16)  + " (" + this.utilsService.num2stat(dreg.stat.state.toNumber()) + ")";
         this.d_icode = dreg.icode.state.toString(16) + " (" + this.utilsService.icode2instr(dreg.icode.state.toNumber()) + ")";
         this.d_ifun = dreg.ifun.state.toString(16);
@@ -172,7 +172,7 @@ export class PipelineRegComponent implements OnInit {
     this.eregSubscription = this.cpuService.getEreg().subscribe(ereg => {
       if (ereg) {
         this.ereg = ereg;
-        this.e_addr = this.utilsService.paddingHex(ereg.address, 3, true);
+        this.e_addr = this.utilsService.paddingHex(ereg.address.state.toNumber(), 3, true);
         this.e_stat = ereg.stat.state.toString(16)  + " (" + this.utilsService.num2stat(ereg.stat.state.toNumber()) + ")";
         this.e_icode = ereg.icode.state.toString(16) + " (" + this.utilsService.icode2instr(ereg.icode.state.toNumber()) + ")";
         this.e_ifun = ereg.ifun.state.toString(16);
@@ -204,7 +204,7 @@ export class PipelineRegComponent implements OnInit {
     this.mregSubscription = this.cpuService.getMreg().subscribe(mreg => {
       if (mreg) {
         this.mreg = mreg;
-        this.m_addr = this.utilsService.paddingHex(mreg.address, 3, true);
+        this.m_addr = this.utilsService.paddingHex(mreg.address.state.toNumber(), 3, true);
         this.m_stat = mreg.stat.state.toString(16)  + " (" + this.utilsService.num2stat(mreg.stat.state.toNumber()) + ")";
         this.m_icode = mreg.icode.state.toString(16) + " (" + this.utilsService.icode2instr(mreg.icode.state.toNumber()) + ")";
         this.m_cnd = mreg.Cnd.state.toString(16);
@@ -230,7 +230,7 @@ export class PipelineRegComponent implements OnInit {
     this.wregSubscription = this.cpuService.getWreg().subscribe(wreg => {
       if (wreg) {
         this.wreg = wreg;
-        this.w_addr = this.utilsService.paddingHex(wreg.address, 3, true);
+        this.w_addr = this.utilsService.paddingHex(wreg.address.state.toNumber(), 3, true);
         this.w_stat = wreg.stat.state.toString(16)  + " (" + this.utilsService.num2stat(wreg.stat.state.toNumber()) + ")";
         this.w_icode = wreg.icode.state.toString(16) + " (" + this.utilsService.icode2instr(wreg.icode.state.toNumber()) + ")";
         this.w_valE = wreg.valE.state.toUnsigned().toString(16);

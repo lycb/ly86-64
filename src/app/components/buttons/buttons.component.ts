@@ -183,7 +183,7 @@ export class ButtonsComponent implements OnInit {
       for (let i = 0; i < this.fileContent.length; i++) {
         if (this.fileContent[i].isAnAddress &&
         this.fileContent[i].parsedLine.instruction !== "" && 
-        this.fileContent[i].parsedLine.address == this.freg.getAddress()) {
+        this.fileContent[i].parsedLine.address == this.freg.getAddress().getOutput().toNumber()) {
           this.fileContent[i].isCurrent = true;
           this.parserService.setCurrent(this.fileContent[i]);
           this.isFirstAddressCurrent = true;
@@ -242,7 +242,7 @@ export class ButtonsComponent implements OnInit {
     let index = 0;
     for (let i = 0; i < this.fileContent.length; i++) {
       if (this.fileContent[i].parsedLine !== null && this.fileContent[i].parsedLine.instruction !== "") {
-        if (this.fileContent[i].parsedLine.address == this.freg.getAddress()) {
+        if (this.fileContent[i].parsedLine.address == this.freg.getAddress().getOutput().toNumber()) {
           index = i;
           break;
         }

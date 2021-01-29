@@ -4,29 +4,26 @@ import Long from 'long';
 
 export class F {
 	predPC: PipeRegField;
-	address: number;
+	address:PipeRegField;
 
 	constructor() {
 		this.predPC = new PipeRegField(Long.ZERO);
-		this.address = 0;
+		this.address = new PipeRegField(Long.ZERO);
 	}
 
 	getPredPC(): PipeRegField {
 		return this.predPC;
 	}
 
-	setAddress(addr: number): void {
-		this.address = addr;
-	}
-
-	getAddress(): number {
+	getAddress():PipeRegField {
 		return this.address;
 	}
 
 	reset(): void {
-		this.predPC = new PipeRegField(Long.ZERO);
-		this.address = 0;
+		this.predPC.setInput(Long.ZERO);
+		this.address.setInput(Long.ZERO);
 
+		this.address.normal();
 		this.predPC.normal();
 	}
 }
@@ -39,7 +36,7 @@ export class D {
 	rB: PipeRegField;
 	valC: PipeRegField;
 	valP: PipeRegField;
-	address: number;
+	address:PipeRegField;
 
 
 	constructor() {
@@ -50,7 +47,7 @@ export class D {
 		this.rB = new PipeRegField(Long.fromNumber(Constants.RNONE));
 		this.valC = new PipeRegField(Long.ZERO);
 		this.valP = new PipeRegField(Long.ZERO);
-		this.address = 0;
+		this.address = new PipeRegField(Long.ZERO);
 	}
 
 	getstat(): PipeRegField {
@@ -81,11 +78,7 @@ export class D {
 		return this.valP;
 	}
 
-	setAddress(addr: number): void {
-		this.address = addr;
-	}
-
-	getAddress(): number {
+	getAddress():PipeRegField {
 		return this.address;
 	}
 
@@ -97,8 +90,9 @@ export class D {
 		this.rB.setInput(Long.fromNumber(Constants.RNONE));
 		this.valC.setInput(Long.ZERO);
 		this.valP.setInput(Long.ZERO);
-		this.address = 0;
+		this.address.setInput(Long.ZERO);
 
+		this.address.normal();
 		this.stat.normal();
 		this.icode.normal();
 		this.ifun.normal();
@@ -120,7 +114,7 @@ export class E {
 	dstM: PipeRegField;
 	srcA: PipeRegField;
 	srcB: PipeRegField;
-	address: number;
+	address:PipeRegField;
 
 	constructor() {
 		this.stat = new PipeRegField(Long.fromNumber(Constants.SAOK));
@@ -133,7 +127,7 @@ export class E {
 		this.dstM = new PipeRegField(Long.fromNumber(Constants.RNONE));
 		this.srcA = new PipeRegField(Long.fromNumber(Constants.RNONE));
 		this.srcB = new PipeRegField(Long.fromNumber(Constants.RNONE));
-		this.address = 0;
+		this.address = new PipeRegField(Long.ZERO);
 	}
 
 	getstat(): PipeRegField {
@@ -176,11 +170,7 @@ export class E {
 		return this.srcB;
 	}
 
-	setAddress(addr: number): void {
-		this.address = addr;
-	}
-
-	getAddress(): number {
+	getAddress():PipeRegField {
 		return this.address;
 	}
 
@@ -195,8 +185,9 @@ export class E {
 		this.dstM.setInput(Long.fromNumber(Constants.RNONE));
 		this.srcA.setInput(Long.fromNumber(Constants.RNONE));
 		this.srcB.setInput(Long.fromNumber(Constants.RNONE));
-		this.address = 0;
+		this.address.setInput(Long.ZERO);
 
+		this.address.normal();
 		this.stat.normal();
 		this.icode.normal();
 		this.ifun.normal();
@@ -218,7 +209,7 @@ export class M {
 	valA: PipeRegField;
 	dstE: PipeRegField;
 	dstM: PipeRegField;
-	address: number;
+	address:PipeRegField;
 
 	constructor() {
 		this.stat = new PipeRegField(Long.fromNumber(Constants.SAOK));
@@ -228,7 +219,7 @@ export class M {
 		this.valA = new PipeRegField(Long.ZERO);
 		this.dstE = new PipeRegField(Long.fromNumber(Constants.RNONE));
 		this.dstM = new PipeRegField(Long.fromNumber(Constants.RNONE));
-		this.address = 0;
+		this.address = new PipeRegField(Long.ZERO);
 	}
 
 	getstat(): PipeRegField {
@@ -259,11 +250,7 @@ export class M {
 		return this.dstM;
 	}
 
-	setAddress(addr: number): void {
-		this.address = addr;
-	}
-
-	getAddress(): number {
+	getAddress():PipeRegField {
 		return this.address;
 	}
 
@@ -275,8 +262,9 @@ export class M {
 		this.valA.setInput(Long.ZERO);
 		this.dstE.setInput(Long.fromNumber(Constants.RNONE));
 		this.dstM.setInput(Long.fromNumber(Constants.RNONE));
-		this.address = 0;
+		this.address.setInput(Long.ZERO);
 
+		this.address.normal();
 		this.stat.normal();
 		this.icode.normal();
 		this.Cnd.normal();
@@ -294,7 +282,7 @@ export class W {
 	valM: PipeRegField;
 	dstE: PipeRegField;
 	dstM: PipeRegField;
-	address: number;
+	address:PipeRegField;
 
 	constructor() {
 		this.stat = new PipeRegField(Long.fromNumber(Constants.SAOK));
@@ -303,7 +291,7 @@ export class W {
 		this.valM = new PipeRegField(Long.ZERO);
 		this.dstE = new PipeRegField(Long.fromNumber(Constants.RNONE));
 		this.dstM = new PipeRegField(Long.fromNumber(Constants.RNONE));
-		this.address = 0;
+		this.address = new PipeRegField(Long.ZERO);
 	}
 
 	getstat(): PipeRegField {
@@ -330,11 +318,7 @@ export class W {
 		return this.dstM;
 	}
 
-	setAddress(addr: number): void {
-		this.address = addr;
-	}
-
-	getAddress(): number {
+	getAddress():PipeRegField {
 		return this.address;
 	}
 
@@ -345,8 +329,9 @@ export class W {
 		this.valM.setInput(Long.ZERO);
 		this.dstE.setInput(Long.fromNumber(Constants.RNONE));
 		this.dstM.setInput(Long.fromNumber(Constants.RNONE));
-		this.address = 0;
+		this.address.setInput(Long.ZERO);
 
+		this.address.normal();
 		this.stat.normal();
 		this.icode.normal();
 		this.valE.normal();
