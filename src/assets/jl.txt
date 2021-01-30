@@ -1,10 +1,20 @@
                             |         DESCRIPTION:
                             |         jl.yo demonstrates a "jump less" logic.
                             |         
-                            |         In this particular example, the jump at 
-                            |         address 0x049 was never taken. The simulator will
-                            |         act as if the jump was taken but then will bubble
-                            |         and trace back its steps. 
+                            |         In this particular example, the jump at address 0x00c is 
+                            |         predicted as taken and this
+                            |         prediction is correct.  The jump at address 0x049 
+                            |         is also predicted as taken and this prediction  
+                            |         is incorrect. The simulator
+                            |         will change the two instructions fetched 
+                            |         at the target (0x067) to nops when it is determined 
+                            |         that the prediction is incorrect and fetch the fall through 
+                            |         instruction at 0x052. 
+                            |         
+                            |         Note also that the instructions following  
+                            |         the HALT at 0x066 are fetched
+                            |         and changed to nops in the M register until  
+                            |         the HALT reaches the writeback stage.
                             |         
 0x000:                      |         .pos 0
 0x000: 30f0ffffffffffffffff |         irmovq $0xffffffffffffffff, %rax
