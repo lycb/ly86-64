@@ -49,6 +49,8 @@ export class CpuService {
   mbubble: boolean;
 
   // Global variables for passing in between stages
+  f_pc: Long;
+
   d_srcA: Long;
   d_srcB: Long;
 
@@ -73,6 +75,7 @@ export class CpuService {
     this.mbubble = false;
     this.error = false;
     this.hold = false;
+    this.f_pc = Long.ZERO;
   }
 
   /*
@@ -128,8 +131,7 @@ export class CpuService {
 
     this.cc_list = [0, 0, 0];
 
-    freg.getPredPC().setInput(Long.ZERO);
-    freg.getPredPC().normal();
+    this.f_pc = Long.ZERO;
 
     freg.reset();
     this.f_reg.next(freg);
@@ -152,7 +154,7 @@ export class CpuService {
 
   holdHighlight(dreg: D, eof: boolean): boolean {
     this.hold = dreg.geticode().getOutput().equals(Long.ZERO) && eof;
-    return this.fstall || this.hold;
+    return this.dstall || this.hold;
   }
 
   getFstall() {
@@ -171,6 +173,10 @@ export class CpuService {
     return this.hold;
   }
 
+  getSelectedPC() {
+    return this.f_pc;
+  }
+
   /*
   * ==============================================================
   *                    F E T C H     S T A G E
@@ -178,24 +184,25 @@ export class CpuService {
   */
 
   doFetchClockLow(fileContent: Line[], lineObject: Line, freg: F, dreg: D, ereg: E, mreg: M, wreg: W): void {
-    let f_pc = this.selectPC(freg, mreg, wreg);
+    this.f_pc = this.selectPC(freg, mreg, wreg);
 
     let line = lineObject.parsedLine.instruction;
 
-    if (f_pc.toNumber() != lineObject.parsedLine.address) {
+    console.log("f_pc: " + this.f_pc.toString(16))
+
+    console.log(lineObject)
+
+    if (this.f_pc.toNumber() != lineObject.parsedLine.address) {
       for (let i = 0; i < fileContent.length; i++) {
         if (fileContent[i].parsedLine !== null && fileContent[i].parsedLine.instruction !== "") {
-          if (fileContent[i].parsedLine.address == f_pc.toNumber()) {
+          if (fileContent[i].parsedLine.address == this.f_pc.toNumber()) {
             line = fileContent[i].parsedLine.instruction;
-            freg.getAddress().setInput(Long.fromNumber(fileContent[i].parsedLine.address));
             this.parserService.setCurrent(fileContent[i])
             break;
           }
         }
       }
-    } else {
-      freg.getAddress().setInput(Long.fromNumber(lineObject.parsedLine.address));
-    }
+    } 
 
     let icode = Long.ZERO,
       ifun = Long.ZERO,
@@ -218,15 +225,14 @@ export class CpuService {
     stat = this.f_status(icode, this.error);
     icode = this.f_icode(icode, this.error);
     ifun = this.f_ifun(ifun, this.error);
-    valC = this.getValC(icode, f_pc, line);
-    valP = Long.fromNumber(this.PCincrement(f_pc, icode));
+    valC = this.getValC(icode, this.f_pc, line);
+    valP = Long.fromNumber(this.PCincrement(this.f_pc, icode));
     f_predPC = this.predictPC(icode, valC, valP);
 
     this.f_calculateControlSignals(dreg, ereg, mreg);
 
     freg.getPredPC().setInput(f_predPC);
-
-    freg.getAddress().normal();
+    freg.getAddress().setInput(f_predPC);
 
     this.setDInput(dreg, stat, icode, ifun, rA, rB, valC, valP, freg.getAddress().getOutput());
   }
@@ -234,6 +240,7 @@ export class CpuService {
   doFetchClockHigh(freg: F, dreg: D): void {
     if (!this.fstall) {
       freg.getPredPC().normal();
+      freg.getAddress().normal();
     }
     if (this.dbubble) {
       dreg.getstat().bubble(Long.fromNumber(Constants.SAOK));

@@ -24,6 +24,7 @@ export class ButtonsComponent implements OnInit {
   showSelectFile: boolean;
   uploadButtonText: string;
   reset: boolean;
+  eof: boolean;
 
   fstall: boolean;
   hold: boolean;
@@ -49,6 +50,7 @@ export class ButtonsComponent implements OnInit {
     this.instructionLength = 0;
     this.showSelectFile = false;
     this.reset = false;
+    this.eof = false;
     this.uploadButtonText = "Upload a file";
 
     this.freg = new F();
@@ -95,8 +97,9 @@ export class ButtonsComponent implements OnInit {
     var current = this.parserService.getCurrentLine();
     if (current.parsedLine.instruction == "") {
       this.setFirstCurrent();
-      var current = this.parserService.getCurrentLine();
+      current = this.parserService.getCurrentLine();
     }
+    console.log(current)
     var nextId = current.id + 1;
     if (current.id < this.fileContent.length && nextId < this.fileContent.length) {
       if (current.parsedLine.instruction != "" && !this.stop) {
@@ -110,9 +113,9 @@ export class ButtonsComponent implements OnInit {
 
   onClickReset(): void {
     this.reset = true;
+    this.cpuService.reset(this.freg, this.dreg, this.ereg, this.mreg, this.wreg); 
     this.setFirstAddressCurrent();
     this.cycle = 0;
-    this.cpuService.reset(this.freg, this.dreg, this.ereg, this.mreg, this.wreg);
 
     this.cycle = 0;
     this.fstall = false;
@@ -183,7 +186,7 @@ export class ButtonsComponent implements OnInit {
       for (let i = 0; i < this.fileContent.length; i++) {
         if (this.fileContent[i].isAnAddress &&
         this.fileContent[i].parsedLine.instruction !== "" && 
-        this.fileContent[i].parsedLine.address == this.freg.getAddress().getOutput().toNumber()) {
+        this.fileContent[i].parsedLine.address == this.cpuService.getSelectedPC().toNumber()) {
           this.fileContent[i].isCurrent = true;
           this.parserService.setCurrent(this.fileContent[i]);
           this.isFirstAddressCurrent = true;
@@ -212,7 +215,10 @@ export class ButtonsComponent implements OnInit {
   nextCurrentLine(): void {
     let current = this.parserService.getCurrentLine();
 
-    let nextIndex = this.findNextIndex();
+    console.log("currentid: " + current.id)
+
+    let nextIndex = this.findIndex();
+    console.log("nextIndex: " + nextIndex)
 
     if (nextIndex == 0) {
       nextIndex++;
@@ -220,10 +226,12 @@ export class ButtonsComponent implements OnInit {
     for (let i = nextIndex; i < this.fileContent.length; i++) {
       let next = this.fileContent[i];
       if (next.parsedLine != null) {
-        let eof = next.id >= this.instructionLength;
-        if (!this.cpuService.holdHighlight(this.dreg, eof)) {
+        this.eof = next.id >= this.instructionLength;
+        if (!this.cpuService.holdHighlight(this.dreg, this.eof)) {
+          // console.log("got in on ");
+          // console.log(current)
           this.parserService.setCurrent(next);
-        }
+        } 
       }
       if (current.parsedLine != null && current.parsedLine.address != 0 && !this.counterStop) {
         //increment the clock-cycle
@@ -235,14 +243,14 @@ export class ButtonsComponent implements OnInit {
   }
 
   /*
-  * findNextIndex
+  * findIndex
   * find the line that contains the predPC to highlight
   */
-  findNextIndex(): number {
+  findIndex(): number {
     let index = 0;
     for (let i = 0; i < this.fileContent.length; i++) {
       if (this.fileContent[i].parsedLine !== null && this.fileContent[i].parsedLine.instruction !== "") {
-        if (this.fileContent[i].parsedLine.address == this.freg.getAddress().getOutput().toNumber()) {
+        if (this.fileContent[i].parsedLine.address == this.cpuService.getSelectedPC().toNumber()) {
           index = i;
           break;
         }
