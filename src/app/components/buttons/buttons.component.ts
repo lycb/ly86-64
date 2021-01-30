@@ -99,7 +99,6 @@ export class ButtonsComponent implements OnInit {
       this.setFirstCurrent();
       current = this.parserService.getCurrentLine();
     }
-    console.log(current)
     var nextId = current.id + 1;
     if (current.id < this.fileContent.length && nextId < this.fileContent.length) {
       if (current.parsedLine.instruction != "" && !this.stop) {
@@ -215,10 +214,7 @@ export class ButtonsComponent implements OnInit {
   nextCurrentLine(): void {
     let current = this.parserService.getCurrentLine();
 
-    console.log("currentid: " + current.id)
-
     let nextIndex = this.findIndex();
-    console.log("nextIndex: " + nextIndex)
 
     if (nextIndex == 0) {
       nextIndex++;
@@ -227,13 +223,12 @@ export class ButtonsComponent implements OnInit {
       let next = this.fileContent[i];
       if (next.parsedLine != null) {
         this.eof = next.id >= this.instructionLength;
-        if (!this.cpuService.holdHighlight(this.dreg, this.eof)) {
-          // console.log("got in on ");
-          // console.log(current)
+        if (!this.cpuService.holdHighlight(this.ereg, this.eof)) {
           this.parserService.setCurrent(next);
         } 
       }
-      if (current.parsedLine != null && current.parsedLine.address != 0 && !this.counterStop) {
+      let newNextAddress = this.parserService.getCurrentLine().parsedLine.address;
+      if (current.parsedLine != null && (current.parsedLine.address != 0 || (newNextAddress !== 0 && current.parsedLine.address == 0)) && !this.counterStop ) {
         //increment the clock-cycle
         if (this.stop) this.counterStop = true;
         this.cycle++;

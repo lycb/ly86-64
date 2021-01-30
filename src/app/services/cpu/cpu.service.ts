@@ -152,8 +152,8 @@ export class CpuService {
     this.memoryService.reset();
   }
 
-  holdHighlight(dreg: D, eof: boolean): boolean {
-    this.hold = dreg.geticode().getOutput().equals(Long.ZERO) && eof;
+  holdHighlight(ereg: E, eof: boolean): boolean {
+    this.hold = ereg.geticode().getOutput().equals(Long.ZERO) && eof;
     return this.dstall || this.hold;
   }
 
@@ -188,16 +188,12 @@ export class CpuService {
 
     let line = lineObject.parsedLine.instruction;
 
-    console.log("f_pc: " + this.f_pc.toString(16))
-
-    console.log(lineObject)
-
     if (this.f_pc.toNumber() != lineObject.parsedLine.address) {
       for (let i = 0; i < fileContent.length; i++) {
         if (fileContent[i].parsedLine !== null && fileContent[i].parsedLine.instruction !== "") {
           if (fileContent[i].parsedLine.address == this.f_pc.toNumber()) {
             line = fileContent[i].parsedLine.instruction;
-            this.parserService.setCurrent(fileContent[i])
+            // this.parserService.setCurrent(fileContent[i])
             break;
           }
         }
