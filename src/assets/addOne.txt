@@ -3,7 +3,15 @@
                             |         
                             |         In this particular example, the simulator will
                             |         demonstrate stalls and bubbles when there is a
-                            |         RET instruction.
+                            |         RET instruction.  Note that when the RET is in 
+                            |         the D register, the simulator will stall the F 
+                            |         register and bubble the D register (insert a nop) until the
+                            |         RET exits the memory stage, at which point the return 
+                            |         address has been read.
+                            |         
+                            |         Note also that the instructions following the halt at 
+                            |         0x01d are fetched and changed to nops in the M 
+                            |         register until the halt reaches the writeback stage.
                             |         
 0x000:                      |         .pos 0
 0x000: 30f40002000000000000 |         irmovq stack, %rsp

@@ -2,8 +2,14 @@
                             |         loaduse.yo demonstrates a load use hazard.
                             |         
                             |         In this particular example, there are multiple
-                            |         stalls and bubbles to delay the executions
-                            |         until the registers needed get updated from memory.
+                            |         stalls and bubbles to delay the execution of an 
+                            |         instruction until an operand has been read from memory.  
+                            |         For example, the load use hazard between the MRMOVQ 
+                            |         instruction at address 0x015 and the RRMOVQ instruction at 
+                            |         address 0x01f, will cause the F register to
+                            |         be stalled so that it fetches the MRMOVQ at address 0x021 twice, 
+                            |         the D register to be stalled so that it decodes RRMOVQ twice, 
+                            |         and the E register to be bubbled.
                             |         
 0x000:                      |        .pos 0x0
 0x000: 10                   |        nop
