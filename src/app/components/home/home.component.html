@@ -76,7 +76,8 @@
             <div class="inner-p-div-child">
               <img src="assets/instructions/control_logic.png" class="instruction-img-center-big">
               <p class="inner-div-paragraph-txt">
-                The control logic component is designed to help the user understand why a certain register <span style="color: #ff5000;">was</span> stalled or bubbled.
+                The control logic component is designed to help the user understand why a certain register was <span style="background-color: #FFBF00; color: #18133f;">stalled</span> or <span style="background-color: #ff5000; color: #18133f;">bubbled</span>.
+
               </p>
             </div>
           </div>
@@ -88,8 +89,8 @@
               <p class="inner-div-paragraph-txt">
                The text next to the register name, for example, <b>F (STALL)</b>, indicates the control signal that was applied to the pipe register at the end of the current clock cycle.  In addition, colors are used in the following way:
                 <li><span style="background-color: #02d199; color: #18133f;">Green</span> for when the <span style="background-color: #02d199; color: #18133f;">normal</span> singal was applied. In this case, the pipeline register stored the value of its input.</li>
-                <li><span style="background-color: #f7c336; color: #18133f;">Yellow</span>for when the <span style="background-color: #f7c336; color: #18133f;">stall</span> signal was applied. In this case, the pipeline register ignored the input and maintained the same value.</li>
-                <li><span style="background-color: #f77d36; color: #18133f;">Orange</span>for when the <span style="background-color: #f77d36; color: #18133f;">bubbled</span> signal was applied. In this case, the pipeline register was set to a nop.</li>
+                <li><span style="background-color: #f7c336; color: #18133f;">Yellow</span> for when the <span style="background-color: #f7c336; color: #18133f;">stall</span> signal was applied. In this case, the pipeline register ignored the input and maintained the same value.</li>
+                <li><span style="background-color: #f77d36; color: #18133f;">Orange</span> for when the <span style="background-color: #f77d36; color: #18133f;">bubble</span> signal was applied. In this case, the pipeline register was set to a nop.</li>
               </p>
             </div>
           </div>
@@ -100,7 +101,7 @@
               <img src="assets/instructions/misc.png" class="instruction-img-center-small">
               <p class="inner-div-paragraph-txt">
                 <li><b>Registers:</b> Shows the state of the registers during the simulation. Registers are displayed from register 0 (%rax) to register 15 (%r14).</li>
-                <li><b>Control flags:</b> OF is the overflow flag, SF is the sign flag, ZF is the zero flag. The flags are set to 0 or 1 when an OPQ instruction is in the execute stage based upon the result of the arithmetic instruction.</li>
+                <li><b>Control flags:</b> OF is the overflow flag. SF is the sign flag. ZF is the zero flag. The flags are set to 0 or 1 when an OPQ instruction is in the execute stage based upon the result of the arithmetic instruction.</li>
               </p>
             </div>
           </div>

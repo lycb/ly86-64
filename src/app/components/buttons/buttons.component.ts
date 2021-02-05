@@ -26,7 +26,8 @@ export class ButtonsComponent implements OnInit {
   reset: boolean;
   eof: boolean;
 
-  fstall: boolean;
+  dstall: boolean;
+  dbubble: boolean;
   hold: boolean;
 
   freg: F;
@@ -104,7 +105,8 @@ export class ButtonsComponent implements OnInit {
       if (current.parsedLine.instruction != "" && !this.stop) {
         this.stop = this.cpuService.doSimulation(this.fileContent, current, this.freg, this.dreg, this.ereg, this.mreg, this.wreg);
         this.hold = this.cpuService.getHold();
-        this.fstall = this.cpuService.getFstall();
+        this.dstall = this.cpuService.getDstall();
+        this.dbubble = this.cpuService.getDbubble();
       }
       this.nextCurrentLine();
     }

@@ -2,18 +2,16 @@
                             |         jl.yo demonstrates a "jump less" logic.
                             |         
                             |         In this particular example, the jump at address 0x00c is 
-                            |         predicted as taken and this
-                            |         prediction is correct.  The jump at address 0x049 
-                            |         is also predicted as taken and this prediction  
-                            |         is incorrect. The simulator
-                            |         will change the two instructions fetched 
-                            |         at the target (0x067) to nops when it is determined 
+                            |         predicted as taken and this prediction is correct.  
+                            |         The jump at address 0x049 is also predicted as taken 
+                            |         and this prediction is incorrect. The simulator
+                            |         will change the two instructions fetched at the 
+                            |         target (0x067) to nops when it is determined 
                             |         that the prediction is incorrect and fetch the fall through 
                             |         instruction at 0x052. 
                             |         
-                            |         Note also that the instructions following  
-                            |         the HALT at 0x066 are fetched
-                            |         and changed to nops in the M register until  
+                            |         Note also that the instructions following the HALT at 0x066 
+                            |         are fetched and changed to nops in the M register until  
                             |         the HALT reaches the writeback stage.
                             |         
 0x000:                      |         .pos 0

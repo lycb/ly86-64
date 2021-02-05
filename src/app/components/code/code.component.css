@@ -33,6 +33,12 @@
 	margin: 0;
 }
 
+.current-bubbled {
+	background-color: #f77d36;
+	color: #18133f;
+	margin: 0;
+}
+
 @media screen and (max-width: 928px) {
 	.file-content-wrapper {
 		height: 53.5vh;

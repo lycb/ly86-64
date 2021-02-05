@@ -1,7 +1,8 @@
 <div class="file-content-wrapper">
   <div class="file-content" *ngFor="let line of fileContent">
     <pre *ngIf="!line.isCurrent" class="not-current">{{ line.textLine }}</pre>
-    <pre *ngIf="line.isCurrent && (hold || !fstall || reset)" class="current-normal">{{ line.textLine }}</pre>
-    <pre *ngIf="line.isCurrent && fstall && !reset" class="current-stalled">{{ line.textLine }}</pre>
+    <pre *ngIf="line.isCurrent && (hold || (!dstall && !dbubble) || reset)" class="current-normal">{{ line.textLine }}</pre>
+    <pre *ngIf="line.isCurrent && dstall && !reset" class="current-stalled">{{ line.textLine }}</pre>
+    <pre *ngIf="line.isCurrent && dbubble && !reset" class="current-bubbled">{{ line.textLine }}</pre>
   </div>
 </div>
