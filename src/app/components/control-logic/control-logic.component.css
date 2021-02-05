@@ -4,74 +4,72 @@
 
 .wrapper {
 	font-size: 1.6vh;
+	margin-top: 1%;
+	margin-left: 2%;
+	width: 90%;
+	border: 2px solid #3c2e82;
+	border-radius: 5px;
+	font-family: monospace;
+	white-space: pre;
+	overflow: scroll;
+	scrollbar-width: none;
 }
 
 .f-logic {
 	margin: 1%;
-	word-wrap: normal;
 	color: #f7b613;
+  word-wrap: break-word; 
+  white-space: -moz-pre-line; 
+  white-space: pre-line; 
 }
 
 .d-stall-logic {
 	margin: 1%;
-	word-wrap: normal;
 	color: #f7b613;
+  word-wrap: break-word; 
+  white-space: -moz-pre-line; 
+  white-space: pre-line; 
 }
 
 .d-bubble-logic {
 	margin: 1%;
-	word-wrap: normal;
 	color: #f77d36;
+  word-wrap: break-word; 
+  white-space: -moz-pre-line; 
+  white-space: pre-line; 
 }
 
 .e-logic {
 	margin: 1%;
-	word-wrap: normal;
 	color: #f77d36;
+  word-wrap: break-word; 
+  white-space: -moz-pre-line; 
+  white-space: pre-line; 
 }
 
 .m-logic {
 	margin: 1%;
-	word-wrap: normal;
 	color: #f77d36;
+  word-wrap: break-word; 
+  white-space: -moz-pre-line; 
+  white-space: pre-line; 
 }
 
 @media screen and (max-width: 928px) {
 	.wrapper {
-		height: 20%;
-		margin-top: 1%;
-		margin-left: 2%;
-		width: 90%;
-		border: 2px solid #3c2e82;
-		border-radius: 5px;
-		font-family: monospace;
-		overflow: scroll;
+		height: 17%;
 	}
 }
 
 @media screen and (min-width: 929px) and (max-width: 1045px) {
 	.wrapper {
-		height: 19%;
-		margin-top: 1%;
-		margin-left: 2%;
-		width: 90%;
-		border: 2px solid #3c2e82;
-		border-radius: 5px;
-		font-family: monospace;
-		overflow: scroll;
+		height: 20%;
 	}
 }
 
 @media screen and (min-width: 1046px) {
 	.wrapper {
-		height: 15%;
-		margin-top: 1%;
-		margin-left: 2%;
-		width: 90%;
-		border: 2px solid #3c2e82;
-		border-radius: 5px;
-		font-family: monospace;
-		overflow: scroll;
+		height: 20%;
 	}
 }
 

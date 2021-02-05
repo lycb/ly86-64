@@ -7,7 +7,7 @@
 	width: 100%;
 	height: 100%;
 	font-family: 'Ubuntu Mono', monospace;
-	font-size: 14px;
+	font-size: 13px;
 }
 
 .register-title {
@@ -31,18 +31,8 @@
 	font-weight: 700;
 }
 
-.fetch-stage {
-	background-color: white;
-	height: 100%;
-	width: 10%;
-	border: 2px solid black;
-	border-radius: 5px;
-	margin-right: 0.5%;
-}
-
 .fetch-stage-stall {
 	background-color: #f7c336;
-	height: 100%;
 	width: 10%;
 	border: 2px solid #f7c336;
 	border-radius: 5px;
@@ -51,25 +41,14 @@
 
 .fetch-stage-normal {
 	background-color: #02d199;
-	height: 100%;
 	width: 10%;
 	border: 2px solid #02d199;
 	border-radius: 5px;
 	margin-right: 0.5%;
 }
 
-.decode-stage {
-	background-color: white;
-	height: 100%;
-	width: 20%;
-	border: 2px solid black;
-	border-radius: 5px;
-	margin-right: 0.5%;
-}
-
 .decode-stage-bubble {
 	background-color: #f77d36;
-	height: 100%;
 	width: 20%;
 	border: 2px solid #f77d36;
 	border-radius: 5px;
@@ -78,20 +57,30 @@
 
 .decode-stage-stall {
 	background-color: #f7c336;
-	height: 100%;
 	width: 20%;
 	border: 2px solid #f7c336;
 	border-radius: 5px;
 	margin-right: 0.5%;
+	overflow-y: scroll;
+	scrollbar-width: none;
+}
+
+.decode-stage-stall::-webkit-scrollbar {
+  display: none;
 }
 
 .decode-stage-normal {
 	background-color: #02d199;
-	height: 100%;
 	width: 20%;
 	border: 2px solid #02d199;
 	border-radius: 5px;
 	margin-right: 0.5%;
+	overflow-y: scroll;
+	scrollbar-width: none;
+}
+
+.decode-stage-normal::-webkit-scrollbar {
+  display: none;
 }
 
 .execute-stage-value-wrapper {
@@ -102,110 +91,128 @@
 	width: 50%;
 }
 
-.execute-stage {
-	background-color: white;
-	height: 100%;
-	width: 30%;
-	border: 2px solid black;
-	border-radius: 5px;
-	margin-right: 0.5%;
-}
-
 .execute-stage-bubble {
 	background-color: #f77d36;
-	height: 100%;
 	width: 30%;
 	border: 2px solid #f77d36;
 	border-radius: 5px;
 	margin-right: 0.5%;
+	overflow-y: scroll;
+	scrollbar-width: none;
+}
+
+.execute-stage-bubble::-webkit-scrollbar {
+  display: none;
 }
 
 .execute-stage-stall {
 	background-color: #f7c336;
-	height: 100%;
 	width: 30%;
 	border: 2px solid #f7c336;
 	border-radius: 5px;
 	margin-right: 0.5%;
+	overflow-y: scroll;
+	scrollbar-width: none;
+}
+
+.execute-stage-stall::-webkit-scrollbar {
+  display: none;
 }
 
 .execute-stage-normal {
 	background-color: #02d199;
-	height: 100%;
 	width: 30%;
 	border: 2px solid #02d199;
 	border-radius: 5px;
 	margin-right: 0.5%;
+	overflow-y: scroll;
+	scrollbar-width: none;
 }
 
-.memory-stage {
-	background-color: white;
-	height: 100%;
-	width: 20%;
-	border: 2px solid black;
-	border-radius: 5px;
-	margin-right: 0.5%;
+.execute-stage-normal::-webkit-scrollbar {
+  display: none;
 }
 
 .memory-stage-bubble {
 	background-color: #f77d36;
-	height: 100%;
 	width: 20%;
 	border: 2px solid #f77d36;
 	border-radius: 5px;
 	margin-right: 0.5%;
+	overflow-y: scroll;
+	scrollbar-width: none;
+}
+
+.memory-stage-bubble::-webkit-scrollbar {
+  display: none;
 }
 
 .memory-stage-stall {
 	background-color: #f7c336;
-	height: 100%;
 	width: 20%;
 	border: 2px solid #f7c336;
 	border-radius: 5px;
 	margin-right: 0.5%;
+	overflow-y: scroll;
+	scrollbar-width: none;
+}
+
+.memory-stage-stall::-webkit-scrollbar {
+  display: none;
 }
 
 .memory-stage-normal {
 	background-color: #02d199;
-	height: 100%;
 	width: 20%;
 	border: 2px solid #02d199;
 	border-radius: 5px;
 	margin-right: 0.5%;
+	overflow-y: scroll;
+	scrollbar-width: none;
 }
 
-.writeback-stage {
-	background-color: white;
-	height: 100%;
-	width: 15%;
-	border: 2px solid black;
-	border-radius: 5px;
-	margin-right: 0.5%;
+.memory-stage-normal::-webkit-scrollbar {
+  display: none;
 }
 
 .writeback-stage-bubble {
 	background-color: #f77d36;
-	height: 100%;
 	width: 15%;
 	border: 2px solid #f77d36;
 	border-radius: 5px;
 	margin-right: 0.5%;
+	overflow-y: scroll;
+	scrollbar-width: none;
+}
+
+.writeback-stage-bubble::-webkit-scrollbar {
+  display: none;
 }
 
 .writeback-stage-stall {
 	background-color: #f7c336;
-	height: 100%;
 	width: 15%;
 	border: 2px solid #f7c336;
 	border-radius: 5px;
 	margin-right: 0.5%;
+	overflow-y: scroll;
+	scrollbar-width: none;
+}
+
+.writeback-stage-stall::-webkit-scrollbar {
+  display: none;
 }
 
 .writeback-stage-normal {
 	background-color: #02d199;
-	height: 100%;
 	width: 15%;
 	border: 2px solid #02d199;
 	border-radius: 5px;
 	margin-right: 0.5%;
+	overflow-y: scroll;
+	scrollbar-width: none;
+}
+
+.writeback-stage-normal::-webkit-scrollbar {
+  display: none;
 }

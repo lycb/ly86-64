@@ -1,11 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Ubuntu+Mono&display=swap');
 
 .condition-flags-wrapper {
-	margin-bottom: 1%;
-	margin-top: 1%;
-	margin-left: 2%;
-  font-size: 1.6vh;
+  margin-top: 10%;
+  margin-left: 1vw;
   font-family: monospace;
+  font-size: 15px;
 }
 
 .title {

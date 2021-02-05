@@ -3,8 +3,13 @@ body.simulator {
 }
 
 .container {
-  max-height: 100vh;
-  margin: 2vh;
+  max-height: 150vh;
+  margin: 1vh;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.other-elements {
   display: flex;
   flex-wrap: wrap;
 }

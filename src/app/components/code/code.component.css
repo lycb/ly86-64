@@ -9,6 +9,7 @@
 	color: #7867c6;
 	font-size: 15px;
 	font-family: monospace;
+	scrollbar-width: none;
 }
 
 .file-content-wrapper::-webkit-scrollbar {
