@@ -52,7 +52,7 @@ input[type='checkbox'] {
   font-size: 2rem;
   text-transform: uppercase;
   text-align: left;
-  color: #48ff00;
+  color: #ff00fa;
   cursor: pointer;
   border-radius: 7px;
   transition: all 0.25s ease-out;
@@ -60,7 +60,7 @@ input[type='checkbox'] {
 }
 
 .label-element:hover {
-  color: #40d690;
+  color: #ce00c4;
 }
 
 .label-element::before {
