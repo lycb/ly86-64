@@ -186,13 +186,15 @@ export class CpuService {
   doFetchClockLow(fileContent: Line[], lineObject: Line, freg: F, dreg: D, ereg: E, mreg: M, wreg: W): void {
     this.f_pc = this.selectPC(freg, mreg, wreg);
 
-    let line = lineObject.parsedLine.instruction;
+    let instr = lineObject.parsedLine.instruction;
+    let line = lineObject;
 
     if (this.f_pc.toNumber() != lineObject.parsedLine.address) {
       for (let i = 0; i < fileContent.length; i++) {
         if (fileContent[i].parsedLine !== null && fileContent[i].parsedLine.instruction !== "") {
           if (fileContent[i].parsedLine.address == this.f_pc.toNumber()) {
-            line = fileContent[i].parsedLine.instruction;
+            instr = fileContent[i].parsedLine.instruction;
+            line = fileContent[i];
             // this.parserService.setCurrent(fileContent[i])
             break;
           }
@@ -209,9 +211,9 @@ export class CpuService {
       valP = Long.ZERO,
       f_predPC = Long.ZERO;
 
-    icode = Long.fromString(line[0], 16);
-    ifun = Long.fromString(line[1], 16);
-    let registers = this.getRegisterIds(icode, line);
+    icode = Long.fromString(instr[0], 16);
+    ifun = Long.fromString(instr[1], 16);
+    let registers = this.getRegisterIds(icode, instr);
     if (registers) {
       rA = registers[0];
       rB = registers[1];
@@ -221,14 +223,16 @@ export class CpuService {
     stat = this.f_status(icode, this.error);
     icode = this.f_icode(icode, this.error);
     ifun = this.f_ifun(ifun, this.error);
-    valC = this.getValC(icode, this.f_pc, line);
+    valC = this.getValC(icode, this.f_pc, instr);
     valP = Long.fromNumber(this.PCincrement(this.f_pc, icode));
     f_predPC = this.predictPC(icode, valC, valP);
 
     this.f_calculateControlSignals(dreg, ereg, mreg);
 
     freg.getPredPC().setInput(f_predPC);
-    freg.getAddress().setInput(f_predPC);
+    freg.getAddress().setInput(Long.fromNumber(line.parsedLine.address));
+    
+    freg.getAddress().normal();
 
     this.setDInput(dreg, stat, icode, ifun, rA, rB, valC, valP, freg.getAddress().getOutput());
   }
@@ -236,7 +240,6 @@ export class CpuService {
   doFetchClockHigh(freg: F, dreg: D): void {
     if (!this.fstall) {
       freg.getPredPC().normal();
-      freg.getAddress().normal();
     }
     if (this.dbubble) {
       dreg.getstat().bubble(Long.fromNumber(Constants.SAOK));
@@ -246,7 +249,7 @@ export class CpuService {
       dreg.getrB().bubble(Long.fromNumber(Constants.RNONE));
       dreg.getvalC().bubble(Long.ZERO);
       dreg.getvalP().bubble(Long.ZERO);
-      dreg.getAddress().bubble(Long.ZERO)
+      dreg.getAddress().bubble(Long.ZERO);
     }
     if (!this.dbubble && !this.dstall) {
       dreg.getstat().normal();
