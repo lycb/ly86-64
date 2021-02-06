@@ -12,7 +12,6 @@ import { Line } from '../../models/Line';
 export class CodeComponent implements OnInit {
   // display the main code chunk
   @Input() fileContent: Line[];	
-  @Input() hold: boolean;
   @Input() dstall: boolean;
   @Input() dbubble: boolean;
   @Input() reset: boolean;
