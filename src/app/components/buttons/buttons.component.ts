@@ -28,7 +28,6 @@ export class ButtonsComponent implements OnInit {
 
   dstall: boolean;
   dbubble: boolean;
-  hold: boolean;
 
   freg: F;
   dreg: D;
@@ -104,7 +103,6 @@ export class ButtonsComponent implements OnInit {
     if (current.id < this.fileContent.length && nextId < this.fileContent.length) {
       if (current.parsedLine.instruction != "" && !this.stop) {
         this.stop = this.cpuService.doSimulation(this.fileContent, current, this.freg, this.dreg, this.ereg, this.mreg, this.wreg);
-        this.hold = this.cpuService.getHold();
         this.dstall = this.cpuService.getDstall();
         this.dbubble = this.cpuService.getDbubble();
       }
@@ -120,7 +118,6 @@ export class ButtonsComponent implements OnInit {
 
     this.cycle = 0;
     this.dstall = false;
-    this.hold = false;
     this.stop = false;
     this.counterStop = false;
     this.isFirstAddressCurrent = false;
@@ -224,8 +221,7 @@ export class ButtonsComponent implements OnInit {
     for (let i = nextIndex; i < this.fileContent.length; i++) {
       let next = this.fileContent[i];
       if (next.parsedLine != null) {
-        this.eof = next.id >= this.instructionLength;
-        if (!this.cpuService.holdHighlight(this.ereg, this.eof)) {
+        if (!this.cpuService.getDstall()) {
           this.parserService.setCurrent(next);
         } 
       }

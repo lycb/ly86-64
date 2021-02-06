@@ -152,11 +152,6 @@ export class CpuService {
     this.memoryService.reset();
   }
 
-  holdHighlight(ereg: E, eof: boolean): boolean {
-    this.hold = ereg.geticode().getOutput().equals(Long.ZERO) && eof;
-    return this.dstall || this.hold;
-  }
-
   getFstall() {
     return this.fstall;
   }
@@ -231,7 +226,6 @@ export class CpuService {
 
     freg.getPredPC().setInput(f_predPC);
     freg.getAddress().setInput(Long.fromNumber(line.parsedLine.address));
-    
     freg.getAddress().normal();
 
     this.setDInput(dreg, stat, icode, ifun, rA, rB, valC, valP, freg.getAddress().getOutput());
