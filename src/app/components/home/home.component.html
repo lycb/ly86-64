@@ -25,7 +25,7 @@
               <!-- <p class="inner-div-paragraph-txt">
                 While the LY86-64 works on any browsers, it is recommended to use Chrome for the best experience.
               </p> -->
-              <p class="inner-div-paragraph-txt"> We recommend your browser size is at least 700x827.
+              <p class="inner-div-paragraph-txt"> We recommend your browser size is at least 607x814.
               </p>
             </div>
           </div>
@@ -65,8 +65,9 @@
               <img src="assets/instructions/code.png" class="instruction-img-center-big">
               <p class="inner-div-paragraph-txt">
                 As you step through the instructions, the line highlighted is the instruction that was just fetched. This instruction was chosen by the SelectPC hardware in the fetch stage. 
-                <li>This <span style="background-color: #c156ff; color: white;">colored highlight</span> is showing that the normal signal was applied to the F register.</li>
-                <li>This <span style="background-color: #FFBF00; color: #18133f;">colored highlight</span> is showing that the F register was <i>stalled</i>. In other words, this highlighted instruction will be fetched again in the next cycle.</li>
+                <li>If the instruction is colored <span style="background-color: #c156ff; color: white;">purple</span> then the instruction in the D register was chosen by selectPC.</li>
+                <li>If the instruction is colored <span style="background-color: #f77d36; color: #18133f;">orange</span> then the D register was bubbled.</li>
+                <li>If the instruction is colored <span style="background-color: #FFBF00; color: #18133f;">yellow</span> then the instruction is in the D register for a second cycle because the D register was stalled.</li>
               </p>
             </div>
           </div>
@@ -76,7 +77,7 @@
             <div class="inner-p-div-child">
               <img src="assets/instructions/control_logic.png" class="instruction-img-center-big">
               <p class="inner-div-paragraph-txt">
-                The control logic component is designed to help the user understand why a certain register was <span style="background-color: #FFBF00; color: #18133f;">stalled</span> or <span style="background-color: #ff5000; color: #18133f;">bubbled</span>.
+                The control logic component is designed to help the user understand why a certain register was <span style="background-color: #FFBF00; color: #18133f;">stalled</span> or <span style="background-color: #f77d36; color: #18133f;">bubbled</span>.
 
               </p>
             </div>

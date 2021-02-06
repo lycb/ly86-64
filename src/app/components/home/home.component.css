@@ -194,6 +194,7 @@ a:hover {
 
 .inner-p-div-child {
   display: inline-block;
+  padding: 1%;
 }
 
 b {
