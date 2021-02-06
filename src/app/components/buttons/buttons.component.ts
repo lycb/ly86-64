@@ -119,7 +119,7 @@ export class ButtonsComponent implements OnInit {
     this.cycle = 0;
 
     this.cycle = 0;
-    this.fstall = false;
+    this.dstall = false;
     this.hold = false;
     this.stop = false;
     this.counterStop = false;
