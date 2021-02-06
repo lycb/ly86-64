@@ -2,7 +2,7 @@
 
 .register-table-wrapper {
 	margin-top: 5%;
-	margin-left: 5%;
+	margin-left: 1vw;
 	margin-bottom: 2%;
 	margin-right: 0;
 	width: 60%;
@@ -14,7 +14,7 @@
 	color: white;
 	padding-right: 10px;
 	text-align: left;
-	font-size: 20px;
+	font-size: 2vh;
 }
 
 .registers-value {
