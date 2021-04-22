@@ -1,21 +1,21 @@
 import { ComponentFixture, TestBed, waitForAsync, fakeAsync, tick } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { ButtonsComponent } from './buttons.component';
+import { ControlComponent } from './control.component';
 import { CodeComponent } from './../code/code.component';
 import { ClockCycleComponent } from './../clock-cycle/clock-cycle.component';
 import { AddressLine } from '../../models/AddressLine';
 import { ParserService } from '../../services/parser/parser.service';
 import Long from 'long';
 
-describe('ButtonsComponent', () => {
-  let component: ButtonsComponent;
+describe('ControlComponent', () => {
+  let component: ControlComponent;
   let parserService: ParserService;
-  let fixture: ComponentFixture<ButtonsComponent>;
+  let fixture: ComponentFixture<ControlComponent>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [
-      ButtonsComponent,
+      ControlComponent,
       ClockCycleComponent,
       CodeComponent
       ]
@@ -24,7 +24,7 @@ describe('ButtonsComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ButtonsComponent);
+    fixture = TestBed.createComponent(ControlComponent);
     component = fixture.componentInstance;
     parserService = TestBed.inject(ParserService);
     fixture.detectChanges();

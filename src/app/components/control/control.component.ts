@@ -9,11 +9,11 @@ import { F, D, E, M, W } from "../../models/PipeReg";
 import Long from 'long';
 
 @Component({
-  selector: 'app-buttons',
-  templateUrl: './buttons.component.html',
-  styleUrls: ['./buttons.component.css']
+  selector: 'app-control',
+  templateUrl: './control.component.html',
+  styleUrls: ['./control.component.css']
 })
-export class ButtonsComponent implements OnInit {
+export class ControlComponent implements OnInit {
   fileContent: Line[];
   cycle: number;
   instructionLength: number;
