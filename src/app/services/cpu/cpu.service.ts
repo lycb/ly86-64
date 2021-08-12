@@ -236,7 +236,7 @@ export class CpuService {
       freg.getPredPC().normal();
     }
     if (this.dbubble) {
-      dreg.getstat().bubble(Long.fromNumber(Constants.SAOK));
+      dreg.getstat().bubble(Long.fromNumber(Constants.SBUB));
       dreg.geticode().bubble(Long.fromNumber(Constants.NOP));
       dreg.getifun().bubble(Long.ZERO);
       dreg.getrA().bubble(Long.fromNumber(Constants.RNONE));
@@ -507,7 +507,7 @@ export class CpuService {
 
   doDecodeClockHigh(ereg: E): void {
     if (this.ebubble) {
-      ereg.getstat().bubble(Long.fromNumber(Constants.SAOK));
+      ereg.getstat().bubble(Long.fromNumber(Constants.SBUB));
       ereg.geticode().bubble(Long.fromNumber(Constants.NOP));
       ereg.getifun().bubble(Long.ZERO);
       ereg.getvalC().bubble(Long.ZERO);
@@ -723,7 +723,7 @@ export class CpuService {
       mreg.getdstM().normal();
       mreg.getAddress().normal();
     } else {
-      mreg.getstat().bubble(Long.fromNumber(Constants.SAOK));
+      mreg.getstat().bubble(Long.fromNumber(Constants.SBUB));
       mreg.geticode().bubble(Long.fromNumber(Constants.NOP));
       mreg.getCnd().bubble(Long.ZERO);
       mreg.getvalE().bubble(Long.ZERO);

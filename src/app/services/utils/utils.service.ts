@@ -214,6 +214,7 @@ export class UtilsService {
 
   num2stat(stat: number): string {
     switch(stat) {
+      case 0: return 'SBUB';
       case 1: return 'SAOK';
       case 2: return 'SADR';
       case 3: return 'SINS';
