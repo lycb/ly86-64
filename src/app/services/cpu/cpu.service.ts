@@ -1050,7 +1050,7 @@ export class CpuService {
   doWritebackClockLow(wreg: W): boolean {
     let stat = wreg.getstat().getOutput();
 
-    return stat.notEquals(Long.fromNumber(Constants.SAOK));
+    return stat.notEquals(Long.fromNumber(Constants.SAOK)) && stat.notEquals(Long.fromNumber(Constants.SBUB));
   }
 
   doWritebackClockHigh(wreg: W): void {
