@@ -8,3 +8,5 @@
 
 ## Special thanks 
 Dr. Cindy Norris
+
+## Read it [here](https://scholar.google.com/citations?user=gIKA02sAAAAJ&hl=en&authuser=1)
