@@ -9,4 +9,4 @@
 ## Special thanks 
 Dr. Cindy Norris
 
-## Read it here: https://dl.acm.org/doi/10.1145/3476883.3520224
+## Read it [here](https://scholar.google.com/citations?user=gIKA02sAAAAJ&hl=en&authuser=1)
